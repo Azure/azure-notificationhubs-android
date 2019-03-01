@@ -1,26 +1,27 @@
-# Microsoft Azure Notification Hubs
+# Windows Azure Notification Hubs - Android SDK
 
-Azure Notification Hubs provide an easy-to-use, multiplatform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
+With Windows Azure Notification Hubs you can easily send push notifications to your mobile apps (Windows 8, iOS, Android). Broadcast notifications to millions of devices with a single line of code, send platform-agnostic personalized notifications using templates, and target users and interest groups using tags. Learn more, visit our [guidance article](http://msdn.microsoft.com/en-us/library/jj927170.aspx).
 
-## Getting Started
+## Getting Started with Android SDK
+Please follow our [tutorial](http://msdn.microsoft.com/en-us/library/dn265921.aspx) to start using the Android SDK with Windows Azure Notification Hubs.
 
-If you are new to Notification Hubs, you can get started by following our tutorials to push notifications to your [iOS apps](https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-ios-get-started/), [Android apps](https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-android-get-started/), and [Windows Universal apps](https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-windows-store-dotnet-get-started/).
+## Download the source code
+To get the source code of our SDKs and samples via **git** just type:
 
-## Download Source Code
+    git clone https://github.com/Azure/azure-notificationhubs-android.git
+    cd ./azure-notificationhubs-android/
 
-To get the source code of our SDKs via **git** just type:
+## Building and Referencing the SDK
 
-    git clone https://github.com/Azure/azure-notificationhubs.git
-    cd ./azure-notificationhubs/
+1. Import the `.\src\notification-hubs-sdk` project into your workspace
+2. Once Android Studio finished compiling the library, the resulting `.jar` file is located in `.\src\notification-hubs-sdk\bin`.
 
-## Useful Resources
+## Need Help?
 
-* [Samples](https://github.com/Azure/azure-notificationhubs-samples)
-* Tutorials and product overview are available at [Microsoft Azure Notification Hubs Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
-* Our product team actively monitors the [Notification Hubs Developer Forum](http://social.msdn.microsoft.com/Forums/en-US/notificationhubs/) to assist you with any troubles.
+Be sure to check out the Connectivity and Messaging [Developer Forum](http://social.msdn.microsoft.com/Forums/en-US/windowsazureconnectivity/) if you are having trouble. The Notification Hubs product team actively monitors the forum and will be more than happy to assist you.
 
 ## Contribute Code or Provide Feedback
 
-If you would like to become an active contributor to this project please follow the instructions provided in [Microsoft Azure Projects Contribution Guidelines](http://azure.github.com/guidelines.html).
+If you would like to become an active contributor to this project please follow the instructions provided in [Windows Azure Projects Contribution Guidelines](http://windowsazure.github.com/guidelines.html).
 
-If you encounter any bugs with the library please file an issue in the [Issues](https://github.com/Azure/azure-notificationhubs/issues) section of the project.
+If you encounter any bugs with the library please file an issue in the [Issues](https://github.com/Azure/azure-notificationhubs-android/issues) section of the project.
