@@ -19,8 +19,7 @@
             android:value="@integer/google_play_services_version" />
 
         <service
-            android:name=".MyFirebaseMessagingService"
-            android:stopWithTask="false">
+            android:name="com.microsoft.windowsazure.notifications.NotificationMessagingService" android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
