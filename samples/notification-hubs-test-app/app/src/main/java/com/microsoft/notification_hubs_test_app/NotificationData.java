@@ -46,7 +46,6 @@ public class NotificationData {
     private final Integer timeoutMs;
 
     public NotificationData(RemoteMessage remoteMessage) {
-        //this.message = notificationBundle.getString("message");
         Map<String, String> remoteMessageData = remoteMessage.getData();
         this.message = remoteMessageData.get("message");
 
