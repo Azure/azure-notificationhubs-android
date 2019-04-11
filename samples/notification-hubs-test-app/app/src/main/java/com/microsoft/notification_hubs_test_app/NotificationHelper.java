@@ -25,7 +25,7 @@ public class NotificationHelper {
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-            NotificationsManager.handleNotifications(context, BuildConfig.senderId, DemoNotificationsHandler.class);
+            NotificationsManager.handleNotifications(context, DemoNotificationsHandler.class);
         }
     }
 

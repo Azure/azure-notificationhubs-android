@@ -14,6 +14,10 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.widget.ImageView;
 
+import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Map;
+
 
 public class NotificationData {
     public enum CustomActionType {
@@ -41,20 +45,23 @@ public class NotificationData {
     private final MessageSize messageSize;
     private final Integer timeoutMs;
 
-    public NotificationData(Bundle notificationBundle) {
-        this.message = notificationBundle.getString("message");
-        this.title = notificationBundle.getString("title", "Default notification title");
-        this.badgeCount = notificationBundle.containsKey("badgeCount") ?
-                Integer.parseInt(notificationBundle.getString("badgeCount")) : null;
-        this.customAction = notificationBundle.containsKey("customAction") ?
-                parseCustomAction(notificationBundle.getString("customAction")) : null;
-        this.customAudio = notificationBundle.containsKey("customAudio") ?
-                parseCustomAudio(notificationBundle.getString("customAudio")) : null;
-        this.timeoutMs = notificationBundle.containsKey("timeoutMs") ?
-                Integer.parseInt(notificationBundle.getString("timeoutMs")) : null;
-        this.messageSize = notificationBundle.containsKey("messageSize") ?
-                parseMessageSize(notificationBundle.getString("messageSize")): null;
-        this.includePicture = Boolean.parseBoolean(notificationBundle.getString("includePicture", "false"));
+    public NotificationData(RemoteMessage remoteMessage) {
+        //this.message = notificationBundle.getString("message");
+        Map<String, String> remoteMessageData = remoteMessage.getData();
+        this.message = remoteMessageData.get("message");
+
+        this.title = remoteMessageData.getOrDefault("title", "Default notification title");
+        this.badgeCount = remoteMessageData.containsKey("badgeCount") ?
+                Integer.parseInt(remoteMessageData.get("badgeCount")) : null;
+        this.customAction = remoteMessageData.containsKey("customAction") ?
+                parseCustomAction(remoteMessageData.get("customAction")) : null;
+        this.customAudio = remoteMessageData.containsKey("customAudio") ?
+                parseCustomAudio(remoteMessageData.get("customAudio")) : null;
+        this.timeoutMs = remoteMessageData.containsKey("timeoutMs") ?
+                Integer.parseInt(remoteMessageData.get("timeoutMs")) : null;
+        this.messageSize = remoteMessageData.containsKey("messageSize") ?
+                parseMessageSize(remoteMessageData.get("messageSize")): null;
+        this.includePicture = Boolean.parseBoolean(remoteMessageData.getOrDefault("includePicture", "false"));
     }
 
     private CustomActionType parseCustomAction(String customActionString) {
