@@ -12,12 +12,11 @@ def isCI = project.hasProperty('isCI') ? Boolean.valueOf(isCI) : false
 def repoUrl = isCI ? "file://" + "$System.env.BUILD_ARTIFACTSTAGINGDIRECTORY" : 'https://api.bintray.com/maven/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '28.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 21
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -40,8 +39,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
 }
 
 
