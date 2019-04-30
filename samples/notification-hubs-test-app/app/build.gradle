@@ -7,11 +7,11 @@ if (secretsPropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.microsoft.notification_hubs_test_app"
-        minSdkVersion 26
-        targetSdkVersion 28
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,9 +37,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile 'com.google.android.gms:play-services-gcm:16.0.0'
-    compile 'com.microsoft.azure:notification-hubs-android-sdk:0.6@aar'
-    compile 'com.microsoft.azure:azure-notifications-handler:3.5.1@aar'
+    implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.6@aar'
+    implementation 'com.microsoft.azure:azure-notifications-handler:3.5.1@aar'
 }
 
 repositories {
