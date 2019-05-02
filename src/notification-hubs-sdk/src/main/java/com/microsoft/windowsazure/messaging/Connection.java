@@ -48,8 +48,6 @@ import javax.crypto.spec.SecretKeySpec;
 import android.os.Build;
 import android.util.Base64;
 
-import org.apache.http.protocol.HTTP;
-
 /**
  * The connection with a Notification Hub server
  */
@@ -161,7 +159,7 @@ class Connection {
 		HttpURLConnection conn = (HttpURLConnection) wrappedUrl.openConnection();
 		conn.setRequestMethod(method);
 
-		conn.setRequestProperty(HTTP.CONTENT_TYPE, contentType);
+		conn.setRequestProperty("Content-Type", contentType);
 
 		if (extraHeaders != null) {
 			for (SimpleEntry<String, String> header : extraHeaders) {

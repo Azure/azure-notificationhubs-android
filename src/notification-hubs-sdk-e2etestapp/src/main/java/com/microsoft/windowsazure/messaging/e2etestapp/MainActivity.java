@@ -19,12 +19,12 @@ See the Apache Version 2.0 License for specific language governing permissions a
  */
 package com.microsoft.windowsazure.messaging.e2etestapp;
 
+import java.io.DataOutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.net.HttpURLConnection;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -188,19 +188,26 @@ public class MainActivity extends Activity {
 								String url = ApplicationContext.getLogPostURL();
 								if (url != null && url.trim() != "") {
 									url = url + "?platform=android";
-									HttpPost post = new HttpPost();
-									post.setEntity(new StringEntity(postContent, "utf-8"));
-									
-									post.setURI(new URI(url));
-									
-									new DefaultHttpClient().execute(post);
+									byte[] postData = postContent.getBytes(StandardCharsets.UTF_8);
+									URL urlObject = new URL(url);
+									HttpURLConnection conn = (HttpURLConnection) urlObject.openConnection();
+									conn.setDoOutput(true);
+									conn.setInstanceFollowRedirects(false);
+									conn.setRequestMethod("POST");
+									conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+									conn.setRequestProperty("charset", "utf-8");
+									conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
+									conn.setUseCaches(false);
+									try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+										wr.write(postData);
+									}
 								}
 							} catch (Exception e) {
 								// Wasn't able to post the data. Do nothing
 							}
-							
+
 							return null;
-						}	
+						}
 					}.execute();
 				}
 			});
