@@ -27,6 +27,7 @@ import com.microsoft.windowsazure.messaging.Registration.RegistrationType;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
+import java.util.Map;
 import java.net.URLEncoder;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Set;
@@ -139,6 +140,20 @@ public class NotificationHub {
 		Registration registration = PnsSpecificRegistrationFactory.getInstance().createNativeRegistration(mNotificationHubPath);
 		registration.setPNSHandle(pnsHandle);
 		registration.setName(Registration.DEFAULT_REGISTRATION_NAME);
+		registration.addTags(tags);
+
+		return registerInternal(registration);
+	}
+
+	public Registration register(String pnsHandle, Map<String, String> pushVariables, String... tags) throws Exception {
+		if (isNullOrWhiteSpace(pnsHandle)) {
+			throw new IllegalArgumentException("pnsHandle");
+		}
+
+		Registration registration = PnsSpecificRegistrationFactory.getInstance().createNativeRegistration(mNotificationHubPath);
+		registration.setPNSHandle(pnsHandle);
+		registration.setName(Registration.DEFAULT_REGISTRATION_NAME);
+		registration.addPushVariables(pushVariables);
 		registration.addTags(tags);
 
 		return registerInternal(registration);

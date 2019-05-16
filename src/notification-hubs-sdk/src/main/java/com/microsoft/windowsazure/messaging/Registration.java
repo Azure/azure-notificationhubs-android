@@ -27,6 +27,7 @@ import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -105,6 +106,11 @@ public abstract class Registration {
 	 * The registration tags
 	 */
 	protected List<String> mTags;
+
+	/**
+	 * The registration push variables
+	 */
+	protected Map<String, String> mPushVariables;
 	
 	/**
 	 * The registration URI
@@ -166,6 +172,9 @@ public abstract class Registration {
 		appendNodeWithValue(doc, registrationDescription, "ETag", getETag());
 		appendNodeWithValue(doc, registrationDescription, "ExpirationTime", getExpirationTimeString());
 		appendNodeWithValue(doc, registrationDescription, "RegistrationId", getRegistrationId());
+		if(mPushVariables != null) {
+			appendNodeWithValue(doc, registrationDescription, "PushVariables", getPushVariables());
+		}
 		appendTagsNode(doc, registrationDescription);
 
 		appendCustomPayload(doc, registrationDescription);
@@ -467,6 +476,30 @@ public abstract class Registration {
 				}
 			}
 		}
+	}
+
+	void addPushVariables(Map<String, String> pushVariables) {
+		if(pushVariables != null) {
+			mPushVariables = pushVariables;
+		}
+	}
+
+	String getPushVariables() {
+		String result = "";
+		try {
+			JSONObject pushVariablesJson = new JSONObject();
+			if (mPushVariables != null) {
+				for(Map.Entry<String, String> entry : mPushVariables.entrySet()) {
+					pushVariablesJson.put(entry.getKey(), entry.getValue());
+				}
+			}
+			if (pushVariablesJson.length() > 0) {
+				result = pushVariablesJson.toString();
+			}
+		} catch (JSONException e) {
+
+		}
+		return result;
 	}
 	
 	/**
