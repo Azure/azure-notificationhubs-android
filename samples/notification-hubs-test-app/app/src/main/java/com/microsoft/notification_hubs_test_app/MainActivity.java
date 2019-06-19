@@ -33,8 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 if (key == "registrationID") {
                     String value = sharedPreferences.getString(key, "");
                     updateRegistrationID(value);
-                }
-                else if (key == "FCMtoken") {
+                } else if (key == "FCMtoken") {
                     String value = sharedPreferences.getString(key, "");
                     updatePushToken(value);
                 }
