@@ -36,7 +36,7 @@ public class RegistrationIntentService extends IntentService {
             // Storing the registration ID that indicates whether the generated token has been
             // sent to your server. If it is not stored, send the token to your server,
             // otherwise your server should have already received the token.
-            if (((regID=sharedPreferences.getString("registrationID", null)) == null)){
+            if (((regID = sharedPreferences.getString("registrationID", null)) == null)){
 
                 NotificationHub hub = new NotificationHub(BuildConfig.hubName,
                         BuildConfig.hubListenConnectionString, this);
@@ -55,7 +55,7 @@ public class RegistrationIntentService extends IntentService {
             }
 
             // Check if the token may have been compromised and needs refreshing.
-            else if ((storedToken=sharedPreferences.getString("FCMtoken", "")) != FCM_token) {
+            else if ((storedToken = sharedPreferences.getString("FCMtoken", "")) != FCM_token) {
 
                 NotificationHub hub = new NotificationHub(BuildConfig.hubName,
                         BuildConfig.hubListenConnectionString, this);

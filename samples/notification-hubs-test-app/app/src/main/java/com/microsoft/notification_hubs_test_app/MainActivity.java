@@ -1,5 +1,7 @@
 package com.microsoft.notification_hubs_test_app;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
@@ -18,14 +20,45 @@ public class MainActivity extends AppCompatActivity {
     public static Boolean isVisible = false;
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key == "registrationID") {
+                    String value = sharedPreferences.getString(key, "");
+                    updateRegistrationID(value);
+                }
+                else if (key == "FCMtoken") {
+                    String value = sharedPreferences.getString(key, "");
+                    updatePushToken(value);
+                }
+            }
+        };
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+
+        updateRegistrationID(sharedPreferences.getString("registrationID", ""));
+        updatePushToken(sharedPreferences.getString("FCMtoken", ""));
+
         mainActivity = this;
         NotificationHelper.createChannelAndHandleNotifications(getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (onSharedPreferenceChangeListener != null) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+            onSharedPreferenceChangeListener = null;
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -123,5 +156,17 @@ public class MainActivity extends AppCompatActivity {
 
             startService(intent);
         }
+    }
+
+    private void updateRegistrationID(String value) {
+        EditText editRegistrationID = findViewById(R.id.editRegistrationID);
+        editRegistrationID.setText(value);
+        editRegistrationID.clearFocus();
+    }
+
+    private void updatePushToken(String value) {
+        EditText editPushToken = findViewById(R.id.editPushToken);
+        editPushToken.setText(value);
+        editPushToken.clearFocus();
     }
 }
