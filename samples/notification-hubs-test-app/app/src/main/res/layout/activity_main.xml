@@ -7,11 +7,18 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="495dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/TagsTitle"
@@ -32,6 +39,7 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:onClick="onRegisterClick"
             android:text="Register" />
 
@@ -44,9 +52,55 @@
             android:text="Unregister" />
 
         <TextView
-            android:id="@+id/textLog"
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_marginTop="16dp"
+            android:labelFor="@id/editRegistrationID"
+            android:text="Registration ID:" />
+
+        <EditText
+            android:id="@+id/editRegistrationID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:inputType="none"
+            android:selectAllOnFocus="true"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            tools:text="1234-5678-9" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/editPushToken"
+            android:text="Push Token:" />
+
+        <EditText
+            android:id="@+id/editPushToken"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:inputType="none"
+            android:selectAllOnFocus="true"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            tools:text="baadf00d-d00d" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Messages:" />
+
+        <TextView
+            android:id="@+id/textLog"
+            android:layout_width="match_parent"
+            android:layout_height="274dp"
+            tools:text="Messages" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
