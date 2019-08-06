@@ -3,7 +3,7 @@
 Microsoft Azure Notification Hubs provide a multiplatform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
 ## Getting Started with Android SDK
-Please follow our [tutorial](http://msdn.microsoft.com/en-us/library/dn265921.aspx) to start using the Android SDK with Microsoft Azure Notification Hubs.
+Please follow our [tutorial](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started) to start using the Android SDK with Microsoft Azure Notification Hubs.
 
 ## Download the source code
 To get the source code of our SDKs and samples via **git** just type:
