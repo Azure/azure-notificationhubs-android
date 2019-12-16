@@ -477,12 +477,9 @@ public class NotificationHub {
 	private void deleteRegistrationInternal(String registrationName, String registrationId) throws Exception {
 		Connection conn = new Connection(mConnectionString);
 		String resource = mNotificationHubPath + "/Registrations/" + registrationId;
-		
-		try {
-			conn.executeRequest(resource, null, XML_CONTENT_TYPE, "DELETE", new SimpleEntry<String, String>("If-Match", "*"));
-		} finally {
-			removeRegistrationId(registrationName);
-		}
+
+		conn.executeRequest(resource, null, XML_CONTENT_TYPE, "DELETE", new SimpleEntry<String, String>("If-Match", "*"));
+		removeRegistrationId(registrationName);
 	}
 		
 	/**
