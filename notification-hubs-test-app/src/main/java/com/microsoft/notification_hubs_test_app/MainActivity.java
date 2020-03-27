@@ -2,11 +2,11 @@ package com.microsoft.notification_hubs_test_app;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.microsoft.windowsazure.notifications.NotificationsManager;
+
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
