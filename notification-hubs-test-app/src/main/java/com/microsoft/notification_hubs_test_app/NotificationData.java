@@ -10,11 +10,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.RingtoneManager;
 import android.net.Uri;
-
 import androidx.core.app.NotificationCompat;
-
 import com.google.firebase.messaging.RemoteMessage;
-
 import java.util.Map;
 
 
