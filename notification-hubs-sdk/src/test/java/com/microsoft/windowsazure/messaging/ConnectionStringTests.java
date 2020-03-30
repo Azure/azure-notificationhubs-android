@@ -20,32 +20,35 @@ See the Apache Version 2.0 License for specific language governing permissions a
 
 package com.microsoft.windowsazure.messaging;
 
+import org.junit.Test;
 import java.net.URI;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import com.microsoft.windowsazure.messaging.ConnectionString;
+public class ConnectionStringTests {
 
-import android.test.InstrumentationTestCase;
-
-public class ConnectionStringTests extends InstrumentationTestCase {
-	
+	@Test
 	public void testCreateConnectionWithFullAccessString() {
 		String cs = ConnectionString.createUsingSharedAccessKeyWithFullAccess(URI.create("http://myUrl.com"), "secret123");
 		
 		assertEquals("Endpoint=http://myUrl.com;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=secret123", cs);
 	}
-	
+
+	@Test
 	public void testCreateConnectionWithListenAccessString() {
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
 		
 		assertEquals("Endpoint=http://myUrl.com;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=secret123", cs);
 	}
-	
+
+	@Test
 	public void testCreateConnectionWithCustomAccessString() {
 		String cs = ConnectionString.createUsingSharedAccessKey(URI.create("http://myUrl.com"), "MyKeyName", "secret123");
 		
 		assertEquals("Endpoint=http://myUrl.com;SharedAccessKeyName=MyKeyName;SharedAccessKey=secret123", cs);
 	}
-	
+
+	@Test
 	public void testCreateConnectionWithInvalidValues() {
 		try {
 			ConnectionString.createUsingSharedAccessKey(null, "keyName", "keyValue");

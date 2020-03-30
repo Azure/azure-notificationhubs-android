@@ -1,15 +1,19 @@
 package com.microsoft.windowsazure.messaging;
 
+import android.content.Context;
+
+import androidx.test.filters.SmallTest;
+
 import java.net.URI;
 import java.util.UUID;
+import org.junit.Test;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import com.microsoft.windowsazure.messaging.ConnectionString;
-import com.microsoft.windowsazure.messaging.NotificationHub;
-
-import android.content.Context;
-import android.test.InstrumentationTestCase;
-
-public class NotificationHubTests extends InstrumentationTestCase {
+@SmallTest
+public class NotificationHubTests {
+	@Test
 	public void testCreateNotificationHub() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
@@ -20,6 +24,7 @@ public class NotificationHubTests extends InstrumentationTestCase {
 		assertEquals(nh.getConnectionString(), cs);
 	}
 
+	@Test
 	public void testCreateNotificationHubWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
@@ -54,6 +59,7 @@ public class NotificationHubTests extends InstrumentationTestCase {
 		}
 	}
 
+	@Test
 	public void testRegisterWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
@@ -71,6 +77,7 @@ public class NotificationHubTests extends InstrumentationTestCase {
 		}
 	}
 
+	@Test
 	public void testRegisterTemplateWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
@@ -107,6 +114,7 @@ public class NotificationHubTests extends InstrumentationTestCase {
 		}
 	}
 
+	@Test
 	public void testUnregisterTemplateWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
@@ -122,6 +130,7 @@ public class NotificationHubTests extends InstrumentationTestCase {
 		}
 	}
 
+	@Test
 	public void testUnregisterAllWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
