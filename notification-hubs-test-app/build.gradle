@@ -38,7 +38,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
-    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.6@aar'
+    implementation project(":notification-hubs-sdk")
     implementation 'com.microsoft.azure:azure-notifications-handler:3.5.1@aar'
 }
 
