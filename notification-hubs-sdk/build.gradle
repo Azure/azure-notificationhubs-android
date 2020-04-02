@@ -71,7 +71,7 @@ task clearJar(type: Delete) {
 
 // step 1
 task makeJar(type: Copy) {
-    from('build/intermediates/packaged-classes/release/')
+    from('build/intermediates/aar_main_jar/release/')
     into('build/release/')
     include('classes.jar')
     rename ('classes.jar', PUBLISH_ARTIFACT_ID + '-' +  version + '.jar')
