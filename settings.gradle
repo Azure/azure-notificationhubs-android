@@ -1,1 +1,1 @@
-include ':notification-hubs-sdk', ':notification-hubs-sdk-e2etestapp',':notification-hubs-test-app', ':notifications-handler', 'FCMTutorialApp'
+include ':notification-hubs-sdk', ':notifications-handler', ':notification-hubs-sdk-e2etestapp',':notification-hubs-test-app', 'FCMTutorialApp'

@@ -47,6 +47,7 @@ uploadArchives {
     }
 }
 
+uploadArchives.dependsOn(makeJar)
 
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
