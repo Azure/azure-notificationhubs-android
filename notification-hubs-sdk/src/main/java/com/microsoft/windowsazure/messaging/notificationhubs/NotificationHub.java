@@ -2,13 +2,24 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
 import android.content.Intent;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * A Singleton controller that wraps all interactions with Firebase Cloud Messaging and Azure
+ * Notification Hubs.
+ */
 public final class NotificationHub {
     private static NotificationHub sInstance;
 
     private NotificationListener mListener;
+    private final List<InstallationMiddleware> mMiddleware;
 
     private Activity mActivity;
+
+    private NotificationHub() {
+        mMiddleware = new ArrayList<InstallationMiddleware>();
+    }
 
     /**
      * Fetches the single instance of NotificationHub that has been created to suit the current
@@ -47,5 +58,25 @@ public final class NotificationHub {
      */
     public void setInstanceListener(NotificationListener listener) {
         mListener = listener;
+    }
+
+    /**
+     * Registers {@link InstallationMiddleware} for use when a new {@link Installation} is to be
+     * created and registered.
+     * @param middleware A {@link InstallationMiddleware} to invoke when creating a new
+     *                   {@link Installation}.
+     */
+    public static void useMiddleware(InstallationMiddleware middleware) {
+        getInstance().useInstanceMiddleware(middleware);
+    }
+
+    /**
+     * Registers {@link InstallationMiddleware} for use when a new {@link Installation} is to be
+     * created and registered.
+     * @param middleware A {@link InstallationMiddleware} to invoke when creating a new
+     *                   {@link Installation}.
+     */
+    public void useInstanceMiddleware(InstallationMiddleware middleware) {
+        mMiddleware.add(middleware);
     }
 }
