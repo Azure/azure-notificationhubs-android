@@ -17,11 +17,15 @@ public class NotificationHubTest {
 
         specimen.useInstanceMiddleware(next -> {
             callCount[0]++;
+            assertNotNull("Next InstallationEnricher should never be null.", next);
             return subject -> {
                 callCount[1]++;
                 next.enrichInstallation(subject);
+                assertNotNull("Installation to be enriched should never be null", subject);
             };
         });
+
+        specimen.reinstallInstance();
 
         assertEquals("Middleware should have been invoked exactly once.", 1, callCount[0]);
         assertEquals("InstallationEnricher should have been invoked exactly once.", 1, callCount[1]);

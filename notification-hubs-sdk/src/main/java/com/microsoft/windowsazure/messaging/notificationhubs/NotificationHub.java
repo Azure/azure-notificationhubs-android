@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A Singleton controller that wraps all interactions with Firebase Cloud Messaging and Azure
@@ -78,5 +79,28 @@ public final class NotificationHub {
      */
     public void useInstanceMiddleware(InstallationMiddleware middleware) {
         mMiddleware.add(middleware);
+    }
+
+    /**
+     * Creates a new {@link Installation} and registers it with a backend that tracks devices.
+     */
+    public static void reinstall() {
+        getInstance().reinstallInstance();
+    }
+
+    public void reinstallInstance() {
+        ListIterator<InstallationMiddleware> iterator = this.mMiddleware.listIterator(this.mMiddleware.size());
+
+        InstallationEnricher enricher = subject -> {
+            // Intentionally Left Blank
+        };
+
+        while(iterator.hasPrevious()) {
+            InstallationMiddleware current = iterator.previous();
+            enricher = current.getInstallationEnricher(enricher);
+        }
+
+        Installation installation = new Installation();
+        enricher.enrichInstallation(installation);
     }
 }
