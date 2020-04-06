@@ -2,6 +2,10 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -15,11 +19,19 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
+    private final PushChannelEnricher pushChannelEnricher;
 
     private Activity mActivity;
 
     NotificationHub() {
         mMiddleware = new ArrayList<InstallationMiddleware>();
+
+        this.pushChannelEnricher = new PushChannelEnricher();
+
+        BagMiddleware defaultEnrichment = new BagMiddleware();
+        defaultEnrichment.addEnricher(this.pushChannelEnricher);
+
+        this.useInstanceMiddleware(defaultEnrichment);
     }
 
     /**
@@ -88,6 +100,9 @@ public final class NotificationHub {
         getInstance().reinstallInstance();
     }
 
+    /**
+     * Creates a new {@link Installation} and registers it with a backend that tracks devices.
+     */
     public void reinstallInstance() {
         ListIterator<InstallationMiddleware> iterator = this.mMiddleware.listIterator(this.mMiddleware.size());
 
@@ -102,5 +117,21 @@ public final class NotificationHub {
 
         Installation installation = new Installation();
         enricher.enrichInstallation(installation);
+    }
+
+    static void setPushChannel(String token) {
+        getInstance().setInstancePushChannel(token);
+    }
+
+    void setInstancePushChannel(String token) {
+        pushChannelEnricher.setPushChannel(token);
+    }
+
+    static void relayMessage(RemoteMessage message) {
+        getInstance().relayInstanceMessage(message);
+    }
+
+    void relayInstanceMessage(RemoteMessage message) {
+        mListener.onPushNotificationReceived(mActivity, new NotificationMessage(message));
     }
 }
