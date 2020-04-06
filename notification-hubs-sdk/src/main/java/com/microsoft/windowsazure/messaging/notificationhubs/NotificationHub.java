@@ -17,7 +17,7 @@ public final class NotificationHub {
 
     private Activity mActivity;
 
-    private NotificationHub() {
+    NotificationHub() {
         mMiddleware = new ArrayList<InstallationMiddleware>();
     }
 
