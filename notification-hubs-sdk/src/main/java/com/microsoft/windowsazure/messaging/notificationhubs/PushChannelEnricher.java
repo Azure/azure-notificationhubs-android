@@ -1,14 +1,14 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 public class PushChannelEnricher implements InstallationEnricher {
-    private String channel;
+    private String mChannel;
 
     public PushChannelEnricher() {
         // Intentionally Left Blank
     }
 
     public PushChannelEnricher(String pushChannel) {
-        channel = pushChannel;
+        mChannel = pushChannel;
     }
 
     /**
@@ -18,7 +18,7 @@ public class PushChannelEnricher implements InstallationEnricher {
      */
     @Override
     public void enrichInstallation(Installation subject) {
-        subject.setPushChannel(channel);
+        subject.setPushChannel(mChannel);
     }
 
     /**
@@ -26,6 +26,6 @@ public class PushChannelEnricher implements InstallationEnricher {
      * @param channel The new unique identifier to apply.
      */
     public void setPushChannel(String channel) {
-        this.channel = channel;
+        this.mChannel = channel;
     }
 }

@@ -5,10 +5,10 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
  */
 class DefaultMiddleware implements InstallationMiddleware {
 
-    private InstallationEnricher enricher;
+    private InstallationEnricher mEnricher;
 
     public DefaultMiddleware(InstallationEnricher enricher) {
-        this.enricher = enricher;
+        this.mEnricher = enricher;
     }
 
     /**
@@ -20,8 +20,8 @@ class DefaultMiddleware implements InstallationMiddleware {
     @Override
     public InstallationEnricher getInstallationEnricher(InstallationEnricher next) {
         return subject -> {
-            if (this.enricher != null) {
-                DefaultMiddleware.this.enricher.enrichInstallation(subject);
+            if (this.mEnricher != null) {
+                DefaultMiddleware.this.mEnricher.enrichInstallation(subject);
             }
             if (next != null) {
                 next.enrichInstallation(subject);

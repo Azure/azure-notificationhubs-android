@@ -10,14 +10,14 @@ import java.util.Set;
  */
 class BagMiddleware implements InstallationMiddleware {
 
-    private final Set<InstallationEnricher> enrichers;
+    private final Set<InstallationEnricher> mEnrichers;
 
     public BagMiddleware() {
-        this.enrichers = new HashSet<InstallationEnricher>();
+        this.mEnrichers = new HashSet<InstallationEnricher>();
     }
 
     public BagMiddleware(Collection<? extends InstallationEnricher> enrichers) {
-        this.enrichers = new HashSet<InstallationEnricher>(enrichers);
+        this.mEnrichers = new HashSet<InstallationEnricher>(enrichers);
     }
 
     /**
@@ -27,7 +27,7 @@ class BagMiddleware implements InstallationMiddleware {
      * @return True if this enricher was not previously part of the set to be applied.
      */
     public boolean addEnricher(InstallationEnricher enricher){
-        return this.enrichers.add(enricher);
+        return this.mEnrichers.add(enricher);
     }
 
     /**
@@ -39,7 +39,7 @@ class BagMiddleware implements InstallationMiddleware {
     @Override
     public InstallationEnricher getInstallationEnricher(InstallationEnricher next) {
         return subject -> {
-            for (InstallationEnricher e: BagMiddleware.this.enrichers) {
+            for (InstallationEnricher e: BagMiddleware.this.mEnrichers) {
                 e.enrichInstallation(subject);
             }
             next.enrichInstallation(subject);

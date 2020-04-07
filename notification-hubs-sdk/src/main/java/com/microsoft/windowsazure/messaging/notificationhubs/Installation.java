@@ -4,14 +4,14 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
  * Wraps a record of a device, for use resolving future requests to broadcast notifications.
  */
 public class Installation {
-    private String pushChannel;
+    private String mPushChannel;
 
     /**
      * Fetches the unique code that will be used to identify this device.
      * @return A unique code that will be used to identify this device.
      */
     public String getPushChannel() {
-        return pushChannel;
+        return mPushChannel;
     }
 
     /**
@@ -21,6 +21,6 @@ public class Installation {
      *                    for new notifications.
      */
     public void setPushChannel(String pushChannel) {
-        this.pushChannel = pushChannel;
+        this.mPushChannel = pushChannel;
     }
 }

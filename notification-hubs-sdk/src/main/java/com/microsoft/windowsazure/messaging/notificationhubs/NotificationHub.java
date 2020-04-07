@@ -18,22 +18,22 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
-    private final PushChannelEnricher pushChannelEnricher;
-    private InstallationManager manager;
+    private final PushChannelEnricher mPushChannelEnricher;
+    private InstallationManager mManager;
 
     private Activity mActivity;
 
     NotificationHub() {
         mMiddleware = new ArrayList<InstallationMiddleware>();
 
-        this.pushChannelEnricher = new PushChannelEnricher();
+        this.mPushChannelEnricher = new PushChannelEnricher();
 
         BagMiddleware defaultEnrichment = new BagMiddleware();
-        defaultEnrichment.addEnricher(this.pushChannelEnricher);
+        defaultEnrichment.addEnricher(this.mPushChannelEnricher);
 
         this.useInstanceMiddleware(defaultEnrichment);
 
-        this.manager = new NoopInstallationManager();
+        this.mManager = new NoopInstallationManager();
     }
 
     /**
@@ -120,7 +120,7 @@ public final class NotificationHub {
         Installation installation = new Installation();
         enricher.enrichInstallation(installation);
 
-        return manager.saveInstallation(installation);
+        return mManager.saveInstallation(installation);
     }
 
     static void setPushChannel(String token) {
@@ -128,7 +128,7 @@ public final class NotificationHub {
     }
 
     void setInstancePushChannel(String token) {
-        pushChannelEnricher.setPushChannel(token);
+        mPushChannelEnricher.setPushChannel(token);
     }
 
     static void relayMessage(RemoteMessage message) {
