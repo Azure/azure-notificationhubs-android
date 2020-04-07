@@ -6,6 +6,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.async.NotificationHubFuture;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -19,6 +20,7 @@ public final class NotificationHub {
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
     private final PushChannelEnricher mPushChannelEnricher;
+    private final TagEnricher mTagEnricher;
     private InstallationManager mManager;
 
     private Activity mActivity;
@@ -26,14 +28,16 @@ public final class NotificationHub {
     NotificationHub() {
         mMiddleware = new ArrayList<InstallationMiddleware>();
 
-        this.mPushChannelEnricher = new PushChannelEnricher();
+        mPushChannelEnricher = new PushChannelEnricher();
+        mTagEnricher = new TagEnricher();
 
         BagMiddleware defaultEnrichment = new BagMiddleware();
-        defaultEnrichment.addEnricher(this.mPushChannelEnricher);
+        defaultEnrichment.addEnricher(mPushChannelEnricher);
+        defaultEnrichment.addEnricher(mTagEnricher);
 
-        this.useInstanceMiddleware(defaultEnrichment);
+        useInstanceMiddleware(defaultEnrichment);
 
-        this.mManager = new NoopInstallationManager();
+        mManager = new NoopInstallationManager();
     }
 
     /**
@@ -137,5 +141,138 @@ public final class NotificationHub {
 
     void relayInstanceMessage(RemoteMessage message) {
         mListener.onPushNotificationReceived(mActivity, new NotificationMessage(message));
+    }
+
+    /**
+     * Adds a single tag to this collection.
+     *
+     * @param tag The tag to include with this collection.
+     * @return True if the provided tag was not previously associated with this collection.
+     */
+    public static boolean addTag(String tag) {
+        return getInstance().addInstanceTag(tag);
+    }
+
+    /**
+     * Adds a single tag to this collection.
+     *
+     * @param tag The tag to include with this collection.
+     * @return True if the provided tag was not previously associated with this collection.
+     */
+    public boolean addInstanceTag(String tag) {
+        if(mTagEnricher.addTag(tag)){
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Adds several tags to the collection.
+     *
+     * @param tags The tags to include with this collection.
+     * @return True if any of the provided tags had not previously been associated with this
+     * Installation.
+     */
+    public static boolean addTags(Collection<? extends String> tags) {
+       return getInstance().addInstanceTags(tags);
+    }
+
+    /**
+     * Adds several tags to the collection.
+     *
+     * @param tags The tags to include with this collection.
+     * @return True if any of the provided tags had not previously been associated with this
+     * Installation.
+     */
+    public boolean addInstanceTags(Collection<? extends String> tags) {
+        if(mTagEnricher.addTags(tags)) {
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deletes one tag from this collection.
+     *
+     * @param tag The tag that should no longer be in the collection.
+     * @return True if the tag had previously been associated with this collection.
+     */
+    public static boolean removeTag(String tag) {
+        return getInstance().removeInstanceTag(tag);
+    }
+
+    /**
+     * Deletes one tag from this collection.
+     *
+     * @param tag The tag that should no longer be in the collection.
+     * @return True if the tag had previously been associated with this collection.
+     */
+    public boolean removeInstanceTag(String tag) {
+        if(mTagEnricher.removeTag(tag)) {
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deletes several tags from this collection.
+     *
+     * @param tags The tags that should no longer be in the collection.
+     * @return True if any of the tags had previously been associated with this collection.
+     */
+    public static boolean removeTags(Collection<? extends String> tags) {
+        return getInstance().removeInstanceTags(tags);
+    }
+
+    /**
+     * Deletes several tags from this collection.
+     *
+     * @param tags The tags that should no longer be in the collection.
+     * @return True if any of the tags had previously been associated with this collection.
+     */
+    public boolean removeInstanceTags(Collection<? extends String> tags) {
+        if(mTagEnricher.removeTags(tags)) {
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Fetches the tags associated with this collection.
+     *
+     * @return A set of tags.
+     */
+    public static Iterable<String> getTags() {
+        return getInstance().getInstanceTags();
+    }
+
+    /**
+     * Fetches the tags associated with this collection.
+     *
+     * @return A set of tags.
+     */
+    public Iterable<String> getInstanceTags() {
+        return mTagEnricher.getTags();
+    }
+
+    /**
+     * Empties the collection of tags.
+     */
+    public static void clearTags() {
+       getInstance().clearInstanceTags();
+    }
+
+    /**
+     * Empties the collection of tags.
+     */
+    public void clearInstanceTags() {
+        if (mTagEnricher.getTags().iterator().hasNext()) {
+            mTagEnricher.clearTags();
+            this.reinstallInstance();
+        }
     }
 }
