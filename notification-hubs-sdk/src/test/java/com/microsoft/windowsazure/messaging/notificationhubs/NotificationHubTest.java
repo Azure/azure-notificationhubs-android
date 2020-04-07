@@ -1,10 +1,8 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.google.firebase.messaging.RemoteMessage;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class NotificationHubTest {
 

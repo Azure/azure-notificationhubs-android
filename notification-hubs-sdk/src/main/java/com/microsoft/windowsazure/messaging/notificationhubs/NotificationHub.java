@@ -2,9 +2,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.microsoft.windowsazure.messaging.notificationhubs.async.NotificationHubFuture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ public final class NotificationHub {
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
     private final PushChannelEnricher pushChannelEnricher;
+    private InstallationManager manager;
 
     private Activity mActivity;
 
@@ -32,6 +32,8 @@ public final class NotificationHub {
         defaultEnrichment.addEnricher(this.pushChannelEnricher);
 
         this.useInstanceMiddleware(defaultEnrichment);
+
+        this.manager = new NoopInstallationManager();
     }
 
     /**
@@ -103,7 +105,7 @@ public final class NotificationHub {
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public void reinstallInstance() {
+    public NotificationHubFuture<String> reinstallInstance() {
         ListIterator<InstallationMiddleware> iterator = this.mMiddleware.listIterator(this.mMiddleware.size());
 
         InstallationEnricher enricher = subject -> {
@@ -117,6 +119,8 @@ public final class NotificationHub {
 
         Installation installation = new Installation();
         enricher.enrichInstallation(installation);
+
+        return manager.saveInstallation(installation);
     }
 
     static void setPushChannel(String token) {
