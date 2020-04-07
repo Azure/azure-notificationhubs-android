@@ -3,7 +3,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs.async;
 import java.util.concurrent.Future;
 
 /**
- * Widely compatible Future implementa
+ * Widely compatible Future implementation.
  * @param <T>
  */
 public interface NotificationHubFuture<T> extends Future<T> {
