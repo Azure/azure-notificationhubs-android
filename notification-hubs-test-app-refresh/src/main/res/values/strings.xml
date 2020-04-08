@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">notification-hubs-test-app-refresh</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="app_name">Notification Hubs Sample</string>
+    <string name="tab_text_1">Setup</string>
+    <string name="tab_text_2">Notifications</string>
 </resources>
