@@ -2,4 +2,7 @@
     <string name="app_name">Notification Hubs Sample</string>
     <string name="tab_text_1">Setup</string>
     <string name="tab_text_2">Notifications</string>
+    <string name="device_token_label">Device Token:</string>
+    <string name="installation_id_label">Installation ID:</string>
+    <string name="unknown_information">Unknown</string>
 </resources>

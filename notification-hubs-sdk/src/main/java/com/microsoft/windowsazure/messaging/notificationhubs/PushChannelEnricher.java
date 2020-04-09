@@ -28,4 +28,13 @@ public class PushChannelEnricher implements InstallationEnricher {
     public void setPushChannel(String channel) {
         this.mChannel = channel;
     }
+
+    /**
+     * Fetches the current Push Channel.
+     * @return The current string that identifies this device as Push notification receiver. Null if
+     *         it hasn't been initialized yet.
+     */
+    public String getPushChannel() {
+        return this.mChannel;
+    }
 }

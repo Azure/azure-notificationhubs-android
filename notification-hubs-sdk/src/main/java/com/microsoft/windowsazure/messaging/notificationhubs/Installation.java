@@ -10,6 +10,7 @@ import java.util.Set;
 public class Installation implements Tagable {
     private String mPushChannel;
     private Set<String> mTags;
+    private String mInstallationId;
 
     public Installation() {
         mTags = new HashSet<String>();
@@ -31,6 +32,23 @@ public class Installation implements Tagable {
      */
     public void setPushChannel(String pushChannel) {
         this.mPushChannel = pushChannel;
+    }
+
+    /**
+     * Fetches the unique identifier used by the backend tracking this record of a Device.
+     * @return A unique identifier for this installation record.
+     */
+    public String getInstallationId() {
+        return mInstallationId;
+    }
+
+    /**
+     * Sets the unique identifier that should be used by the backend to track the record of this
+     * Device.
+     * @param id The unique identifer to associate with the record of this device.
+     */
+    void setInstallationId(String id) {
+        mInstallationId = id;
     }
 
     /**

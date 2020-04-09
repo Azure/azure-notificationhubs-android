@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Notification-hubs-sdk</string>
+    <string name="firebase_preference_file_key">com.microsoft.windowsazure.messaging.notificationhubs.FirebasePreferences</string>
 </resources>

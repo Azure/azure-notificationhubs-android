@@ -22,6 +22,7 @@ public final class NotificationHub {
     private final PushChannelEnricher mPushChannelEnricher;
     private final TagEnricher mTagEnricher;
     private InstallationManager mManager;
+    private final IdAssignmentEnricher mIdAssignmentEnricher;
 
     private Activity mActivity;
 
@@ -30,10 +31,12 @@ public final class NotificationHub {
 
         mPushChannelEnricher = new PushChannelEnricher();
         mTagEnricher = new TagEnricher();
+        mIdAssignmentEnricher = new IdAssignmentEnricher();
 
         BagMiddleware defaultEnrichment = new BagMiddleware();
         defaultEnrichment.addEnricher(mPushChannelEnricher);
         defaultEnrichment.addEnricher(mTagEnricher);
+        defaultEnrichment.addEnricher(mIdAssignmentEnricher);
 
         useInstanceMiddleware(defaultEnrichment);
 
@@ -131,8 +134,58 @@ public final class NotificationHub {
         getInstance().setInstancePushChannel(token);
     }
 
+    /**
+     * Fetches the current Push Channel.
+     * @return The current string that identifies this device as Push notification receiver. Null if
+     *         it hasn't been initialized yet.
+     */
+    public static String getPushChannel() {
+        return getInstance().getInstancePushChannel();
+    }
+
     void setInstancePushChannel(String token) {
         mPushChannelEnricher.setPushChannel(token);
+    }
+
+    /**
+     * Fetches the current Push Channel.
+     * @return The current string that identifies this device as Push notification receiver. Null if
+     *         it hasn't been initialized yet.
+     */
+    public String getInstancePushChannel() {
+        return mPushChannelEnricher.getPushChannel();
+    }
+
+    /**
+     * Fetches the InstallationId that will be assigned to future Installations that are created.
+     * @return The unique ID associated with the record of this device.
+     */
+    public static String getInstallationId() {
+        return getInstance().getInstanceInstallationId();
+    }
+
+    /**
+     * Fetches the InstallationId that will be assigned to future Installations that are created.
+     * @return The unique ID associated with the record of this device.
+     */
+    public String getInstanceInstallationId() {
+        return mIdAssignmentEnricher.getInstallationId();
+    }
+
+    /**
+     * Updateds the unique identifier that will be associated with the record of this device.
+     * @param id The value to treat as the unique identifier of the record of this device.
+     */
+    public static void setInstallationId(String id) {
+        getInstance().setInstanceInstallationId(id);
+    }
+
+    /**
+     * Updateds the unique identifier that will be associated with the record of this device.
+     * @param id The value to treat as the unique identifier of the record of this device.
+     */
+    public void setInstanceInstallationId(String id) {
+        mIdAssignmentEnricher.setInstallationId(id);
     }
 
     static void relayMessage(RemoteMessage message) {
