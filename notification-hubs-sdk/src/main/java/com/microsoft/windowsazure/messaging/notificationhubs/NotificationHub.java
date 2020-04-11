@@ -1,7 +1,11 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.async.NotificationHubFuture;
 
@@ -21,10 +25,10 @@ public final class NotificationHub {
     private final List<InstallationMiddleware> mMiddleware;
     private final PushChannelEnricher mPushChannelEnricher;
     private final TagEnricher mTagEnricher;
-    private InstallationManager mManager;
     private final IdAssignmentEnricher mIdAssignmentEnricher;
 
-    private Activity mActivity;
+    private InstallationManager mManager;
+    private Context mContext;
 
     NotificationHub() {
         mMiddleware = new ArrayList<InstallationMiddleware>();
@@ -39,8 +43,7 @@ public final class NotificationHub {
         defaultEnrichment.addEnricher(mIdAssignmentEnricher);
 
         useInstanceMiddleware(defaultEnrichment);
-
-        mManager = new NoopInstallationManager();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> this.setInstancePushChannel(task.getResult().getToken()));
     }
 
     /**
@@ -53,6 +56,18 @@ public final class NotificationHub {
             sInstance = new NotificationHub();
         }
         return sInstance;
+    }
+
+    public static void initialize(Context context, String hubName, String connectionString) {
+        initialize(context, new NotificationHubInstallationManager(
+                hubName,
+                connectionString));
+    }
+
+    public static void initialize(Context context, InstallationManager manager) {
+        NotificationHub instance = getInstance();
+        instance.setInstanceInstallationManager(manager);
+        instance.mContext = context.getApplicationContext();
     }
 
     /**
@@ -103,6 +118,22 @@ public final class NotificationHub {
     }
 
     /**
+     * Updates the mechanism that will be used to inform a backend service of the new installation.
+     * @param manager An instance of the {@link InstallationManager} that should be used.
+     */
+    public static void setInstallationManger(InstallationManager manager) {
+        getInstance().setInstanceInstallationManager(manager);
+    }
+
+    /**
+     * Updates the mechanism that will be used to inform a backend service of the new installation.
+     * @param manager An instance of the {@link InstallationManager} that should be used.
+     */
+    public void setInstanceInstallationManager(InstallationManager manager) {
+        this.mManager = manager;
+    }
+
+    /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
     public static void reinstall() {
@@ -112,7 +143,7 @@ public final class NotificationHub {
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public NotificationHubFuture<String> reinstallInstance() {
+    public void reinstallInstance() {
         ListIterator<InstallationMiddleware> iterator = this.mMiddleware.listIterator(this.mMiddleware.size());
 
         InstallationEnricher enricher = subject -> {
@@ -127,7 +158,9 @@ public final class NotificationHub {
         Installation installation = new Installation();
         enricher.enrichInstallation(installation);
 
-        return mManager.saveInstallation(installation);
+        if (mManager != null) {
+            mManager.saveInstallation(mContext, installation);
+        }
     }
 
     static void setPushChannel(String token) {
@@ -145,6 +178,7 @@ public final class NotificationHub {
 
     void setInstancePushChannel(String token) {
         mPushChannelEnricher.setPushChannel(token);
+        reinstallInstance();
     }
 
     /**
@@ -173,7 +207,7 @@ public final class NotificationHub {
     }
 
     /**
-     * Updateds the unique identifier that will be associated with the record of this device.
+     * Updates the unique identifier that will be associated with the record of this device.
      * @param id The value to treat as the unique identifier of the record of this device.
      */
     public static void setInstallationId(String id) {
@@ -186,6 +220,7 @@ public final class NotificationHub {
      */
     public void setInstanceInstallationId(String id) {
         mIdAssignmentEnricher.setInstallationId(id);
+        reinstallInstance();
     }
 
     static void relayMessage(RemoteMessage message) {
@@ -193,7 +228,7 @@ public final class NotificationHub {
     }
 
     void relayInstanceMessage(RemoteMessage message) {
-        mListener.onPushNotificationReceived(mActivity, new NotificationMessage(message));
+        mListener.onPushNotificationReceived(mContext, new NotificationMessage(message));
     }
 
     /**

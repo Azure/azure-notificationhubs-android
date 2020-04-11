@@ -1,6 +1,6 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import com.microsoft.windowsazure.messaging.notificationhubs.async.NotificationHubFuture;
+import android.content.Context;
 
 public interface InstallationManager {
     /**
@@ -8,5 +8,5 @@ public interface InstallationManager {
      * @param installation The record to update.
      * @return A future, with the Installation ID as the value.
      */
-    NotificationHubFuture<String> saveInstallation(Installation installation);
+    void saveInstallation(Context context, Installation installation);
 }

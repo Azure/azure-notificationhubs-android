@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        NotificationHub.initialize(this.getApplicationContext(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_refresh:0.1.0");
     }
 }
