@@ -3,11 +3,9 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
-import com.microsoft.windowsazure.messaging.notificationhubs.async.NotificationHubFuture;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +29,7 @@ public final class NotificationHub {
     private Context mContext;
 
     NotificationHub() {
-        mMiddleware = new ArrayList<InstallationMiddleware>();
+        mMiddleware = new ArrayList<>();
 
         mPushChannelEnricher = new PushChannelEnricher();
         mTagEnricher = new TagEnricher();
@@ -68,6 +66,7 @@ public final class NotificationHub {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(manager);
         instance.mContext = context.getApplicationContext();
+        instance.mTagEnricher.SetPreferences(instance.mContext);
     }
 
     /**
