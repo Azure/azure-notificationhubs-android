@@ -1,25 +1,21 @@
-package com.microsoft.windowsazure.messaging.notificationhubs;
+package com.microsoft.windowsazure.messaging;
 
 import android.content.Context;
-
-import androidx.test.core.app.ApplicationProvider;
-
+import androidx.test.filters.SmallTest;
+import com.microsoft.windowsazure.messaging.notificationhubs.TagEnricher;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 28)
+@SmallTest
 public class TagEnricherTest {
-    private Context context = ApplicationProvider.getApplicationContext();
+    private Context context = getInstrumentation().getTargetContext();
     private List<String> tagList = Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList());
 
     @Test
