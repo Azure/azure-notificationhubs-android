@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,9 +36,13 @@ public class TagEnricherTest {
         TagEnricher te = new TagEnricher();
         te.SetPreferences(context);
 
+        List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
+
         assertTrue(te.addTags(tagList));
+        assertTrue(te.addTags(secondTagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
-        assertEquals(((HashSet<String>)te.getTags()).size(), tagList.size());
+        assertTrue(((HashSet<String>)te.getTags()).containsAll(secondTagList));
+        assertEquals(tagList.size() + secondTagList.size(), ((HashSet<String>)te.getTags()).size());
     }
 
     @Test

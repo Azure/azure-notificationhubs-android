@@ -16,6 +16,7 @@ import java.util.Set;
  */
 public class TagEnricher implements InstallationEnricher, Tagable {
 
+    private static final String PREFERENCE_KEY = "tags";
     private SharedPreferences mPreferences;
 
     /**
@@ -35,13 +36,17 @@ public class TagEnricher implements InstallationEnricher, Tagable {
         addTags(tags);
     }
 
+    private Set<String> getTagsSet() {
+        return new HashSet<>(mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>()));
+    }
+
     public void SetPreferences (Context context) {
-        mPreferences = context.getSharedPreferences(String.valueOf(R.string.preference_file_key), Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     @Override
     public void enrichInstallation(Installation subject) {
-        subject.addTags((Collection<String>) getTags());
+        subject.addTags(getTagsSet());
     }
 
     /**
@@ -64,8 +69,9 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean addTags(Collection<? extends String> tags) {
-        Set<String> set = new HashSet<>(tags);
-        mPreferences.edit().putStringSet("tags", set).apply();
+        Set<String> set = getTagsSet();
+        set.addAll(tags);
+        mPreferences.edit().putStringSet(PREFERENCE_KEY, set).apply();
         return true;
     }
 
@@ -88,9 +94,12 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean removeTags(Collection<? extends String> tags) {
-        Set<String> set = (Set<String>) getTags();
-        set.removeAll(tags);
-        return addTags(set);
+        Set<String> set = getTagsSet();
+        if(set.removeAll(tags)) {
+            mPreferences.edit().putStringSet(PREFERENCE_KEY, set).apply();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -100,7 +109,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public Iterable<String> getTags() {
-        return mPreferences.getStringSet("tags", new HashSet<String>());
+        return getTagsSet();
     }
 
     /**
@@ -108,6 +117,6 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public void clearTags() {
-        mPreferences.edit().remove("tags").apply();
+        mPreferences.edit().remove(PREFERENCE_KEY).apply();
     }
 }
