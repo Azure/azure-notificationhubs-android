@@ -1,6 +1,12 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.microsoft.windowsazure.messaging.R;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,27 +16,37 @@ import java.util.Set;
  */
 public class TagEnricher implements InstallationEnricher, Tagable {
 
-    public final Set<String> mTags;
+    private static final String PREFERENCE_KEY = "tags";
+    private SharedPreferences mPreferences;
 
     /**
      * Creates an empty TagEnricher.
      */
     public TagEnricher() {
-        mTags = new HashSet<String>();
+
     }
 
     /**
      * Creates a TagEnricher with a pre-populated set of tags to apply.
      * @param tags The initial set of tags that should be applied to future {@link Installation}s.
      */
-    public TagEnricher(Collection<? extends String> tags) {
+    public TagEnricher(Context context, Collection<? extends String> tags) {
         this();
-        mTags.addAll(tags);
+        SetPreferences(context);
+        addTags(tags);
+    }
+
+    private Set<String> getTagsSet() {
+        return new HashSet<>(mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>()));
+    }
+
+    public void SetPreferences (Context context) {
+        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     @Override
     public void enrichInstallation(Installation subject) {
-        subject.addTags(mTags);
+        subject.addTags(getTagsSet());
     }
 
     /**
@@ -41,7 +57,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean addTag(String tag) {
-        return mTags.add(tag);
+        return addTags(Collections.singletonList(tag));
     }
 
     /**
@@ -53,7 +69,10 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean addTags(Collection<? extends String> tags) {
-        return mTags.addAll(tags);
+        Set<String> set = getTagsSet();
+        set.addAll(tags);
+        mPreferences.edit().putStringSet(PREFERENCE_KEY, set).apply();
+        return true;
     }
 
     /**
@@ -64,7 +83,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean removeTag(String tag) {
-        return mTags.remove(tag);
+        return removeTags(Collections.singletonList(tag));
     }
 
     /**
@@ -75,7 +94,12 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public boolean removeTags(Collection<? extends String> tags) {
-        return mTags.removeAll(tags);
+        Set<String> set = getTagsSet();
+        if(set.removeAll(tags)) {
+            mPreferences.edit().putStringSet(PREFERENCE_KEY, set).apply();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -85,7 +109,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public Iterable<String> getTags() {
-        return mTags;
+        return getTagsSet();
     }
 
     /**
@@ -93,6 +117,6 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     @Override
     public void clearTags() {
-        mTags.clear();
+        mPreferences.edit().remove(PREFERENCE_KEY).apply();
     }
 }

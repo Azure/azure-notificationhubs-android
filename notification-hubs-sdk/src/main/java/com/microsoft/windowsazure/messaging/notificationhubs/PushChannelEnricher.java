@@ -22,7 +22,7 @@ public class PushChannelEnricher implements InstallationEnricher {
     }
 
     /**
-     * Updates the unique identifier that will be applied to future {@seealso enrichInstallation} calls.
+     * Updates the unique identifier that will be applied to future {see enrichInstallation} calls.
      * @param channel The new unique identifier to apply.
      */
     public void setPushChannel(String channel) {
