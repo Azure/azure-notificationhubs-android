@@ -1,8 +1,7 @@
-package com.microsoft.windowsazure.messaging;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import androidx.test.filters.SmallTest;
-import com.microsoft.windowsazure.messaging.notificationhubs.TagEnricher;
 import org.junit.Test;
 import java.util.HashSet;
 import java.util.List;
