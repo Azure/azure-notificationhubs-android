@@ -2,20 +2,25 @@ package com.example.notification_hubs_test_app_refresh.ui.main;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.notification_hubs_test_app_refresh.R;
+
+import java.util.List;
 
 public class SetupFragment extends Fragment {
 
@@ -45,6 +50,20 @@ public class SetupFragment extends Fragment {
         final TextView installationIdValue = root.findViewById(R.id.installation_id_value);
         final Observer<String> installationIdObserver = s -> installationIdValue.setText(s);
         mViewModel.getInstallationId().observe(getViewLifecycleOwner(), installationIdObserver);
+
+        final EditText tagToAddField = root.findViewById(R.id.add_tag_field);
+        final Button tagToAddButton = root.findViewById(R.id.add_tag_button);
+        tagToAddButton.setOnClickListener(v -> {
+            mViewModel.addTag(tagToAddField.getText().toString());
+            tagToAddField.getText().clear();
+        });
+
+        final TagDisplayAdapter tagDisplayAdapter = new TagDisplayAdapter(mViewModel);
+        final Observer<List<String>> tagsObserver = s -> tagDisplayAdapter.setTags(s);
+        mViewModel.getTags().observe(getViewLifecycleOwner(), tagsObserver);
+        final RecyclerView tagList = root.findViewById(R.id.tag_list);
+        tagList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tagList.setAdapter(tagDisplayAdapter);
 
         return root;
     }
