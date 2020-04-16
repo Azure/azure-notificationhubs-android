@@ -32,7 +32,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      */
     public TagEnricher(Context context, Collection<? extends String> tags) {
         this();
-        SetPreferences(context);
+        setPreferences(context);
         addTags(tags);
     }
 
@@ -40,7 +40,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
         return new HashSet<>(mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>()));
     }
 
-    public void SetPreferences (Context context) {
+    void setPreferences(Context context) {
         mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 

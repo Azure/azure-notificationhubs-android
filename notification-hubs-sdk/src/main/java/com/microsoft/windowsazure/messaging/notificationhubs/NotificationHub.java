@@ -66,7 +66,7 @@ public final class NotificationHub {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(manager);
         instance.mContext = context.getApplicationContext();
-        instance.mTagEnricher.SetPreferences(instance.mContext);
+        instance.mTagEnricher.setPreferences(instance.mContext);
     }
 
     /**
