@@ -11,8 +11,10 @@ import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SetupViewModel extends ViewModel {
+    private final static Pattern sTagPattern = Pattern.compile("^[a-zA-Z0-9_@#\\.:\\-]{1,120}$");
 
     private String mUnknownText;
 
@@ -82,7 +84,7 @@ public class SetupViewModel extends ViewModel {
     }
 
     public void addTag(String tag) {
-        if (!NotificationHub.isAllowableTag(tag)) {
+        if (!isAllowableTag(tag)) {
             throw new IllegalArgumentException();
         }
 
@@ -114,5 +116,9 @@ public class SetupViewModel extends ViewModel {
             retval.add(entry);
         }
         return retval;
+    }
+
+    static boolean isAllowableTag(String tag) {
+        return sTagPattern.matcher(tag).matches();
     }
 }
