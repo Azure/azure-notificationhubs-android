@@ -3,7 +3,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.util.Base64;
 
-import com.android.volley.*;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -28,7 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Responsible for informing Azure Notification Hubs of changes to when this device should receive
  * notifications.
  */
-public class NotificationHubInstallationManager implements InstallationManager {
+class NotificationHubInstallationManager implements InstallationManager {
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
