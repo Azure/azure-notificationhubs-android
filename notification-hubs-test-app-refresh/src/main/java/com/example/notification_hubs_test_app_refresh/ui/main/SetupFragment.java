@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.notification_hubs_test_app_refresh.R;
 
@@ -54,7 +55,12 @@ public class SetupFragment extends Fragment {
         final EditText tagToAddField = root.findViewById(R.id.add_tag_field);
         final Button tagToAddButton = root.findViewById(R.id.add_tag_button);
         tagToAddButton.setOnClickListener(v -> {
-            mViewModel.addTag(tagToAddField.getText().toString());
+            try {
+                mViewModel.addTag(tagToAddField.getText().toString());
+            } catch (IllegalArgumentException e) {
+                Toast toast = Toast.makeText(getContext(), R.string.invalid_tag_message, Toast.LENGTH_SHORT);
+                toast.show();
+            }
             tagToAddField.getText().clear();
         });
 

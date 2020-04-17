@@ -82,6 +82,10 @@ public class SetupViewModel extends ViewModel {
     }
 
     public void addTag(String tag) {
+        if (!NotificationHub.isAllowableTag(tag)) {
+            throw new IllegalArgumentException();
+        }
+
         if (NotificationHub.addTag(tag)) {
             mTags.postValue(iterableToList(NotificationHub.getTags()));
         }

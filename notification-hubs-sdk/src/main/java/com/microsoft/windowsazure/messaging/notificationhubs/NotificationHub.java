@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Pattern;
 
 /**
  * A Singleton controller that wraps all interactions with Firebase Cloud Messaging and Azure
@@ -18,6 +19,7 @@ import java.util.ListIterator;
  */
 public final class NotificationHub {
     private static NotificationHub sInstance;
+    private final static Pattern sTagPattern = Pattern.compile("^[a-zA-Z0-9_@#\\.:\\-]{1,120}$");
 
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
@@ -361,5 +363,9 @@ public final class NotificationHub {
             mTagEnricher.clearTags();
             this.reinstallInstance();
         }
+    }
+
+    public static boolean isAllowableTag(String tag) {
+        return sTagPattern.matcher(tag).matches();
     }
 }
