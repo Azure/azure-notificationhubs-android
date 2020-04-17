@@ -3,11 +3,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.util.Base64;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.*;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -16,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
@@ -49,63 +46,56 @@ public class NotificationHubInstallationManager implements InstallationManager {
      */
     @Override
     public void saveInstallation(Context context, Installation installation) {
-        try {
-            RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
-            // TODO: Build a PUT Installation Request, and fire it off to the Notification Hubs Backend.
-            String url  = "https://" + mConnectionString.getEndpoint() + "/" + mHubName + "/installations/" + installation.getInstallationId() + "?api-version=2017-04";
+        RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
 
-            JSONObject jsonBody = new JSONObject();
+        String httpsAddress = "https://" + mConnectionString.getEndpoint().replace("sb://", "").replace("/", "");
+        String url  = httpsAddress + "/" + mHubName + "/installations/" + installation.getInstallationId() + "?api-version=2017-04";
 
-                jsonBody.put("installationId", installation.getInstallationId());
-                jsonBody.put("platform", "FCM");
-                jsonBody.put("pushChannel", installation.getPushChannel());
-
-            final String requestBody = jsonBody.toString();
-
-
-            StringRequest request = new StringRequest(
-                    Request.Method.PUT,
-                    url,
-                    response -> {
-                        System.out.println();
-                    },
-                    error -> {
-                    }
-            ){
-                @Override
-                public byte[] getBody() {
-                    try {
-                        return requestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        return null;
-                    }
+        StringRequest request = new StringRequest(
+                Request.Method.PUT,
+                url,
+                response -> {
+                },
+                error -> {
                 }
+        ){
+            @Override
+            public byte[] getBody() {
+                try {
+                    JSONObject jsonBody = new JSONObject(){{
+                        put("installationId", installation.getInstallationId());
+                        put("platform", "GCM");
+                        put("pushChannel", installation.getPushChannel());
+                    }};
+                    return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
 
-                @Override
-                public  Map<String, String> getHeaders(){
-                    Map<String,String> params = new HashMap<String, String>();
-                    params.put("Content-Type", "application/json");
-                    try {
-                        params.put("Authorization", generateAuthToken(url));
-                    } catch (InvalidKeyException e) {
-                        e.printStackTrace();
-                    }
-                    params.put("x-ms-version", "2017-04");
+            @Override
+            public  Map<String, String> getHeaders(){
+                try {
+                    Map<String,String> params = new HashMap<String, String>(){{
+                        put("Content-Type", "application/json");
+                        put("x-ms-version", "2015-01");
+                        put("Authorization", generateAuthToken(url));
+                    }};
                     return params;
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                    return null;
                 }
-            };
+            }
+        };
 
-            queue.add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        queue.add(request);
     }
 
 
     private String generateAuthToken(String url) throws InvalidKeyException {
-
         String keyName = mConnectionString.getSharedAccessKeyName();
-
         String key = mConnectionString.getSharedAccessKey();
 
         try {
@@ -117,13 +107,11 @@ public class NotificationHubInstallationManager implements InstallationManager {
         // Set expiration in seconds
         Calendar expireDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         expireDate.add(Calendar.MINUTE, 5);
-
         long expires = expireDate.getTimeInMillis() / 1000;
 
         String toSign = url + '\n' + expires;
 
         // sign
-
         byte[] bytesToSign = toSign.getBytes();
         Mac mac = null;
         try {
@@ -144,9 +132,7 @@ public class NotificationHubInstallationManager implements InstallationManager {
         }
 
         // construct authorization string
-        String token = "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
-
-        return token;
+        return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
     }
 
 
