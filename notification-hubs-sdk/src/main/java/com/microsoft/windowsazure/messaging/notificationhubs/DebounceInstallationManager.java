@@ -2,10 +2,10 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 public abstract class DebounceInstallationManager implements InstallationManager {
 
-    protected InstallationManager mInstallationManager;
+    protected InstallationManager installationManager;
 
-    public DebounceInstallationManager(InstallationManager mInstallationManager) {
+    public DebounceInstallationManager(InstallationManager installationManager) {
         super();
-        this.mInstallationManager = mInstallationManager;
+        this.installationManager = installationManager;
     }
 }
