@@ -1,5 +1,6 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import static org.junit.Assert.*;
 public class ConnectionStringTest {
 
     @Test
+    @Ignore
     public void parse() {
         Map<String, ConnectionString> testCases = new HashMap<String, ConnectionString>();
         testCases.put(
