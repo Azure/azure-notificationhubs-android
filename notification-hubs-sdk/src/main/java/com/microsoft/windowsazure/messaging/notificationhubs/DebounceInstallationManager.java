@@ -1,6 +1,9 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.microsoft.windowsazure.messaging.R;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,11 +12,12 @@ import java.util.concurrent.TimeUnit;
 
 public class DebounceInstallationManager implements InstallationManager {
 
-    protected InstallationManager mInstallationManager;
-
+    private static final String PREFERENCE_KEY = "recentInstallation";
+    private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
+    private InstallationManager mInstallationManager;
     private long mInterval;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> mSchedFuture;
+    private SharedPreferences mPreferences;
 
     public DebounceInstallationManager(InstallationManager installationManager) {
         super();
@@ -27,24 +31,33 @@ public class DebounceInstallationManager implements InstallationManager {
         mInterval = interval;
     }
 
-    private ScheduledFuture<?> schedFuture;
-
-    public void shutdown() {
-        scheduler.shutdownNow();
+    private void setPreferences(Context context) {
+        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
     }
 
     @Override
     public void saveInstallation(Context context, Installation installation) {
-        if (schedFuture != null && !schedFuture.isDone()) {
-            schedFuture.cancel(true);
+        if (mPreferences == null) {
+            setPreferences(context);
         }
 
-        // verify if not equal to recent:
-        // get recent from shared preferences and if ShPref.RecentInstallation.Equals(installation)
-        // do nothing otherwise schedule
-        schedFuture = scheduler.schedule(() ->
+        if (mSchedFuture != null && !mSchedFuture.isDone()) {
+            mSchedFuture.cancel(true);
+        }
+
+        int recentHash = mPreferences.getInt(PREFERENCE_KEY, 0);
+        if (recentHash != 0 && recentHash == installation.hashCode()) {
+            return;
+        }
+
+        mSchedFuture = mScheduler.schedule(() ->
         {
-            mInstallationManager.saveInstallation(context, installation);
+            try {
+                mInstallationManager.saveInstallation(context, installation);
+                mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
+            } catch (Exception e) {
+
+            }
         }, mInterval, TimeUnit.MILLISECONDS);
     }
 }

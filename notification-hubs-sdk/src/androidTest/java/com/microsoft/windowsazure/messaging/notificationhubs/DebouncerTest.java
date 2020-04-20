@@ -1,17 +1,22 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
+
+import com.microsoft.windowsazure.messaging.R;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -23,7 +28,7 @@ public class DebouncerTest {
     private Installation installation_second;
     private Installation installation_third;
     private final int debouncerDelayInMillisec = 2000;
-    private final int testTimeout = debouncerDelayInMillisec + 1000;
+    private final int debouncerDelayPlusSecond = debouncerDelayInMillisec + 1000;
 
     @Before
     public void Before() {
@@ -54,7 +59,7 @@ public class DebouncerTest {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
         DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
     }
 
@@ -65,7 +70,7 @@ public class DebouncerTest {
         debouncer.saveInstallation(context, installation);
         debouncer.saveInstallation(context, installation_second);
         debouncer.saveInstallation(context, installation_third);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation_second);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation_third);
@@ -76,15 +81,15 @@ public class DebouncerTest {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
         DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation_second);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation_second);
     }
 
     @Test
-    public void DebouncerInvokesRestartsDelay() throws InterruptedException {
+    public void DebouncerRestartsDelay() throws InterruptedException {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
         DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
@@ -105,9 +110,23 @@ public class DebouncerTest {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
         DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation);
-        Thread.sleep(testTimeout);
+        Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
+    }
+
+    @Test
+    public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
+        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        debouncer.saveInstallation(context, installation);
+        Thread.sleep(debouncerDelayPlusSecond);
+
+        String PREFERENCE_KEY = "recentInstallation";
+        SharedPreferences mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
+
+        assertTrue(recentHash == installation.hashCode());
     }
 }
