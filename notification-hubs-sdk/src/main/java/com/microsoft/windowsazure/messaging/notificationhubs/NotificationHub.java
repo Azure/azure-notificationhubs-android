@@ -25,7 +25,7 @@ public final class NotificationHub {
     private final TagEnricher mTagEnricher;
     private final IdAssignmentEnricher mIdAssignmentEnricher;
 
-    private Debouncer mManager;
+    private DebounceInstallationManager mManager;
     private Context mContext;
 
     NotificationHub() {
@@ -129,7 +129,7 @@ public final class NotificationHub {
      * @param manager An instance of the {@link InstallationManager} that should be used.
      */
     public void setInstanceInstallationManager(InstallationManager manager) {
-        this.mManager = new Debouncer(manager);
+        this.mManager = new DebounceInstallationManager(manager);
     }
 
     /**

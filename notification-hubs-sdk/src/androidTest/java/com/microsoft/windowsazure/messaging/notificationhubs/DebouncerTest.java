@@ -23,7 +23,7 @@ public class DebouncerTest {
     private Installation installation_second;
     private Installation installation_third;
     private final int debouncerDelayInMillisec = 2000;
-    private final int testTimeout = debouncerDelayInMillisec + 4000;
+    private final int testTimeout = debouncerDelayInMillisec + 1000;
 
     @Before
     public void Before() {
@@ -44,7 +44,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerDoesNotInvokeSaveImmediately() {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        Debouncer debouncer = new Debouncer(nhInstallationManager);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
     }
@@ -52,7 +52,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveAfterDelayHappyPath() throws InterruptedException {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        Debouncer debouncer = new Debouncer(nhInstallationManager);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(testTimeout);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
@@ -61,7 +61,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveForMostRecent() throws InterruptedException {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        Debouncer debouncer = new Debouncer(nhInstallationManager);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         debouncer.saveInstallation(context, installation_second);
         debouncer.saveInstallation(context, installation_third);
@@ -74,21 +74,36 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveTwice() throws InterruptedException {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        Debouncer debouncer = new Debouncer(nhInstallationManager);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(testTimeout);
         debouncer.saveInstallation(context, installation_second);
-        debouncer.saveInstallation(context, installation_third);
         Thread.sleep(testTimeout);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
+        verify(nhInstallationManager, times(1)).saveInstallation(context, installation_second);
+    }
+
+    @Test
+    public void DebouncerInvokesRestartsDelay() throws InterruptedException {
+        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        debouncer.saveInstallation(context, installation);
+        Thread.sleep(debouncerDelayInMillisec - 1000);
+        // Invoke second call during delay, scheduler should be restarted, delay 2seconds
+        debouncer.saveInstallation(context, installation_second);
+        Thread.sleep(1000);
+        verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation_second);
-        verify(nhInstallationManager, times(1)).saveInstallation(context, installation_third);
+        Thread.sleep(1000);
+        // After 2 seconds recent installation should be saved
+        verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
+        verify(nhInstallationManager, times(1)).saveInstallation(context, installation_second);
     }
 
     @Test
     public void DebouncerDoesNotInvokeSaveForSameInstallation() throws InterruptedException {
         NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        Debouncer debouncer = new Debouncer(nhInstallationManager);
+        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(testTimeout);
         debouncer.saveInstallation(context, installation);
