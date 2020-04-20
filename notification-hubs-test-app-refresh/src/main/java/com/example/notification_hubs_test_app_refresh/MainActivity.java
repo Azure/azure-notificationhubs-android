@@ -22,14 +22,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NotificationHub.reinstall();
-            }
-        });
 
         NotificationHub.initialize(this.getApplicationContext(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_refresh:0.1.0");

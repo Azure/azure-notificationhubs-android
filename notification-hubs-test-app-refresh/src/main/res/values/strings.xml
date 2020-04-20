@@ -5,4 +5,7 @@
     <string name="device_token_label">Device Token:</string>
     <string name="installation_id_label">Installation ID:</string>
     <string name="unknown_information">Unknown</string>
+    <string name="tags_label">Tags:</string>
+    <string name="add_tag_button">Add Tag</string>
+    <string name="invalid_tag_message">Invalid Tag</string>
 </resources>
