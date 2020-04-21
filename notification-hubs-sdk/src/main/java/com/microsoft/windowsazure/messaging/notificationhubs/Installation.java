@@ -2,6 +2,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -97,5 +98,20 @@ public class Installation implements Tagable {
 
     public boolean removeTags(Collection<? extends String> tags) {
         return mTags.removeAll(tags);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Installation that = (Installation) o;
+        return mPushChannel.equals(that.mPushChannel) &&
+                mTags.equals(that.mTags) &&
+                mInstallationId.equals(that.mInstallationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mPushChannel, mTags, mInstallationId);
     }
 }

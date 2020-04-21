@@ -57,9 +57,9 @@ public final class NotificationHub {
     }
 
     public static void initialize(Context context, String hubName, String connectionString) {
-        initialize(context, new NotificationHubInstallationManager(
+        initialize(context, new DebounceInstallationManager(new NotificationHubInstallationManager(
                 hubName,
-                connectionString));
+                connectionString)));
     }
 
     public static void initialize(Context context, InstallationManager manager) {
