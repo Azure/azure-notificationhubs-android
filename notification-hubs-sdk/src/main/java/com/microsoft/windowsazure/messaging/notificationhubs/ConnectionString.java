@@ -28,10 +28,7 @@ class ConnectionString {
         while (matcher.find()) {
             switch (matcher.group(1)) {
                 case ENDPOINT_KEY:
-                    String uri = matcher.group(2);
-                    Endpoint = uri
-                            .replace("sb://", "")
-                            .replace("/", "");
+                    Endpoint = matcher.group(2);
                     break;
                 case SHARED_ACCESS_KEY_NAME_KEY:
                     SharedAccessKeyName = matcher.group(2);
