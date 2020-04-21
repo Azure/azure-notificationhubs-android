@@ -49,8 +49,8 @@ class NotificationHubInstallationManager implements InstallationManager {
     public void saveInstallation(Context context, Installation installation) {
         RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
 
-        String httpsAddress = "https://" + mConnectionString.getEndpoint().replace("sb://", "").replace("/", "");
-        String url  = httpsAddress + "/" + mHubName + "/installations/" + installation.getInstallationId() + "?api-version=2017-04";
+        String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
+        String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
         StringRequest request = new StringRequest(
                 Request.Method.PUT,
@@ -135,6 +135,4 @@ class NotificationHubInstallationManager implements InstallationManager {
         // construct authorization string
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
     }
-
-
 }
