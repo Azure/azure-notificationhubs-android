@@ -18,6 +18,7 @@ import java.util.List;
 public class NotificationDisplayAdapter extends RecyclerView.Adapter<NotificationDisplayAdapter.ViewHolder> {
 
     private List<NotificationMessage> mNotifications;
+    private NotificationClickListener mClickListener;
 
     public NotificationDisplayAdapter() {
         this(new ArrayList<NotificationMessage>(0));
@@ -25,6 +26,9 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
 
     public NotificationDisplayAdapter(List<NotificationMessage> initialList) {
         mNotifications = initialList;
+        mClickListener = message -> {
+            // Intentionally Left Blank
+        };
     }
 
     /**
@@ -57,6 +61,10 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
     public void setNotifications(List<NotificationMessage> mNotifications) {
         this.mNotifications = mNotifications;
         notifyDataSetChanged();
+    }
+
+    public void setClickListener(NotificationClickListener listener) {
+        this.mClickListener = listener;
     }
 
     /**
@@ -107,6 +115,14 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
             mTitle = (TextView) itemView.findViewById(R.id.titleValue);
             mBody = (TextView) itemView.findViewById(R.id.bodyValue);
             mDataCardinality = (TextView) itemView.findViewById(R.id.dataCardinalityValue);
+            itemView.setOnClickListener(v -> {
+                NotificationMessage clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
+                NotificationDisplayAdapter.this.mClickListener.onNotificationClicked(clicked);
+            });
         }
+    }
+
+    public interface NotificationClickListener {
+        void onNotificationClicked(NotificationMessage message);
     }
 }

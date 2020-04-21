@@ -27,10 +27,6 @@ public class SetupFragment extends Fragment {
 
     private SetupViewModel mViewModel;
 
-    public static SetupFragment newInstance() {
-        return new SetupFragment();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

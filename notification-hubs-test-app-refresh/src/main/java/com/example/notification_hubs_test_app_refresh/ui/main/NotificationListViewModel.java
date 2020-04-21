@@ -35,8 +35,7 @@ public class NotificationListViewModel extends ViewModel {
 
         mExecutor = Executors.newSingleThreadExecutor();
         mExecutor.execute(() -> {
-            int count = 0;
-            while(true) {
+            for (int count = 0; count < 20; count++) {
                 String suffix = String.valueOf(count);
                 try {
                     NotificationMessage toPost = new NotificationMessage(
@@ -46,7 +45,6 @@ public class NotificationListViewModel extends ViewModel {
                     );
 
                     addNotification(toPost);
-                    count++;
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -61,7 +59,7 @@ public class NotificationListViewModel extends ViewModel {
         if(toUpdate == null) {
             toUpdate = new ArrayList<NotificationMessage>();
         }
-        toUpdate.add(notification);
+        toUpdate.add(0, notification);
         mNotifications.postValue(toUpdate);
     }
 
