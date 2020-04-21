@@ -30,6 +30,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return new SetupFragment();
+            case 1:
+                return new NotificationListFragment();
             default:
                 return PlaceholderFragment.newInstance(position + 1);
         }
