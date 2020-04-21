@@ -27,7 +27,7 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
 
         if (networkInfo != null && networkInfo.isConnected()) {
             if (!isConnected){
-                //TODO: implement reinstall
+                NotificationHub.reinstall();
             }
             isConnected = networkInfo.isConnected();
 
