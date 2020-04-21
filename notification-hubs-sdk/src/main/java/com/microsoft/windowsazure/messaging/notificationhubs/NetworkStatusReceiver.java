@@ -17,6 +17,8 @@ import com.microsoft.windowsazure.messaging.R;
 
 public class NetworkStatusReceiver extends BroadcastReceiver {
 
+    private boolean isConnected = false;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager conn =  (ConnectivityManager)
@@ -24,9 +26,15 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
         NetworkInfo networkInfo = conn.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
+            if (!isConnected){
+                //TODO: implement reinstall
+            }
+            isConnected = networkInfo.isConnected();
+
             Toast.makeText(context, "Connection is exist", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, "Lost connection", Toast.LENGTH_LONG).show();
+            isConnected = false;
         }
     }
 }
