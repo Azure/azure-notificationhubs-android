@@ -25,7 +25,7 @@ public final class NotificationHub {
     private final TagEnricher mTagEnricher;
     private final IdAssignmentEnricher mIdAssignmentEnricher;
 
-    private DebounceInstallationManager mManager;
+    private InstallationManager mManager;
     private Context mContext;
 
     NotificationHub() {
@@ -57,9 +57,9 @@ public final class NotificationHub {
     }
 
     public static void initialize(Context context, String hubName, String connectionString) {
-        initialize(context, new NotificationHubInstallationManager(
+        initialize(context, new DebounceInstallationManager(new NotificationHubInstallationManager(
                 hubName,
-                connectionString));
+                connectionString)));
     }
 
     public static void initialize(Context context, InstallationManager manager) {
@@ -129,7 +129,7 @@ public final class NotificationHub {
      * @param manager An instance of the {@link InstallationManager} that should be used.
      */
     public void setInstanceInstallationManager(InstallationManager manager) {
-        this.mManager = new DebounceInstallationManager(manager);
+        this.mManager = manager;
     }
 
     /**
