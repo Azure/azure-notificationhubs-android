@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,10 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.notification_hubs_test_app_refresh.NotificationDetailActivity;
 import com.example.notification_hubs_test_app_refresh.R;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 
@@ -55,6 +58,16 @@ public class NotificationListFragment extends Fragment {
         final RecyclerView notificationList = root.findViewById(R.id.notificationList);
         notificationList.setLayoutManager(new LinearLayoutManager(getActivity()));
         notificationList.setAdapter(notificationDisplayAdapter);
+
+        notificationDisplayAdapter.setClickListener(message -> {
+            Intent i  = new Intent(this.getActivity(), NotificationDetailActivity.class);
+            i.putExtra(NotificationDetailActivity.INTENT_TITLE_KEY, message.getTitle());
+            i.putExtra(NotificationDetailActivity.INTENT_BODY_KEY, message.getMessage());
+            for (Map.Entry<String, String> row : message.getCustomData().entrySet()) {
+                i.putExtra(row.getKey(), row.getValue());
+            }
+            startActivity(i);
+        });
 
         return root;
     }
