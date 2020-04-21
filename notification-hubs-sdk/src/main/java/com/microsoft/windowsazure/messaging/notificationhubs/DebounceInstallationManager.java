@@ -20,9 +20,7 @@ public class DebounceInstallationManager implements InstallationManager {
     private SharedPreferences mPreferences;
 
     public DebounceInstallationManager(InstallationManager installationManager) {
-        super();
-        this.mInstallationManager = installationManager;
-        mInterval = 2000;
+        this(installationManager, 2000);
     }
 
     public DebounceInstallationManager(InstallationManager installationManager, long interval) {
