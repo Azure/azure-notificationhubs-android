@@ -45,7 +45,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        NotificationHub.relayMessage(remoteMessage);
+        NotificationHub.relayMessage(getNotificationMessage(remoteMessage));
     }
 
     @Override
@@ -60,9 +60,15 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     static NotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
+        String title = null;
+        String body = null;
+        if (notification != null) {
+            title = notification.getTitle();
+            body = notification.getBody();
+        }
         return new NotificationMessage(
-                notification.getTitle(),
-                notification.getBody(),
+                title,
+                body,
                 remoteMessage.getData());
     }
 

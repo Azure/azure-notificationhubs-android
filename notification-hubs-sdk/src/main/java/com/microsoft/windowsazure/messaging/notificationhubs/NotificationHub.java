@@ -222,12 +222,12 @@ public final class NotificationHub {
         reinstallInstance();
     }
 
-    static void relayMessage(RemoteMessage message) {
+    static void relayMessage(NotificationMessage message) {
         getInstance().relayInstanceMessage(message);
     }
 
-    void relayInstanceMessage(RemoteMessage message) {
-        mListener.onPushNotificationReceived(mContext, new NotificationMessage(message));
+    void relayInstanceMessage(NotificationMessage message) {
+        mListener.onPushNotificationReceived(mContext, message);
     }
 
     /**
