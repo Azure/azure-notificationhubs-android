@@ -16,7 +16,7 @@ import java.util.ListIterator;
  * A Singleton controller that wraps all interactions with Firebase Cloud Messaging and Azure
  * Notification Hubs.
  */
-public final class NotificationHub {
+public final class NotificationHub implements INotificationHub {
     private static NotificationHub sInstance;
 
     private NotificationListener mListener;
@@ -41,7 +41,6 @@ public final class NotificationHub {
         defaultEnrichment.addEnricher(mIdAssignmentEnricher);
 
         useInstanceMiddleware(defaultEnrichment);
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> this.setInstancePushChannel(task.getResult().getToken()));
     }
 
     /**
@@ -52,6 +51,7 @@ public final class NotificationHub {
     public static synchronized NotificationHub getInstance() {
         if (sInstance == null) {
             sInstance = new NotificationHub();
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> sInstance.setInstancePushChannel(task.getResult().getToken()));
         }
         return sInstance;
     }

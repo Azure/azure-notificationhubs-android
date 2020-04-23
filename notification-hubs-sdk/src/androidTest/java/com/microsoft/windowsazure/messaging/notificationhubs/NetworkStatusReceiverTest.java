@@ -9,51 +9,59 @@ import androidx.test.filters.SmallTest;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 
 @SmallTest
 public class NetworkStatusReceiverTest {
     private NetworkStatusReceiver mReceiver;
+    ConnectivityManager cm;
+    Context context;
+    NetworkInfo networkInfo;
 
     @Before
     public void setUp() {
-        mReceiver = new NetworkStatusReceiver();
+        cm = mock(ConnectivityManager.class);
+        context = mock(Context.class);
+        when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(cm);
+        networkInfo = mock(NetworkInfo.class);
+        when(cm.getActiveNetworkInfo()).thenReturn(networkInfo);
     }
 
     @Test
     public void ReceiverReinstallsWhenOnline() {
         // Setup
-        ConnectivityManager cm = mock(ConnectivityManager.class);
-        Context context = mock(Context.class);
-        when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(cm);
-        NetworkInfo networkInfo = mock(NetworkInfo.class);
-        when(cm.getActiveNetworkInfo()).thenReturn(networkInfo);
         when(networkInfo.isConnectedOrConnecting()).thenReturn(true);
-        // NotificationHub nh = mock(NotificationHub.class);
+        NotificationHub nh = new NotificationHub();
+        NotificationHub nhSpy = spy(nh);
+        doNothing().when(nhSpy).reinstallInstance();
+        mReceiver = new NetworkStatusReceiver(nhSpy);
 
         // Exercise
         mReceiver.onReceive(context, new Intent(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Verify
-        // verify(nh, times(1)).reinstall();
+        verify(nhSpy, times(1)).reinstallInstance();
     }
 
     @Test
     public void ReceiverDoesNotReinstallWhenOffline() {
         // Setup
-        ConnectivityManager cm = mock(ConnectivityManager.class);
-        Context context = mock(Context.class);
-        when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(cm);
-        NetworkInfo networkInfo = mock(NetworkInfo.class);
-        when(cm.getActiveNetworkInfo()).thenReturn(networkInfo);
         when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
-        // NotificationHub nh = mock(NotificationHub.class);
+        NotificationHub nh = new NotificationHub();
+        NotificationHub nhSpy = spy(nh);
+        doNothing().when(nhSpy).reinstallInstance();
+        mReceiver = new NetworkStatusReceiver(nhSpy);
 
         // Exercise
         mReceiver.onReceive(context, new Intent(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Verify
-        // verify(nh, times(0)).reinstall();
+        verify(nhSpy, times(0)).reinstallInstance();
     }
 }

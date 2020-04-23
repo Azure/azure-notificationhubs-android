@@ -12,20 +12,28 @@ import android.net.NetworkInfo;
  */
 public class NetworkStatusReceiver extends BroadcastReceiver {
 
-    public NetworkStatusReceiver() {}
+    private INotificationHub _notificationHub;
+
+    public NetworkStatusReceiver() {
+        _notificationHub = NotificationHub.getInstance();
+    }
+
+    public NetworkStatusReceiver(INotificationHub nh) {
+        _notificationHub = nh;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
             try {
-                NotificationHub.reinstall();
+                _notificationHub.reinstallInstance();
             } catch (Exception e) {
+
             }
         }
     }
