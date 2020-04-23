@@ -1,6 +1,7 @@
 package com.example.notification_hubs_test_app_refresh;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import android.text.Layout;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.notification_hubs_test_app_refresh.ui.main.NotificationListViewModel;
 
 import java.util.ArrayList;
 import java.util.Collection;

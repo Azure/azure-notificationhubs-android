@@ -21,37 +21,14 @@ import java.util.concurrent.Executors;
 public class NotificationListViewModel extends ViewModel {
     private final MutableLiveData<List<NotificationMessage>> mNotifications;
     private final NotificationListener mListener;
-    private final Executor mExecutor;
 
     public NotificationListViewModel() {
         mNotifications = new MutableLiveData<List<NotificationMessage>>();
         mListener = (context, message) -> {
             addNotification(message);
-            Toast t = Toast.makeText(context, R.string.notification_received_message, Toast.LENGTH_SHORT);
-            t.show();
         };
 
         NotificationHub.setListener(mListener);
-
-        mExecutor = Executors.newSingleThreadExecutor();
-        mExecutor.execute(() -> {
-            for (int count = 0; count < 20; count++) {
-                String suffix = String.valueOf(count);
-                try {
-                    NotificationMessage toPost = new NotificationMessage(
-                            "Title " + suffix,
-                            "Body " + suffix,
-                            new HashMap<>()
-                    );
-
-                    addNotification(toPost);
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
     }
 
     public void addNotification(NotificationMessage notification) {

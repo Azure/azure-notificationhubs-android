@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.notification_hubs_test_app_refresh.NotificationDetailActivity;
 import com.example.notification_hubs_test_app_refresh.R;
@@ -53,7 +54,10 @@ public class NotificationListFragment extends Fragment {
         View root = inflater.inflate(R.layout.notification_list_fragment, container, false);
 
         final NotificationDisplayAdapter notificationDisplayAdapter = new NotificationDisplayAdapter();
-        final Observer<List<NotificationMessage>> notificationsObserver = notificationMessages -> notificationDisplayAdapter.setNotifications(notificationMessages);
+        final Observer<List<NotificationMessage>> notificationsObserver = notificationMessages -> {
+            notificationDisplayAdapter.setNotifications(notificationMessages);
+            Toast.makeText(this.getContext(), R.string.notification_received_message, Toast.LENGTH_SHORT).show();
+        };
         mViewModel.getNotificationList().observe(getViewLifecycleOwner(), notificationsObserver);
         final RecyclerView notificationList = root.findViewById(R.id.notificationList);
         notificationList.setLayoutManager(new LinearLayoutManager(getActivity()));
