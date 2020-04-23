@@ -2,6 +2,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,8 +57,10 @@ class NotificationHubInstallationManager implements InstallationManager {
                 Request.Method.PUT,
                 url,
                 response -> {
+                    Log.i("ANH", "Installation Updated");
                 },
                 error -> {
+                    Log.e("ANH", "Couldn't update installation: " + error);
                 }
         ){
             @Override
