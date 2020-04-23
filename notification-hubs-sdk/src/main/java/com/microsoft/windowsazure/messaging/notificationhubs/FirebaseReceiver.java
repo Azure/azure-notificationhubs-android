@@ -3,6 +3,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -20,9 +21,13 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
 
     private SharedPreferences mFirebasePreferences;
 
-    public FirebaseReceiver() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        final String preferencesFile = getString(R.string.firebase_preference_file_key);
         mFirebasePreferences = this.getSharedPreferences(
-                getString(R.string.firebase_preference_file_key),
+                preferencesFile,
                 Context.MODE_PRIVATE);
 
         if (!mFirebasePreferences.contains(DEVICE_TOKEN_KEY)) {
@@ -30,7 +35,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
                     .getInstanceId()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()){
-                            // TODO: log an exception.
+                            Log.e("ANH", "unable to fetch FirebaseInstanceId");
                             return;
                         }
                         FirebaseReceiver.this.setDeviceToken(task.getResult().getToken());
