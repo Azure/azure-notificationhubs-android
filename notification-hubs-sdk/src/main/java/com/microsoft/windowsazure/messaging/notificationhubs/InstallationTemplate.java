@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.Nullable;
@@ -12,6 +13,10 @@ public class InstallationTemplate {
     private String mBody;
     private Set<String> mTags = new HashSet<>();
     private Map<String, String> mHeaders = new HashMap<>();
+
+    public InstallationTemplate() {
+
+    }
 
     public String getBody() {
         return mBody;
@@ -48,6 +53,7 @@ public class InstallationTemplate {
     public void setHeader(String name, String value) {
         mHeaders.put(name, value);
     }
+
     public void removeHeader(String name) {
         mHeaders.remove(name);
     }
@@ -65,5 +71,10 @@ public class InstallationTemplate {
         InstallationTemplate castedObj = (InstallationTemplate) obj;
 
         return mBody.equals(castedObj.mBody) && mTags.equals(castedObj.mTags) && mHeaders.equals(castedObj.mHeaders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mBody, mTags, mHeaders);
     }
 }

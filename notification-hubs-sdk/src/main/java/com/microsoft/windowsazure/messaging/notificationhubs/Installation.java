@@ -11,10 +11,12 @@ import java.util.Set;
 public class Installation implements Tagable {
     private String mPushChannel;
     private Set<String> mTags;
+    private Set<InstallationTemplate> mTemplates;
     private String mInstallationId;
 
     public Installation() {
         mTags = new HashSet<String>();
+        mTemplates = new HashSet<InstallationTemplate>();
     }
 
     /**
@@ -100,6 +102,14 @@ public class Installation implements Tagable {
         return mTags.removeAll(tags);
     }
 
+    /**
+     * Adds several tamplates to this Installation.
+     * @param templates The templates to include with this Installation.
+     * @return True if any of the provided templates had not previously been associated with this
+     *         Installation.
+     */
+    public boolean addTemplates(Collection<? extends InstallationTemplate> templates) { return mTemplates.addAll(templates); }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,6 +117,7 @@ public class Installation implements Tagable {
         Installation that = (Installation) o;
         return mPushChannel.equals(that.mPushChannel) &&
                 mTags.equals(that.mTags) &&
+                mTemplates.equals(that.mTemplates) &&
                 mInstallationId.equals(that.mInstallationId);
     }
 
