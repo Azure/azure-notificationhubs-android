@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.Nullable;
@@ -14,9 +13,6 @@ public class InstallationTemplate {
     private Set<String> mTags = new HashSet<>();
     private Map<String, String> mHeaders = new HashMap<>();
 
-    public InstallationTemplate() {
-
-    }
     /**
      * Get template body.
      *
