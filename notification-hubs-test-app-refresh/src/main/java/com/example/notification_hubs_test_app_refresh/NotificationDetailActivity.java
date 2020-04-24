@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,18 @@ public class NotificationDetailActivity extends AppCompatActivity {
 
         final TextView bodyValue = findViewById(R.id.detail_body_view);
         bodyValue.setText(info.getStringExtra(INTENT_BODY_KEY));
+
+        final LinearLayout detailContent = findViewById(R.id.detail_content);
+        for (String key : getDataKeys(info)) {
+            final View dataRow = getLayoutInflater().inflate(R.layout.data_item, null);
+            final TextView dataKey = dataRow.findViewById(R.id.data_key);
+            dataKey.setText(key);
+
+            final TextView dataValue = dataRow.findViewById(R.id.data_value);
+            dataValue.setText(info.getStringExtra(key));
+
+            detailContent.addView(dataRow);
+        }
     }
 
     private static Iterable<String> getDataKeys(Intent i) {
