@@ -2,6 +2,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -27,6 +28,7 @@ public final class NotificationHub {
 
     private InstallationAdapter mManager;
     private Application mApplication;
+    private Class mReceiver;
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
@@ -380,6 +382,33 @@ public final class NotificationHub {
         if (mTagVisitor.getTags().iterator().hasNext()) {
             mTagVisitor.clearTags();
             this.reinstallInstance();
+        }
+    }
+
+    void setInstanceReceiver(Class receiver) {
+        mReceiver = receiver;
+    }
+
+    /**
+     * Controls whether or not this application should be listening for Notifications.
+     * @param enable true if the application should be listening for notifications, false if not.
+     */
+    public static void setEnabled(Context context, boolean enable) {
+        getInstance().setInstanceEnabled(context, enable);
+    }
+
+    /**
+     * Controls whether or not this application should be listening for Notifications.
+     * @param enable true if the application should be listening for notifications, false if not.
+     */
+    public void setInstanceEnabled(Context context, boolean enable) {
+        Intent i = new Intent(context.getApplicationContext(), mReceiver);
+        context = context.getApplicationContext();
+
+        if (enable) {
+            context.startService(i);
+        } else {
+            context.stopService(i);
         }
     }
 }
