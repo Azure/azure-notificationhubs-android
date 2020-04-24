@@ -18,6 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/unknown_information"
+        android:textIsSelectable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tag_delete_button"
         app:layout_constraintStart_toStartOf="parent"
