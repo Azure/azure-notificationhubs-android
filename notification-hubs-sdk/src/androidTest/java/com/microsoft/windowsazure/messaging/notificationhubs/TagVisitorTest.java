@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
-public class TagEnricherTest {
+public class TagVisitorTest {
     private Context context = getInstrumentation().getTargetContext();
     private List<String> tagList = Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList());
 
