@@ -29,6 +29,7 @@ public final class NotificationHub {
     private InstallationAdapter mManager;
     private Application mApplication;
     private Class mReceiver;
+    private boolean mIsEnabled = true;
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
@@ -385,30 +386,34 @@ public final class NotificationHub {
         }
     }
 
-    void setInstanceReceiver(Class receiver) {
-        mReceiver = receiver;
+    /**
+     * Controls whether or not this application should be listening for Notifications.
+     * @param enable true if the application should be listening for notifications, false if not.
+     */
+    public static void setEnabled(boolean enable) {
+        getInstance().setInstanceEnabled(enable);
     }
 
     /**
      * Controls whether or not this application should be listening for Notifications.
      * @param enable true if the application should be listening for notifications, false if not.
      */
-    public static void setEnabled(Context context, boolean enable) {
-        getInstance().setInstanceEnabled(context, enable);
-    }
-
-    /**
-     * Controls whether or not this application should be listening for Notifications.
-     * @param enable true if the application should be listening for notifications, false if not.
-     */
-    public void setInstanceEnabled(Context context, boolean enable) {
-        Intent i = new Intent(context.getApplicationContext(), mReceiver);
-        context = context.getApplicationContext();
+    public void setInstanceEnabled(boolean enable) {
+        Intent i = new Intent(mContext, mReceiver);
 
         if (enable) {
-            context.startService(i);
+            mContext.startService(i);
         } else {
-            context.stopService(i);
+            mContext.stopService(i);
         }
+
+    }
+
+    public static boolean isEnabled() {
+        return getInstance().isInstanceEnabled();
+    }
+
+    public boolean isInstanceEnabled() {
+        return mIsEnabled;
     }
 }
