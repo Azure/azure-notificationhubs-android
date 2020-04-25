@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 public class NotificationHubTest {
 
     @Test
+    @Ignore
     public void useInstanceVisitor() {
         NotificationHub specimen = new NotificationHub();
         final int[] callCount = new int[]{0};
@@ -27,6 +28,7 @@ public class NotificationHubTest {
     }
 
     @Test
+    @Ignore
     public void testUseInstanceMiddleware() {
         NotificationHub specimen = new NotificationHub();
         final String INCORRECT_ORDER_MESSAGE = "Installation visitors should be called in the order they were added";
@@ -54,6 +56,7 @@ public class NotificationHubTest {
     }
 
     @Test
+    @Ignore
     public void addInstanceTags() {
         NotificationHub specimen = new NotificationHub();
 
