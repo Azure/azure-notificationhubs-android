@@ -1,30 +1,30 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 /**
- * Wraps an {@link InstallationEnricher} to fulfill the most basic responsibilities of middleware.
+ * Wraps an {@link InstallationVisitor} to fulfill the most basic responsibilities of middleware.
  */
 class DefaultMiddleware implements InstallationMiddleware {
 
-    private InstallationEnricher mEnricher;
+    private InstallationVisitor mEnricher;
 
-    public DefaultMiddleware(InstallationEnricher enricher) {
+    public DefaultMiddleware(InstallationVisitor enricher) {
         this.mEnricher = enricher;
     }
 
     /**
      * Applies an enrichment, then calls the next piece of middleware.
-     * @param next The {@link InstallationEnricher} that should be invoked when this enricher has
+     * @param next The {@link InstallationVisitor} that should be invoked when this enricher has
      *             completed its work.
-     * @return An {@link InstallationEnricher} that applies multiple enrichments.
+     * @return An {@link InstallationVisitor} that applies multiple enrichments.
      */
     @Override
-    public InstallationEnricher getInstallationEnricher(InstallationEnricher next) {
+    public InstallationVisitor getInstallationEnricher(InstallationVisitor next) {
         return subject -> {
             if (this.mEnricher != null) {
-                DefaultMiddleware.this.mEnricher.enrichInstallation(subject);
+                DefaultMiddleware.this.mEnricher.visitInstallation(subject);
             }
             if (next != null) {
-                next.enrichInstallation(subject);
+                next.visitInstallation(subject);
             }
         };
     }

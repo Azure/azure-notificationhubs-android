@@ -21,7 +21,7 @@ public class NotificationHubTest {
             assertNotNull("Next InstallationEnricher should never be null.", next);
             return subject -> {
                 callCount[1]++;
-                next.enrichInstallation(subject);
+                next.visitInstallation(subject);
                 assertNotNull("Installation to be enriched should never be null", subject);
             };
         });
@@ -45,19 +45,19 @@ public class NotificationHubTest {
             return subject -> {
                 assertEquals("Installation Enrichers are called in the order the middleware was added", 0, callCount[3]);
                 callCount[1]++;
-                next.enrichInstallation(subject);
+                next.visitInstallation(subject);
             };
         });
 
         specimen.useInstanceMiddleware(next -> {
             assertEquals("Middleware should be called as a stack", 0, callCount[0]);
             callCount[2]++;
-            return new InstallationEnricher() {
+            return new InstallationVisitor() {
                 @Override
-                public void enrichInstallation(Installation subject) {
+                public void visitInstallation(Installation subject) {
                     assertEquals("Installation Enrichers are called in the order the middleware was added", 1, callCount[1]);
                     callCount[3]++;
-                    next.enrichInstallation(subject);
+                    next.visitInstallation(subject);
                 }
             };
         });

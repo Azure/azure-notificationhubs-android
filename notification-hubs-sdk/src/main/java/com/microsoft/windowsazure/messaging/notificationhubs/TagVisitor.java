@@ -14,7 +14,7 @@ import java.util.Set;
  * Collects a set of distinct tags, in order to apply them to {@link Installation}s as they are
  * created.
  */
-public class TagEnricher implements InstallationEnricher, Tagable {
+public class TagVisitor implements InstallationVisitor, Tagable {
 
     private static final String PREFERENCE_KEY = "tags";
     private SharedPreferences mPreferences;
@@ -22,7 +22,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
     /**
      * Creates an empty TagEnricher.
      */
-    public TagEnricher() {
+    public TagVisitor() {
 
     }
 
@@ -30,7 +30,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
      * Creates a TagEnricher with a pre-populated set of tags to apply.
      * @param tags The initial set of tags that should be applied to future {@link Installation}s.
      */
-    public TagEnricher(Context context, Collection<? extends String> tags) {
+    public TagVisitor(Context context, Collection<? extends String> tags) {
         this();
         setPreferences(context);
         addTags(tags);
@@ -45,7 +45,7 @@ public class TagEnricher implements InstallationEnricher, Tagable {
     }
 
     @Override
-    public void enrichInstallation(Installation subject) {
+    public void visitInstallation(Installation subject) {
         subject.addTags(getTagsSet());
     }
 

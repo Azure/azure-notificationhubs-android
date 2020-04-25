@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +20,9 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationMiddleware> mMiddleware;
-    private final PushChannelEnricher mPushChannelEnricher;
-    private final TagEnricher mTagEnricher;
-    private final IdAssignmentEnricher mIdAssignmentEnricher;
+    private final PushChannelVisitor mPushChannelEnricher;
+    private final TagVisitor mTagEnricher;
+    private final IdAssignmentVisitor mIdAssignmentEnricher;
 
     private InstallationManager mManager;
     private Context mContext;
@@ -31,9 +30,9 @@ public final class NotificationHub {
     NotificationHub() {
         mMiddleware = new ArrayList<>();
 
-        mPushChannelEnricher = new PushChannelEnricher();
-        mTagEnricher = new TagEnricher();
-        mIdAssignmentEnricher = new IdAssignmentEnricher();
+        mPushChannelEnricher = new PushChannelVisitor();
+        mTagEnricher = new TagVisitor();
+        mIdAssignmentEnricher = new IdAssignmentVisitor();
 
         BagMiddleware defaultEnrichment = new BagMiddleware();
         defaultEnrichment.addEnricher(mPushChannelEnricher);
@@ -145,7 +144,7 @@ public final class NotificationHub {
     public void reinstallInstance() {
         ListIterator<InstallationMiddleware> iterator = this.mMiddleware.listIterator(this.mMiddleware.size());
 
-        InstallationEnricher enricher = subject -> {
+        InstallationVisitor enricher = subject -> {
             // Intentionally Left Blank
         };
 
@@ -155,7 +154,7 @@ public final class NotificationHub {
         }
 
         Installation installation = new Installation();
-        enricher.enrichInstallation(installation);
+        enricher.visitInstallation(installation);
 
         if (mManager != null) {
             mManager.saveInstallation(mContext, installation);

@@ -10,39 +10,39 @@ import java.util.Set;
  */
 class BagMiddleware implements InstallationMiddleware {
 
-    private final Set<InstallationEnricher> mEnrichers;
+    private final Set<InstallationVisitor> mEnrichers;
 
     public BagMiddleware() {
-        this.mEnrichers = new HashSet<InstallationEnricher>();
+        this.mEnrichers = new HashSet<InstallationVisitor>();
     }
 
-    public BagMiddleware(Collection<? extends InstallationEnricher> enrichers) {
-        this.mEnrichers = new HashSet<InstallationEnricher>(enrichers);
+    public BagMiddleware(Collection<? extends InstallationVisitor> enrichers) {
+        this.mEnrichers = new HashSet<InstallationVisitor>(enrichers);
     }
 
     /**
-     * Updates the set of {@link InstallationEnricher} implementers that will be called when this
+     * Updates the set of {@link InstallationVisitor} implementers that will be called when this
      * {@link InstallationMiddleware} is invoked.
-     * @param enricher The {@link InstallationEnricher} that should be applied in the future.
+     * @param enricher The {@link InstallationVisitor} that should be applied in the future.
      * @return True if this enricher was not previously part of the set to be applied.
      */
-    public boolean addEnricher(InstallationEnricher enricher){
+    public boolean addEnricher(InstallationVisitor enricher){
         return this.mEnrichers.add(enricher);
     }
 
     /**
      * Creates a link in the Installation chain that applies many enrichments at once.
-     * @param next The {@link InstallationEnricher} that should be invoked when this enricher has
+     * @param next The {@link InstallationVisitor} that should be invoked when this enricher has
      *             completed its work.
-     * @return A {@link InstallationEnricher} that applies many updates to an {@link Installation}.
+     * @return A {@link InstallationVisitor} that applies many updates to an {@link Installation}.
      */
     @Override
-    public InstallationEnricher getInstallationEnricher(InstallationEnricher next) {
+    public InstallationVisitor getInstallationEnricher(InstallationVisitor next) {
         return subject -> {
-            for (InstallationEnricher e: BagMiddleware.this.mEnrichers) {
-                e.enrichInstallation(subject);
+            for (InstallationVisitor e: BagMiddleware.this.mEnrichers) {
+                e.visitInstallation(subject);
             }
-            next.enrichInstallation(subject);
+            next.visitInstallation(subject);
         };
     }
 }

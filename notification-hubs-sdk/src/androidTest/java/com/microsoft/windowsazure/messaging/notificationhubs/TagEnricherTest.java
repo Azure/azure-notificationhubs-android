@@ -19,7 +19,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTag () {
-        TagEnricher te = new TagEnricher();
+        TagVisitor te = new TagVisitor();
         te.setPreferences(context);
 
         assertTrue(te.addTag(tagList.get(0)));
@@ -28,7 +28,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTags () {
-        TagEnricher te = new TagEnricher();
+        TagVisitor te = new TagVisitor();
         te.setPreferences(context);
 
         List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherClearTags () {
-        TagEnricher te = new TagEnricher();
+        TagVisitor te = new TagVisitor();
         te.setPreferences(context);
 
         assertTrue(te.addTags(tagList));
@@ -53,7 +53,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTag () {
-        TagEnricher te = new TagEnricher();
+        TagVisitor te = new TagVisitor();
         te.setPreferences(context);
 
         assertTrue(te.addTags(tagList));
@@ -65,7 +65,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTags () {
-        TagEnricher te = new TagEnricher();
+        TagVisitor te = new TagVisitor();
         te.setPreferences(context);
 
         assertTrue(te.addTags(tagList));

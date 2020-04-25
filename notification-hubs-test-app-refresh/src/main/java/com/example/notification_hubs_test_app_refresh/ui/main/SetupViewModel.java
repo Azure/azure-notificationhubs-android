@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.microsoft.windowsazure.messaging.notificationhubs.Installation;
-import com.microsoft.windowsazure.messaging.notificationhubs.InstallationEnricher;
+import com.microsoft.windowsazure.messaging.notificationhubs.InstallationVisitor;
 import com.microsoft.windowsazure.messaging.notificationhubs.InstallationMiddleware;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
@@ -29,10 +29,10 @@ public class SetupViewModel extends ViewModel {
             //       call with the finalized installation.
 
             @Override
-            public InstallationEnricher getInstallationEnricher(InstallationEnricher next) {
-                return new InstallationEnricher() {
+            public InstallationVisitor getInstallationEnricher(InstallationVisitor next) {
+                return new InstallationVisitor() {
                     @Override
-                    public void enrichInstallation(Installation subject) {
+                    public void visitInstallation(Installation subject) {
                         String pushChannel = subject.getPushChannel();
                         if (pushChannel == null) {
                             pushChannel = getUnknownText();
@@ -45,7 +45,7 @@ public class SetupViewModel extends ViewModel {
                         }
                         mInstallationId.setValue(installationId);
 
-                        next.enrichInstallation(subject);
+                        next.visitInstallation(subject);
                     }
                 };
             }
