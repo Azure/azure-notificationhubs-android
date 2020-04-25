@@ -19,8 +19,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTag () {
-        TagVisitor te = new TagVisitor();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTag(tagList.get(0)));
         assertTrue(((HashSet<String>)te.getTags()).contains(tagList.get(0)));
@@ -28,8 +27,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTags () {
-        TagVisitor te = new TagVisitor();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
 
@@ -42,8 +40,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherClearTags () {
-        TagVisitor te = new TagVisitor();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -53,8 +50,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTag () {
-        TagVisitor te = new TagVisitor();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -65,8 +61,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTags () {
-        TagVisitor te = new TagVisitor();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
