@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.microsoft.windowsazure.messaging.notificationhubs.Installation;
-import com.microsoft.windowsazure.messaging.notificationhubs.InstallationVisitor;
-import com.microsoft.windowsazure.messaging.notificationhubs.InstallationMiddleware;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 import java.util.ArrayList;
@@ -23,33 +20,23 @@ public class SetupViewModel extends ViewModel {
     private final MutableLiveData<List<String>> mTags = new MutableLiveData<List<String>>();
 
     public SetupViewModel() {
-        NotificationHub.useMiddleware(new InstallationMiddleware() {
+        NotificationHub.useVisitor(
             // TODO: Instead of having this be InstallationMiddleware, which will get a partially
             //       hydrated Installation, have this be an InstallationManager that intercepts the
             //       call with the finalized installation.
+            subject -> {
+                String pushChannel = subject.getPushChannel();
+                if (pushChannel == null) {
+                    pushChannel = getUnknownText();
+                }
+                mDeviceToken.setValue(pushChannel);
 
-            @Override
-            public InstallationVisitor getInstallationEnricher(InstallationVisitor next) {
-                return new InstallationVisitor() {
-                    @Override
-                    public void visitInstallation(Installation subject) {
-                        String pushChannel = subject.getPushChannel();
-                        if (pushChannel == null) {
-                            pushChannel = getUnknownText();
-                        }
-                        mDeviceToken.setValue(pushChannel);
-
-                        String installationId = subject.getInstallationId();
-                        if (installationId == null) {
-                            installationId = getUnknownText();
-                        }
-                        mInstallationId.setValue(installationId);
-
-                        next.visitInstallation(subject);
-                    }
-                };
-            }
-        });
+                String installationId = subject.getInstallationId();
+                if (installationId == null) {
+                    installationId = getUnknownText();
+                }
+                mInstallationId.setValue(installationId);
+            });
         mTags.setValue(iterableToList(NotificationHub.getTags()));
 
         // TODO: This reinstall is forced to take advantage of the hook we setup above into the
