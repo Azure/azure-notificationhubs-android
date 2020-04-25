@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,10 +67,16 @@ class NotificationHubInstallationManager implements InstallationManager {
             @Override
             public byte[] getBody() {
                 try {
+                    JSONArray tagList = new JSONArray();
+                    for (String tag: installation.getTags()) {
+                        tagList.put(tag);
+                    }
+
                     JSONObject jsonBody = new JSONObject(){{
                         put("installationId", installation.getInstallationId());
                         put("platform", "GCM");
                         put("pushChannel", installation.getPushChannel());
+                        put("tags", tagList);
                     }};
                     return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
                 } catch (JSONException e) {
