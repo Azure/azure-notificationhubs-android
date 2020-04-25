@@ -28,8 +28,6 @@ public final class NotificationHub {
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
-
-        mIdAssignmentVisitor = new IdAssignmentVisitor();
     }
 
     /**
@@ -44,18 +42,38 @@ public final class NotificationHub {
         return sInstance;
     }
 
+    /**
+     * Initialize the single global instance of {@link NotificationHub} and configure to associate
+     * this device with an Azure Notification Hub.
+     * @param context The application that will own the lifecycle and resources that NotificationHub
+     *                needs access to.
+     * @param hubName The name of the Notification Hub that will broadcast notifications to this
+     *                device.
+     * @param connectionString The Listen-only AccessPolicy that grants this device the ability to
+     *                         receive notifications.
+     */
     public static void initialize(Context context, String hubName, String connectionString) {
         initialize(context, new DebounceInstallationManager(new NotificationHubInstallationManager(
                 hubName,
                 connectionString)));
     }
 
+    /**
+     * Initialize the single global instance of {@link NotificationHub} and configure to associate
+     * this device with a custom backend that will store device references for future broadcasts.
+     *
+     * This is useful when your backend will exclusively use Notification Hub's direct send
+     * functionality.
+     * @param context The application that will own the lifecycle and resources that NotificationHub
+     *                needs access to.
+     * @param manager A client that can create/overwrite a reference to this device with a backend.
+     */
     public static void initialize(Context context, InstallationManager manager) {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(manager);
         instance.mContext = context.getApplicationContext();
 
-        instance.mIdAssignmentVisitor = new IdAssignmentVisitor();
+        instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mContext);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
 
         instance.mTagVisitor = new TagVisitor(instance.mContext);
