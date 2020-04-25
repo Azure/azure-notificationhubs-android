@@ -1,13 +1,13 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-public class PushChannelEnricher implements InstallationEnricher {
+public class PushChannelVisitor implements InstallationVisitor {
     private String mChannel;
 
-    public PushChannelEnricher() {
+    public PushChannelVisitor() {
         // Intentionally Left Blank
     }
 
-    public PushChannelEnricher(String pushChannel) {
+    public PushChannelVisitor(String pushChannel) {
         mChannel = pushChannel;
     }
 
@@ -17,7 +17,7 @@ public class PushChannelEnricher implements InstallationEnricher {
      * @param subject The {@link Installation} that should be modified to include more detail.
      */
     @Override
-    public void enrichInstallation(Installation subject) {
+    public void visitInstallation(Installation subject) {
         subject.setPushChannel(mChannel);
     }
 

@@ -2,15 +2,15 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.util.UUID;
 
-class IdAssignmentEnricher implements InstallationEnricher {
+class IdAssignmentVisitor implements InstallationVisitor {
 
     private String mInstallationId;
 
-    public IdAssignmentEnricher() {
+    public IdAssignmentVisitor() {
         this(UUID.randomUUID().toString());
     }
 
-    public IdAssignmentEnricher(String id) {
+    public IdAssignmentVisitor(String id) {
         mInstallationId = id;
     }
 
@@ -21,7 +21,7 @@ class IdAssignmentEnricher implements InstallationEnricher {
      * @param subject The {@link Installation} that should be modified to include more detail.
      */
     @Override
-    public void enrichInstallation(Installation subject) {
+    public void visitInstallation(Installation subject) {
         if(subject.getInstallationId() == null) {
             subject.setInstallationId(mInstallationId);
         }

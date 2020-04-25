@@ -13,14 +13,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
-public class TagEnricherTest {
+public class TagVisitorTest {
     private Context context = getInstrumentation().getTargetContext();
     private List<String> tagList = Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList());
 
     @Test
     public void TagEnricherAddTag () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTag(tagList.get(0)));
         assertTrue(((HashSet<String>)te.getTags()).contains(tagList.get(0)));
@@ -28,8 +27,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
 
@@ -42,8 +40,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherClearTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -53,8 +50,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTag () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -65,8 +61,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
