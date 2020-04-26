@@ -15,5 +15,21 @@ public interface InstallationAdapter {
      * @param context Application context.
      * @param installation The record to update.
      */
-    void saveInstallation(Context context, Installation installation);
+    void saveInstallation(Context context, Installation installation, Listener onSuccess, ErrorListener onFailure);
+
+    /**
+     * Defines the callback that should be invoked when an Installation is successfully processed by
+     * the backend.
+     */
+    interface Listener{
+        void onInstallationSaved(Installation i);
+    }
+
+    /**
+     * Defines the callback that should be invoked when an Installation fails to be processed by the
+     * backend.
+     */
+    interface ErrorListener {
+        void onInstallationSaveError(Exception e);
+    }
 }

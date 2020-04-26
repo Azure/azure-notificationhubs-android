@@ -22,6 +22,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.notification_hubs_test_app_refresh.MainActivity;
 import com.example.notification_hubs_test_app_refresh.R;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
@@ -72,6 +73,14 @@ public class SetupFragment extends Fragment {
         final RecyclerView tagList = root.findViewById(R.id.tag_list);
         tagList.setLayoutManager(new LinearLayoutManager(getActivity()));
         tagList.setAdapter(tagDisplayAdapter);
+
+
+        NotificationHub.setInstallationSavedListener(i -> {
+            Toast.makeText(this.getContext(), getString(R.string.installation_saved_message), Toast.LENGTH_SHORT).show();
+            mViewModel.setInstallationId(NotificationHub.getInstallationId());
+            mViewModel.setDeviceToken(NotificationHub.getPushChannel());
+        });
+        NotificationHub.setInstallationSaveFailureListener(e -> Toast.makeText(this.getContext(), getString(R.string.installation_save_failure_message), Toast.LENGTH_SHORT).show());
 
         return root;
     }

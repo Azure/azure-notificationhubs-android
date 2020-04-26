@@ -48,13 +48,13 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @param installation The record to update.\
      */
     @Override
-    public void saveInstallation(final Context context, final Installation installation) {
+    public void saveInstallation(final Context context, final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
         httpClient = HttpUtils.createHttpClient(context.getApplicationContext());
 
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        httpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback());
+        httpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onSuccess, onFailure));
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {
@@ -147,16 +147,16 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         };
     }
 
-    private ServiceCallback buildServiceCallback() {
+    private ServiceCallback buildServiceCallback(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
         return new ServiceCallback() {
             @Override
             public void onCallSucceeded(HttpResponse httpResponse) {
-                Log.i("ANH", "Installation Updated");
+                onSuccess.onInstallationSaved(installation);
             }
 
             @Override
             public void onCallFailed(Exception e) {
-                Log.e("ANH", "Couldn't update installation: " + e.getMessage());
+                onFailure.onInstallationSaveError(e);
             }
         };
     }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +35,24 @@ public final class NotificationHub {
     private SharedPreferences mPreferences;
     private static final String IS_ENABLED_PREFERENCE_KEY = "isEnabled";
 
+    private InstallationAdapter.Listener mOnSavedInstallation;
+    private InstallationAdapter.ErrorListener mOnInstallationFailure;
+
     NotificationHub() {
         mVisitors = new ArrayList<>();
+
+        mOnInstallationFailure = new InstallationAdapter.ErrorListener() {
+            @Override
+            public void onInstallationSaveError(Exception e) {
+                Log.e("ANH", "unable to save installation: " + e.toString());
+            }
+        };
+        mOnSavedInstallation = new InstallationAdapter.Listener() {
+            @Override
+            public void onInstallationSaved(Installation i) {
+                Log.i("ANH", "updated installation");
+            }
+        };
     }
 
     /**
@@ -117,6 +134,31 @@ public final class NotificationHub {
     }
 
     /**
+     * Changes the callback that will be invoked when a notification is received.
+     * @param listener A callback that will be invoked whenever your application is given access to
+     *                 a notification.
+     */
+    public void setInstanceListener(NotificationListener listener) {
+        mListener = listener;
+    }
+
+    public static void setInstallationSavedListener(InstallationAdapter.Listener listener) {
+        getInstance().setInstanceInstallationSavedListener(listener);
+    }
+
+    public void setInstanceInstallationSavedListener(InstallationAdapter.Listener listener) {
+        mOnSavedInstallation = listener;
+    }
+
+    public static void setInstallationSaveFailureListener(InstallationAdapter.ErrorListener listener) {
+        getInstance().setInstanceInstallationSaveFailureListener(listener);
+    }
+
+    public void setInstanceInstallationSaveFailureListener(InstallationAdapter.ErrorListener listener) {
+        mOnInstallationFailure = listener;
+    }
+
+    /**
      * Captures notification activity that happened while your application was in the background.
      * @param activity TODO
      * @param intent TODO
@@ -125,14 +167,6 @@ public final class NotificationHub {
         // TODO: Cache the activity and intent extras that were passed to us.
     }
 
-    /**
-     * Changes the callback that will be invoked when a notification is received.
-     * @param listener A callback that will be invoked whenever your application is given access to
-     *                 a notification.
-     */
-    public void setInstanceListener(NotificationListener listener) {
-        mListener = listener;
-    }
 
     /**
      * Registers {@link InstallationVisitor} for use when a new {@link Installation} is to be
@@ -181,7 +215,7 @@ public final class NotificationHub {
         }
 
         if (mAdapter != null) {
-            mAdapter.saveInstallation(mApplication, installation);
+            mAdapter.saveInstallation(mApplication, installation, mOnSavedInstallation, mOnInstallationFailure);
         }
     }
 
