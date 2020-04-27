@@ -31,12 +31,12 @@ import javax.crypto.spec.SecretKeySpec;
  * Responsible for informing Azure Notification Hubs of changes to when this device should receive
  * notifications.
  */
-class NotificationHubInstallationManager implements InstallationManager {
+class NotificationHubInstallationAdapter implements InstallationAdapter {
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
 
-    public NotificationHubInstallationManager(String hubName, String connectionString) {
+    public NotificationHubInstallationAdapter(String hubName, String connectionString) {
         mHubName = hubName;
         mConnectionString = ConnectionString.parse(connectionString);
     }
