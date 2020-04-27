@@ -25,12 +25,6 @@ public class SetupViewModel extends ViewModel {
             //       hydrated Installation, have this be an InstallationManager that intercepts the
             //       call with the finalized installation.
             subject -> {
-                String pushChannel = subject.getPushChannel();
-                if (pushChannel == null) {
-                    pushChannel = getUnknownText();
-                }
-                mDeviceToken.setValue(pushChannel);
-
                 String installationId = subject.getInstallationId();
                 if (installationId == null) {
                     installationId = getUnknownText();
@@ -38,6 +32,11 @@ public class SetupViewModel extends ViewModel {
                 mInstallationId.setValue(installationId);
             });
         mTags.setValue(iterableToList(NotificationHub.getTags()));
+
+        String pushChannel = NotificationHub.getPushChannel();
+        if (pushChannel != null) {
+            mDeviceToken.setValue(pushChannel);
+        }
 
         // TODO: This reinstall is forced to take advantage of the hook we setup above into the
         //       Installation creation process. Honestly, this stinks. We shouldn't encourage people
