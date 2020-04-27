@@ -64,11 +64,11 @@ public final class NotificationHub {
      * functionality.
      * @param context The application that will own the lifecycle and resources that NotificationHub
      *                needs access to.
-     * @param manager A client that can create/overwrite a reference to this device with a backend.
+     * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Context context, InstallationAdapter manager) {
+    public static void initialize(Context context, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.setInstanceInstallationManager(manager);
+        instance.setInstanceInstallationManager(adapter);
         instance.mContext = context.getApplicationContext();
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mContext);
@@ -135,18 +135,18 @@ public final class NotificationHub {
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param manager An instance of the {@link InstallationAdapter} that should be used.
+     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public static void setInstallationManger(InstallationAdapter manager) {
-        getInstance().setInstanceInstallationManager(manager);
+    public static void setInstallationManger(InstallationAdapter adapter) {
+        getInstance().setInstanceInstallationManager(adapter);
     }
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param manager An instance of the {@link InstallationAdapter} that should be used.
+     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public void setInstanceInstallationManager(InstallationAdapter manager) {
-        this.mManager = manager;
+    public void setInstanceInstallationManager(InstallationAdapter adapter) {
+        this.mManager = adapter;
     }
 
     /**
