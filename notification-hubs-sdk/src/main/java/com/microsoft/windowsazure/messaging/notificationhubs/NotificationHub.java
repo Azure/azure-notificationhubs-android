@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +21,7 @@ public final class NotificationHub {
     private TagVisitor mTagVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
-    private InstallationManager mManager;
+    private InstallationAdapter mManager;
     private Context mContext;
 
     NotificationHub() {
@@ -53,7 +51,7 @@ public final class NotificationHub {
      *                         receive notifications.
      */
     public static void initialize(Context context, String hubName, String connectionString) {
-        initialize(context, new DebounceInstallationManager(new NotificationHubInstallationManager(
+        initialize(context, new DebounceInstallationAdapter(new NotificationHubInstallationAdapter(
                 hubName,
                 connectionString)));
     }
@@ -68,7 +66,7 @@ public final class NotificationHub {
      *                needs access to.
      * @param manager A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Context context, InstallationManager manager) {
+    public static void initialize(Context context, InstallationAdapter manager) {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(manager);
         instance.mContext = context.getApplicationContext();
@@ -137,17 +135,17 @@ public final class NotificationHub {
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param manager An instance of the {@link InstallationManager} that should be used.
+     * @param manager An instance of the {@link InstallationAdapter} that should be used.
      */
-    public static void setInstallationManger(InstallationManager manager) {
+    public static void setInstallationManger(InstallationAdapter manager) {
         getInstance().setInstanceInstallationManager(manager);
     }
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param manager An instance of the {@link InstallationManager} that should be used.
+     * @param manager An instance of the {@link InstallationAdapter} that should be used.
      */
-    public void setInstanceInstallationManager(InstallationManager manager) {
+    public void setInstanceInstallationManager(InstallationAdapter manager) {
         this.mManager = manager;
     }
 

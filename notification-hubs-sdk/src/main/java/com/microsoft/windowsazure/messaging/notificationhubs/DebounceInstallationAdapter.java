@@ -10,22 +10,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class DebounceInstallationManager implements InstallationManager {
+public class DebounceInstallationAdapter implements InstallationAdapter {
 
     private static final String PREFERENCE_KEY = "recentInstallation";
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
-    private InstallationManager mInstallationManager;
+    private InstallationAdapter mInstallationAdapter;
     private long mInterval;
     private ScheduledFuture<?> mSchedFuture;
     private SharedPreferences mPreferences;
 
-    public DebounceInstallationManager(InstallationManager installationManager) {
-        this(installationManager, 2000);
+    public DebounceInstallationAdapter(InstallationAdapter installationAdapter) {
+        this(installationAdapter, 2000);
     }
 
-    public DebounceInstallationManager(InstallationManager installationManager, long interval) {
+    public DebounceInstallationAdapter(InstallationAdapter installationAdapter, long interval) {
         super();
-        this.mInstallationManager = installationManager;
+        this.mInstallationAdapter = installationAdapter;
         mInterval = interval;
     }
 
@@ -51,7 +51,7 @@ public class DebounceInstallationManager implements InstallationManager {
         mSchedFuture = mScheduler.schedule(() ->
         {
             try {
-                mInstallationManager.saveInstallation(context, installation);
+                mInstallationAdapter.saveInstallation(context, installation);
                 mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
             } catch (Exception e) {
 
