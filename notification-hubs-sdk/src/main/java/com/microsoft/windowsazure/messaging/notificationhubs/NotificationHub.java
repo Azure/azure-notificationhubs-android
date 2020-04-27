@@ -19,7 +19,7 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationVisitor> mVisitors;
-    private final PushChannelVisitor mPushChannelEnricher;
+    private PushChannelVisitor mPushChannelVisitor;
     private TagVisitor mTagVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
@@ -29,10 +29,7 @@ public final class NotificationHub {
     NotificationHub() {
         mVisitors = new ArrayList<>();
 
-        mPushChannelEnricher = new PushChannelVisitor();
         mIdAssignmentVisitor = new IdAssignmentVisitor();
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> this.setInstancePushChannel(task.getResult().getToken()));
     }
 
     /**
@@ -64,7 +61,13 @@ public final class NotificationHub {
         instance.mTagVisitor = new TagVisitor(instance.mContext);
         instance.useInstanceVisitor(instance.mTagVisitor);
 
-        instance.useInstanceVisitor(instance.mPushChannelEnricher);
+        instance.mPushChannelVisitor = new PushChannelVisitor(instance.mContext);
+        instance.useInstanceVisitor(instance.mPushChannelVisitor);
+
+        instance.useInstanceVisitor(instance.mPushChannelVisitor);
+
+        Intent i =  new Intent(context, FirebaseReceiver.class);
+        context.startService(i);
     }
 
     /**
@@ -165,7 +168,7 @@ public final class NotificationHub {
     }
 
     void setInstancePushChannel(String token) {
-        mPushChannelEnricher.setPushChannel(token);
+        mPushChannelVisitor.setPushChannel(token);
         reinstallInstance();
     }
 
@@ -175,7 +178,7 @@ public final class NotificationHub {
      *         it hasn't been initialized yet.
      */
     public String getInstancePushChannel() {
-        return mPushChannelEnricher.getPushChannel();
+        return mPushChannelVisitor.getPushChannel();
     }
 
     /**

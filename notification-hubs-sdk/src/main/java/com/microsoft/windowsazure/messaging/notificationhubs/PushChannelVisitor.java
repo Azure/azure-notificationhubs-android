@@ -1,14 +1,18 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.core.graphics.drawable.IconCompat;
+
+import com.microsoft.windowsazure.messaging.R;
+
 public class PushChannelVisitor implements InstallationVisitor {
-    private String mChannel;
+    private static final String PREFERENCE_KEY = "pushChannel";
+    private final SharedPreferences mPreferences;
 
-    public PushChannelVisitor() {
-        // Intentionally Left Blank
-    }
-
-    public PushChannelVisitor(String pushChannel) {
-        mChannel = pushChannel;
+    public PushChannelVisitor(Context context) {
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     /**
@@ -18,7 +22,7 @@ public class PushChannelVisitor implements InstallationVisitor {
      */
     @Override
     public void visitInstallation(Installation subject) {
-        subject.setPushChannel(mChannel);
+        subject.setPushChannel(getPushChannel());
     }
 
     /**
@@ -26,7 +30,7 @@ public class PushChannelVisitor implements InstallationVisitor {
      * @param channel The new unique identifier to apply.
      */
     public void setPushChannel(String channel) {
-        this.mChannel = channel;
+        mPreferences.edit().putString(PREFERENCE_KEY, channel).apply();
     }
 
     /**
@@ -35,6 +39,6 @@ public class PushChannelVisitor implements InstallationVisitor {
      *         it hasn't been initialized yet.
      */
     public String getPushChannel() {
-        return this.mChannel;
+        return mPreferences.getString(PREFERENCE_KEY, null);
     }
 }
