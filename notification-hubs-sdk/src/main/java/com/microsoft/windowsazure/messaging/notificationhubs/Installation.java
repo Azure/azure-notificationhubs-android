@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Wraps a record of a device, for use resolving future requests to broadcast notifications.
  */
-public class Installation implements Tagable {
+public class Installation implements Taggable {
     private String mPushChannel;
     private Set<String> mTags;
     private String mInstallationId;

@@ -14,7 +14,7 @@ import java.util.Set;
  * Collects a set of distinct tags, in order to apply them to {@link Installation}s as they are
  * created.
  */
-public class TagVisitor implements InstallationVisitor, Tagable {
+public class TagVisitor implements InstallationVisitor, Taggable {
 
     private static final String PREFERENCE_KEY = "tags";
     private SharedPreferences mPreferences;
