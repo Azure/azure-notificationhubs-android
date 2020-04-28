@@ -89,6 +89,10 @@ public final class NotificationHub {
         Intent i =  new Intent(application, FirebaseReceiver.class);
         application.startService(i);
 
+        // Why is this done here instead of being in the manifest like everything else?
+        // BroadcastReceivers are special, and starting in Android 8.0 the ability to start them
+        // from the manifest was removed. See documentation from Google here:
+        // https://developer.android.com/guide/components/broadcasts#android_80
         IntentFilter connectivityFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         connectivityFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         application.registerReceiver(new NetworkStatusReceiver(), connectivityFilter);
