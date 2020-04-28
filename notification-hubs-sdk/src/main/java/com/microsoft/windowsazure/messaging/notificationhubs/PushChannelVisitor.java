@@ -1,14 +1,18 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-public class PushChannelEnricher implements InstallationEnricher {
-    private String mChannel;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-    public PushChannelEnricher() {
-        // Intentionally Left Blank
-    }
+import androidx.core.graphics.drawable.IconCompat;
 
-    public PushChannelEnricher(String pushChannel) {
-        mChannel = pushChannel;
+import com.microsoft.windowsazure.messaging.R;
+
+public class PushChannelVisitor implements InstallationVisitor {
+    private static final String PREFERENCE_KEY = "pushChannel";
+    private final SharedPreferences mPreferences;
+
+    public PushChannelVisitor(Context context) {
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     /**
@@ -17,8 +21,8 @@ public class PushChannelEnricher implements InstallationEnricher {
      * @param subject The {@link Installation} that should be modified to include more detail.
      */
     @Override
-    public void enrichInstallation(Installation subject) {
-        subject.setPushChannel(mChannel);
+    public void visitInstallation(Installation subject) {
+        subject.setPushChannel(getPushChannel());
     }
 
     /**
@@ -26,7 +30,7 @@ public class PushChannelEnricher implements InstallationEnricher {
      * @param channel The new unique identifier to apply.
      */
     public void setPushChannel(String channel) {
-        this.mChannel = channel;
+        mPreferences.edit().putString(PREFERENCE_KEY, channel).apply();
     }
 
     /**
@@ -35,6 +39,6 @@ public class PushChannelEnricher implements InstallationEnricher {
      *         it hasn't been initialized yet.
      */
     public String getPushChannel() {
-        return this.mChannel;
+        return mPreferences.getString(PREFERENCE_KEY, null);
     }
 }

@@ -29,14 +29,6 @@ public class NotificationMessage {
         mCustomData = customData;
     }
 
-    public NotificationMessage(RemoteMessage message) {
-        RemoteMessage.Notification notification = message.getNotification();
-        mTitle = notification.getTitle();
-        mMessage = notification.getBody();
-
-        mCustomData = message.getData();
-    }
-
     /**
      * @return
      */
