@@ -1,7 +1,7 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.Application;
 import android.content.Intent;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public final class NotificationHub {
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
     private InstallationAdapter mManager;
-    private Context mContext;
+    private Application mApplication;
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
@@ -43,15 +43,15 @@ public final class NotificationHub {
     /**
      * Initialize the single global instance of {@link NotificationHub} and configure to associate
      * this device with an Azure Notification Hub.
-     * @param context The application that will own the lifecycle and resources that NotificationHub
+     * @param application The application that will own the lifecycle and resources that NotificationHub
      *                needs access to.
      * @param hubName The name of the Notification Hub that will broadcast notifications to this
      *                device.
      * @param connectionString The Listen-only AccessPolicy that grants this device the ability to
      *                         receive notifications.
      */
-    public static void initialize(Context context, String hubName, String connectionString) {
-        initialize(context, new DebounceInstallationAdapter(new NotificationHubInstallationAdapter(
+    public static void initialize(Application application, String hubName, String connectionString) {
+        initialize(application, new DebounceInstallationAdapter(new NotificationHubInstallationAdapter(
                 hubName,
                 connectionString)));
     }
@@ -62,28 +62,28 @@ public final class NotificationHub {
      *
      * This is useful when your backend will exclusively use Notification Hub's direct send
      * functionality.
-     * @param context The application that will own the lifecycle and resources that NotificationHub
+     * @param application The application that will own the lifecycle and resources that NotificationHub
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Context context, InstallationAdapter adapter) {
+    public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(adapter);
-        instance.mContext = context.getApplicationContext();
+        instance.mApplication = application;
 
-        instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mContext);
+        instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
 
-        instance.mTagVisitor = new TagVisitor(instance.mContext);
+        instance.mTagVisitor = new TagVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTagVisitor);
 
-        instance.mPushChannelVisitor = new PushChannelVisitor(instance.mContext);
+        instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
-        Intent i =  new Intent(context, FirebaseReceiver.class);
-        context.startService(i);
+        Intent i =  new Intent(application, FirebaseReceiver.class);
+        application.startService(i);
     }
 
     /**
@@ -166,7 +166,7 @@ public final class NotificationHub {
         }
 
         if (mManager != null) {
-            mManager.saveInstallation(mContext, installation);
+            mManager.saveInstallation(mApplication, installation);
         }
     }
 
@@ -235,7 +235,7 @@ public final class NotificationHub {
     }
 
     void relayInstanceMessage(NotificationMessage message) {
-        mListener.onPushNotificationReceived(mContext, message);
+        mListener.onPushNotificationReceived(mApplication, message);
     }
 
     /**
