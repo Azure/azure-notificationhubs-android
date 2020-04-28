@@ -12,13 +12,13 @@ import android.net.NetworkInfo;
  */
 public class NetworkStatusReceiver extends BroadcastReceiver {
 
-    private INotificationHub _notificationHub;
+    private NotificationHub _notificationHub;
 
     public NetworkStatusReceiver() {
         _notificationHub = NotificationHub.getInstance();
     }
 
-    public NetworkStatusReceiver(INotificationHub nh) {
+    public NetworkStatusReceiver(NotificationHub nh) {
         _notificationHub = nh;
     }
 

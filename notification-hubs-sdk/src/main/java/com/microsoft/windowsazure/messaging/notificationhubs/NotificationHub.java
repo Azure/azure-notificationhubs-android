@@ -12,7 +12,7 @@ import java.util.List;
  * A Singleton controller that wraps all interactions with Firebase Cloud Messaging and Azure
  * Notification Hubs.
  */
-public final class NotificationHub implements INotificationHub {
+public final class NotificationHub {
     private static NotificationHub sInstance;
 
     private NotificationListener mListener;
