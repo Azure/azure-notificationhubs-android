@@ -123,7 +123,7 @@ public class DebouncerTest {
         Thread.sleep(debouncerDelayPlusSecond);
 
         String PREFERENCE_KEY = "recentInstallation";
-        SharedPreferences mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
         int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());
