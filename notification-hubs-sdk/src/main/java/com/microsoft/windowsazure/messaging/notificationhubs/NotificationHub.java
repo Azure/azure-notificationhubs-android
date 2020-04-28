@@ -3,6 +3,10 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+
+import androidx.core.net.ConnectivityManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,6 +88,10 @@ public final class NotificationHub {
 
         Intent i =  new Intent(application, FirebaseReceiver.class);
         application.startService(i);
+
+        IntentFilter connectivityFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        connectivityFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        application.registerReceiver(new NetworkStatusReceiver(), connectivityFilter);
     }
 
     /**

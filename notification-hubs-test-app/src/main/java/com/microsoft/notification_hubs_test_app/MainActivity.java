@@ -1,15 +1,11 @@
 package com.microsoft.notification_hubs_test_app;
 
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.microsoft.windowsazure.messaging.notificationhubs.NetworkStatusReceiver;
 
 import android.content.Intent;
 import android.util.Log;
@@ -24,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     public static Boolean isVisible = false;
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private final BroadcastReceiver networkStatusReceiver = new NetworkStatusReceiver();
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
 
     @Override
@@ -53,10 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivity = this;
         NotificationHelper.createChannelAndHandleNotifications(getApplicationContext());
-
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        registerReceiver(networkStatusReceiver, filter);
     }
 
     @Override
@@ -67,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
             onSharedPreferenceChangeListener = null;
         }
         super.onDestroy();
-
-        unregisterReceiver(networkStatusReceiver);
     }
 
     @Override
