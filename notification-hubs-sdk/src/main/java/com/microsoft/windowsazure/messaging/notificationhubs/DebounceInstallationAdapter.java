@@ -30,7 +30,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
     }
 
     private void setPreferences(Context context) {
-        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
     }
 
     @Override
