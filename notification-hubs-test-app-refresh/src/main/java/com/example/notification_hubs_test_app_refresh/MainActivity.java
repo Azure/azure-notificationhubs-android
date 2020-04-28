@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        NotificationHub.initialize(this.getApplicationContext(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
+        NotificationHub.initialize(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_refresh:0.1.0");
     }
 }
