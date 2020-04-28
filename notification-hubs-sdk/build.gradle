@@ -19,7 +19,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'com.microsoft.windowsazure.messaging.notificationhubs.NHAndroidJUnitRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
@@ -47,6 +47,11 @@ android {
     useLibrary 'android.test.base'
 }
 
+repositories {
+    google()
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -59,6 +64,7 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.0.0'
     androidTestImplementation 'org.mockito:mockito-android:2.18.3'
+    androidTestImplementation 'com.github.tmurakami:dexopener:2.0.4'
 
     testImplementation 'androidx.test:core:1.0.0'
     testImplementation 'androidx.test:runner:1.1.0'
