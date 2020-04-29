@@ -5,9 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 
-import androidx.core.net.ConnectivityManagerCompat;
+import com.microsoft.windowsazure.messaging.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +30,10 @@ public final class NotificationHub {
     private InstallationAdapter mManager;
     private Application mApplication;
     private Class mReceiver;
+
     private boolean mIsEnabled = true;
+    private SharedPreferences mPreferences;
+    private static final String IS_ENABLED_PREFERENCE_KEY = "isEnabled";
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
@@ -77,6 +81,8 @@ public final class NotificationHub {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationManager(adapter);
         instance.mApplication = application;
+
+        instance.mPreferences = instance.mApplication.getSharedPreferences(instance.mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
@@ -175,6 +181,10 @@ public final class NotificationHub {
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
     public void reinstallInstance() {
+        if (!isInstanceEnabled()) {
+            return;
+        }
+
         Installation installation = new Installation();
         for (InstallationVisitor visitor: mVisitors) {
             visitor.visitInstallation(installation);
@@ -399,13 +409,7 @@ public final class NotificationHub {
      * @param enable true if the application should be listening for notifications, false if not.
      */
     public void setInstanceEnabled(boolean enable) {
-        Intent i = new Intent(mContext, mReceiver);
-
-        if (enable) {
-            mContext.startService(i);
-        } else {
-            mContext.stopService(i);
-        }
+        mPreferences.edit().putBoolean(IS_ENABLED_PREFERENCE_KEY, enable).apply();
 
     }
 
@@ -414,6 +418,6 @@ public final class NotificationHub {
     }
 
     public boolean isInstanceEnabled() {
-        return mIsEnabled;
+        return mPreferences.getBoolean(IS_ENABLED_PREFERENCE_KEY, false);
     }
 }
