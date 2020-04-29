@@ -51,8 +51,7 @@ public class SetupFragment extends Fragment {
         mViewModel.getInstallationId().observe(getViewLifecycleOwner(), installationIdValue::setText);
 
         final Switch isEnabled = root.findViewById(R.id.enabled_switch);
-        mViewModel.getIsEnabled().observe(getViewLifecycleOwner(), b -> {
-        });
+        mViewModel.getIsEnabled().observe(getViewLifecycleOwner(), isEnabled::setChecked);
         isEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> mViewModel.setIsEnabled(isChecked));
 
         final EditText tagToAddField = root.findViewById(R.id.add_tag_field);
