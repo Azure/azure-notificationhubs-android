@@ -410,7 +410,9 @@ public final class NotificationHub {
      */
     public void setInstanceEnabled(boolean enable) {
         mPreferences.edit().putBoolean(IS_ENABLED_PREFERENCE_KEY, enable).apply();
-
+        if (enable) {
+            reinstallInstance();
+        }
     }
 
     public static boolean isEnabled() {
