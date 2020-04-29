@@ -86,7 +86,7 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
             }
 
             @Override
-            public  Map<String, String> getHeaders(){
+            public Map<String, String> getHeaders(){
                 try {
                     Map<String,String> params = new HashMap<String, String>(){{
                         put("Content-Type", "application/json");
