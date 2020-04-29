@@ -11,15 +11,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.notification_hubs_test_app_refresh.R;
+import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 import java.util.List;
 
@@ -41,12 +45,14 @@ public class SetupFragment extends Fragment {
         View root = inflater.inflate(R.layout.setup_fragment, container, false);
 
         final TextView deviceTokenValue = root.findViewById(R.id.device_token_value);
-        final Observer<String> deviceTokenObserver = s -> deviceTokenValue.setText(s);
-        mViewModel.getDeviceToken().observe(getViewLifecycleOwner(), deviceTokenObserver);
+        mViewModel.getDeviceToken().observe(getViewLifecycleOwner(), deviceTokenValue::setText);
 
         final TextView installationIdValue = root.findViewById(R.id.installation_id_value);
-        final Observer<String> installationIdObserver = s -> installationIdValue.setText(s);
-        mViewModel.getInstallationId().observe(getViewLifecycleOwner(), installationIdObserver);
+        mViewModel.getInstallationId().observe(getViewLifecycleOwner(), installationIdValue::setText);
+
+        final Switch isEnabled = root.findViewById(R.id.enabled_switch);
+        mViewModel.getIsEnabled().observe(getViewLifecycleOwner(), isEnabled::setChecked);
+        isEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> mViewModel.setIsEnabled(isChecked));
 
         final EditText tagToAddField = root.findViewById(R.id.add_tag_field);
         final Button tagToAddButton = root.findViewById(R.id.add_tag_button);
