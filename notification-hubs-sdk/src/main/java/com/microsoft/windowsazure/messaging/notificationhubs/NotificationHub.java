@@ -251,7 +251,7 @@ public final class NotificationHub {
     }
 
     /**
-     * Updateds the unique identifier that will be associated with the record of this device.
+     * Updates the unique identifier that will be associated with the record of this device.
      * @param id The value to treat as the unique identifier of the record of this device.
      */
     public void setInstanceInstallationId(String id) {
@@ -259,12 +259,22 @@ public final class NotificationHub {
         reinstallInstance();
     }
 
+    /**
+     * Informs this {@link NotificationHub} that a new message has been delivered.
+     * @param message The newly received message.
+     */
     static void relayMessage(NotificationMessage message) {
         getInstance().relayInstanceMessage(message);
     }
 
+    /**
+     * Informs this {@link NotificationHub} that a new message has been delivered.
+     * @param message The newly received message.
+     */
     void relayInstanceMessage(NotificationMessage message) {
-        mListener.onPushNotificationReceived(mApplication, message);
+        if (mListener != null) {
+            mListener.onPushNotificationReceived(mApplication, message);
+        }
     }
 
     /**
