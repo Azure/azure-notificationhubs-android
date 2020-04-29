@@ -79,7 +79,7 @@ public final class NotificationHub {
      */
     public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.setInstanceInstallationManager(adapter);
+        instance.setInstanceInstallationAdapter(adapter);
         instance.mApplication = application;
 
         instance.mPreferences = instance.mApplication.getSharedPreferences(instance.mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
@@ -162,15 +162,15 @@ public final class NotificationHub {
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public static void setInstallationManger(InstallationAdapter adapter) {
-        getInstance().setInstanceInstallationManager(adapter);
+    public static void setInstallationAdapter(InstallationAdapter adapter) {
+        getInstance().setInstanceInstallationAdapter(adapter);
     }
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public void setInstanceInstallationManager(InstallationAdapter adapter) {
+    public void setInstanceInstallationAdapter(InstallationAdapter adapter) {
         this.mManager = adapter;
     }
 
