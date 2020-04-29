@@ -135,20 +135,26 @@ public final class NotificationHub {
     /**
      * Registers {@link InstallationVisitor} for use when a new {@link Installation} is to be
      * created and registered.
+     *
+     * Visitors are applied in the order that they are added via calls to this method.
+     *
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    public static void useVisitor(InstallationVisitor visitor) {
+    static void useVisitor(InstallationVisitor visitor) {
         getInstance().useInstanceVisitor(visitor);
     }
 
     /**
      * Registers an {@link InstallationVisitor} for use when a new {@link Installation} is to be
      * created and registered.
+     *
+     * Visitors are applied in the order that they are added via calls to this method.
+     *
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    public void useInstanceVisitor(InstallationVisitor visitor) {
+    void useInstanceVisitor(InstallationVisitor visitor) {
         mVisitors.add(visitor);
     }
 
