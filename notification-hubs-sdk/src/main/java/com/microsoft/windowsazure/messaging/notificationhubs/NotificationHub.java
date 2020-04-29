@@ -93,8 +93,6 @@ public final class NotificationHub {
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
-        instance.useInstanceVisitor(instance.mPushChannelVisitor);
-
         Intent i =  new Intent(application, FirebaseReceiver.class);
         application.startService(i);
 
