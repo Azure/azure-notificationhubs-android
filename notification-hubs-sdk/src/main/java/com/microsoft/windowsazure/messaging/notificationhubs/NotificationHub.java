@@ -418,6 +418,6 @@ public final class NotificationHub {
     }
 
     public boolean isInstanceEnabled() {
-        return mPreferences.getBoolean(IS_ENABLED_PREFERENCE_KEY, false);
+        return mPreferences.getBoolean(IS_ENABLED_PREFERENCE_KEY, true);
     }
 }
