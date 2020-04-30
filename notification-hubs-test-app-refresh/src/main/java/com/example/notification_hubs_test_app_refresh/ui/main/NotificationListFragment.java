@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.notification_hubs_test_app_refresh.NotificationDetailActivity;
 import com.example.notification_hubs_test_app_refresh.R;
+import com.microsoft.windowsazure.messaging.notificationhubs.INotification;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class NotificationListFragment extends Fragment {
         View root = inflater.inflate(R.layout.notification_list_fragment, container, false);
 
         final NotificationDisplayAdapter notificationDisplayAdapter = new NotificationDisplayAdapter();
-        final Observer<List<NotificationMessage>> notificationsObserver = notificationMessages -> {
+        final Observer<List<INotification>> notificationsObserver = notificationMessages -> {
             notificationDisplayAdapter.setNotifications(notificationMessages);
             Toast.makeText(this.getContext(), R.string.notification_received_message, Toast.LENGTH_SHORT).show();
         };

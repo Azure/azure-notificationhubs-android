@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.notification_hubs_test_app_refresh.R;
+import com.microsoft.windowsazure.messaging.notificationhubs.INotification;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationListener;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
@@ -19,11 +20,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class NotificationListViewModel extends ViewModel {
-    private final MutableLiveData<List<NotificationMessage>> mNotifications;
+    private final MutableLiveData<List<INotification>> mNotifications;
     private final NotificationListener mListener;
 
     public NotificationListViewModel() {
-        mNotifications = new MutableLiveData<List<NotificationMessage>>();
+        mNotifications = new MutableLiveData<List<INotification>>();
         mListener = (context, message) -> {
             addNotification(message);
         };
@@ -31,26 +32,26 @@ public class NotificationListViewModel extends ViewModel {
         NotificationHub.setListener(mListener);
     }
 
-    public void addNotification(NotificationMessage notification) {
-        List<NotificationMessage> toUpdate = mNotifications.getValue();
+    public void addNotification(INotification notification) {
+        List<INotification> toUpdate = mNotifications.getValue();
         if(toUpdate == null) {
-            toUpdate = new ArrayList<NotificationMessage>();
+            toUpdate = new ArrayList<INotification>();
         }
         toUpdate.add(0, notification);
         mNotifications.postValue(toUpdate);
     }
 
     public void clearNotifications() {
-        List<NotificationMessage> toUpdate = mNotifications.getValue();
+        List<INotification> toUpdate = mNotifications.getValue();
         if (toUpdate == null) {
-            toUpdate = new ArrayList<NotificationMessage>();
+            toUpdate = new ArrayList<INotification>();
         } else {
             toUpdate.clear();
         }
         mNotifications.postValue(toUpdate);
     }
 
-    public LiveData<List<NotificationMessage>> getNotificationList() {
+    public LiveData<List<INotification>> getNotificationList() {
         return mNotifications;
     }
 }
