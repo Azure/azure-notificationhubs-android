@@ -22,7 +22,7 @@ class BasicNotificationMessage implements NotificationMessage {
     /**
      * Key/value pairs sent with a Push Notification.
      */
-    private final Map<String, String> mCustomData;
+    private final Map<String, String> mData;
 
     /**
      * Instantiates a basic notification.
@@ -33,7 +33,7 @@ class BasicNotificationMessage implements NotificationMessage {
     public BasicNotificationMessage(String title, String message, @NonNull Map<String, String> data) {
         mTitle = title;
         mMessage = message;
-        mCustomData = data;
+        mData = data;
     }
 
     /**
@@ -63,6 +63,6 @@ class BasicNotificationMessage implements NotificationMessage {
      */
     @Override
     public Map<String, String> getData() {
-        return mCustomData;
+        return mData;
     }
 }
