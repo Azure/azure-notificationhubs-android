@@ -32,7 +32,7 @@ public class Installation implements Taggable {
      *                    for new notifications.
      */
     public void setPushChannel(String pushChannel) {
-        this.mPushChannel = pushChannel;
+        mPushChannel = pushChannel;
     }
 
     /**

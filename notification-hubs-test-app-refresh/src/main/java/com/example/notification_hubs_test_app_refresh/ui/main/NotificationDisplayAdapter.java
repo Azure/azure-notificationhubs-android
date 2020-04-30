@@ -58,13 +58,13 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
         return new ViewHolder(v);
     }
 
-    public void setNotifications(List<NotificationMessage> mNotifications) {
-        this.mNotifications = mNotifications;
+    public void setNotifications(List<NotificationMessage> notifications) {
+        mNotifications = notifications;
         notifyDataSetChanged();
     }
 
     public void setClickListener(NotificationClickListener listener) {
-        this.mClickListener = listener;
+        mClickListener = listener;
     }
 
     /**

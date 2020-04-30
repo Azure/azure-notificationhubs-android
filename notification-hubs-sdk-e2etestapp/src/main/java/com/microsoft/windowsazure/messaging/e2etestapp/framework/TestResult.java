@@ -31,7 +31,7 @@ public class TestResult {
 	}
 
 	public void setStatus(TestStatus status) {
-		this.mStatus = status;
+		mStatus = status;
 	}
 
 	public Exception getException() {
@@ -39,7 +39,7 @@ public class TestResult {
 	}
 
 	public void setException(Exception e) {
-		this.mException = e;
+		mException = e;
 	}
 
 	public TestCase getTestCase() {

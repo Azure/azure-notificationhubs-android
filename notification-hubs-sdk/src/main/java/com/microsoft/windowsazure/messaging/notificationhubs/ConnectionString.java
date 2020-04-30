@@ -62,9 +62,9 @@ class ConnectionString {
 
         ConnectionString cast = (ConnectionString) o;
 
-        return this.mSharedAccessKey.equals(cast.mSharedAccessKey) &&
-               this.mSharedAccessKeyName.equals(cast.mSharedAccessKeyName) &&
-               this.mEndpoint.equalsIgnoreCase(cast.mEndpoint);
+        return mSharedAccessKey.equals(cast.mSharedAccessKey) &&
+               mSharedAccessKeyName.equals(cast.mSharedAccessKeyName) &&
+               mEndpoint.equalsIgnoreCase(cast.mEndpoint);
     }
 
     @Override

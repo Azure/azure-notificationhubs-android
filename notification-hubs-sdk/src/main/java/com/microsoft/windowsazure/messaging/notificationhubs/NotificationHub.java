@@ -169,7 +169,7 @@ public final class NotificationHub {
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
     void setInstanceInstallationAdapter(InstallationAdapter adapter) {
-        this.mManager = adapter;
+        mManager = adapter;
     }
 
     /**

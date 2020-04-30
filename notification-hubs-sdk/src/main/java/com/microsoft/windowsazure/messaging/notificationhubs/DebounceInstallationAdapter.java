@@ -25,7 +25,7 @@ class DebounceInstallationAdapter implements InstallationAdapter {
 
     public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter, long interval) {
         super();
-        this.mInstallationAdapter = installationAdapter;
+        mInstallationAdapter = installationAdapter;
         mInterval = interval;
         mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
     }

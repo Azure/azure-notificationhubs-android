@@ -89,8 +89,8 @@ public class SetupViewModel extends ViewModel {
         return mUnknownText;
     }
 
-    public void setUnknownText(String mUnknownText) {
-        this.mUnknownText = mUnknownText;
+    public void setUnknownText(String unknownText) {
+        mUnknownText = unknownText;
     }
 
     static <T> List<T> iterableToList(Iterable<T> iterable) {
