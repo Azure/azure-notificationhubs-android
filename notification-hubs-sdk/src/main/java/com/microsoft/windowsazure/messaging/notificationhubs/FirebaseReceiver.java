@@ -58,7 +58,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
     }
 
     /**
-     * Callback for the system when a new {@link RemoteMessage} is received.
+     * Callback for the system when a new RemoteMessage is received.
      * @param remoteMessage the newly acquired message.
      */
     @Override
@@ -77,7 +77,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
     }
 
     /**
-     * Converts from a {@link RemoteMessage} to a {@link BasicNotificationMessage}.
+     * Converts from a RemoteMessage to a {@link BasicNotificationMessage}.
      * @param remoteMessage The message intended for this device, as delivered by Firebase.
      * @return A fully instantiated {@link BasicNotificationMessage}.
      */
