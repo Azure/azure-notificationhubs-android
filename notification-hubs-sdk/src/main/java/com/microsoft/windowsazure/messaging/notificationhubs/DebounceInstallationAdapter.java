@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class DebounceInstallationAdapter implements InstallationAdapter {
+class DebounceInstallationAdapter implements InstallationAdapter {
 
     private static final String PREFERENCE_KEY = "recentInstallation";
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
