@@ -263,7 +263,7 @@ public final class NotificationHub {
      * Informs this {@link NotificationHub} that a new message has been delivered.
      * @param message The newly received message.
      */
-    static void relayMessage(INotification message) {
+    static void relayMessage(NotificationMessage message) {
         getInstance().relayInstanceMessage(message);
     }
 
@@ -271,7 +271,7 @@ public final class NotificationHub {
      * Informs this {@link NotificationHub} that a new message has been delivered.
      * @param message The newly received message.
      */
-    void relayInstanceMessage(INotification message) {
+    void relayInstanceMessage(NotificationMessage message) {
         if (mListener != null) {
             mListener.onPushNotificationReceived(mApplication, message);
         }

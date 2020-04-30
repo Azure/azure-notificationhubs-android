@@ -10,5 +10,5 @@ public interface NotificationListener {
      * @param context A reference to the {@link android.app.Application} context that
      * @param message
      */
-    void onPushNotificationReceived(Context context, INotification message);
+    void onPushNotificationReceived(Context context, NotificationMessage message);
 }

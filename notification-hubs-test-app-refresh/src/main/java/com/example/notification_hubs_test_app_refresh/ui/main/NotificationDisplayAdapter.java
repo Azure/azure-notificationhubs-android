@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification_hubs_test_app_refresh.R;
-import com.microsoft.windowsazure.messaging.notificationhubs.INotification;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 
 import java.util.ArrayList;
@@ -18,14 +17,14 @@ import java.util.List;
 
 public class NotificationDisplayAdapter extends RecyclerView.Adapter<NotificationDisplayAdapter.ViewHolder> {
 
-    private List<INotification> mNotifications;
+    private List<NotificationMessage> mNotifications;
     private NotificationClickListener mClickListener;
 
     public NotificationDisplayAdapter() {
-        this(new ArrayList<INotification>(0));
+        this(new ArrayList<NotificationMessage>(0));
     }
 
-    public NotificationDisplayAdapter(List<INotification> initialList) {
+    public NotificationDisplayAdapter(List<NotificationMessage> initialList) {
         mNotifications = initialList;
         mClickListener = message -> {
             // Intentionally Left Blank
@@ -59,7 +58,7 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
         return new ViewHolder(v);
     }
 
-    public void setNotifications(List<INotification> mNotifications) {
+    public void setNotifications(List<NotificationMessage> mNotifications) {
         this.mNotifications = mNotifications;
         notifyDataSetChanged();
     }
@@ -90,7 +89,7 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        INotification entry = mNotifications.get(position);
+        NotificationMessage entry = mNotifications.get(position);
         holder.mTitle.setText(entry.getTitle());
         holder.mBody.setText(entry.getBody());
         holder.mDataCardinality.setText(String.valueOf(entry.getData().size()));
@@ -117,13 +116,13 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
             mBody = (TextView) itemView.findViewById(R.id.bodyValue);
             mDataCardinality = (TextView) itemView.findViewById(R.id.dataCardinalityValue);
             itemView.setOnClickListener(v -> {
-                INotification clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
+                NotificationMessage clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
                 NotificationDisplayAdapter.this.mClickListener.onNotificationClicked(clicked);
             });
         }
     }
 
     public interface NotificationClickListener {
-        void onNotificationClicked(INotification message);
+        void onNotificationClicked(NotificationMessage message);
     }
 }
