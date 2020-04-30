@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import com.microsoft.windowsazure.messaging.R;
 import java.util.UUID;
 
+/**
+ * Associates the Installation ID assigned to this device with any Installation that it visits.
+ */
 class IdAssignmentVisitor implements InstallationVisitor {
     private static final String PREFERENCE_KEY = "installationId";
     private final SharedPreferences mPreferences;
@@ -44,7 +47,7 @@ class IdAssignmentVisitor implements InstallationVisitor {
     }
 
     /**
-     * Updates the UUID that will be associated with future calls to `enrichInstallation`.
+     * Updates the UUID that will be associated with future calls to `visitInstallation`.
      * @param installationId The unique identifier to apply.
      */
     public void setInstallationId(String installationId) {
