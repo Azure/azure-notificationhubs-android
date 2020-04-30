@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Wraps a record of a device, for use resolving future requests to broadcast notifications.
+ * Wraps a record of a device, for use resolving future requests of broadcast notifications.
  */
 public class Installation implements Taggable {
     private String mPushChannel;
