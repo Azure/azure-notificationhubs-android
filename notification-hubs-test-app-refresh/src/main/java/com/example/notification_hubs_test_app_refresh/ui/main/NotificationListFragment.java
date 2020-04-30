@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.notification_hubs_test_app_refresh.NotificationDetailActivity;
 import com.example.notification_hubs_test_app_refresh.R;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
-import com.microsoft.windowsazure.messaging.notificationhubs.BasicNotificationMessage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +37,6 @@ public class NotificationListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(NotificationListViewModel.class);
-
-        mViewModel.addNotification(new BasicNotificationMessage("Puppies for Adoption!", "6 puppies born Sunday, each could be yours for just $100,000.00.", new HashMap<String,String>()));
-
-        Map<String, String> catData = new HashMap<>();
-        catData.put("feline", "yes");
-        catData.put("fun", "no");
-        mViewModel.addNotification(new BasicNotificationMessage("Kittens for pickup!", "Please take them, we can't handle it!", catData));
     }
 
     @Override
