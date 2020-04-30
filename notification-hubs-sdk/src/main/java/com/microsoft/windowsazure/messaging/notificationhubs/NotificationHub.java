@@ -175,14 +175,14 @@ public final class NotificationHub {
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public static void reinstall() {
-        getInstance().reinstallInstance();
+    public static void beginInstallationUpdate() {
+        getInstance().beginInstanceInstallationUpdate();
     }
 
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public void reinstallInstance() {
+    public void beginInstanceInstallationUpdate() {
         if (!isInstanceEnabled()) {
             return;
         }
@@ -212,7 +212,7 @@ public final class NotificationHub {
 
     void setInstancePushChannel(String token) {
         mPushChannelVisitor.setPushChannel(token);
-        reinstallInstance();
+        beginInstanceInstallationUpdate();
     }
 
     /**
@@ -254,7 +254,7 @@ public final class NotificationHub {
      */
     public void setInstanceInstallationId(String id) {
         mIdAssignmentVisitor.setInstallationId(id);
-        reinstallInstance();
+        beginInstanceInstallationUpdate();
     }
 
     /**
@@ -293,7 +293,7 @@ public final class NotificationHub {
      */
     public boolean addInstanceTag(String tag) {
         if(mTagVisitor.addTag(tag)){
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -319,7 +319,7 @@ public final class NotificationHub {
      */
     public boolean addInstanceTags(Collection<? extends String> tags) {
         if(mTagVisitor.addTags(tags)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -343,7 +343,7 @@ public final class NotificationHub {
      */
     public boolean removeInstanceTag(String tag) {
         if(mTagVisitor.removeTag(tag)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -367,7 +367,7 @@ public final class NotificationHub {
      */
     public boolean removeInstanceTags(Collection<? extends String> tags) {
         if(mTagVisitor.removeTags(tags)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -404,7 +404,7 @@ public final class NotificationHub {
     public void clearInstanceTags() {
         if (mTagVisitor.getTags().iterator().hasNext()) {
             mTagVisitor.clearTags();
-            this.reinstallInstance();
+            this.beginInstanceInstallationUpdate();
         }
     }
 
@@ -423,7 +423,7 @@ public final class NotificationHub {
     public void setInstanceEnabled(boolean enable) {
         mPreferences.edit().putBoolean(IS_ENABLED_PREFERENCE_KEY, enable).apply();
         if (enable) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
         }
     }
 

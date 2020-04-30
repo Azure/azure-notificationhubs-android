@@ -31,7 +31,7 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
                 activeNetwork.isConnectedOrConnecting();
         if (isConnected) {
             try {
-                mNotificationHub.reinstallInstance();
+                mNotificationHub.beginInstanceInstallationUpdate();
             } catch (Exception e) {
 
             }

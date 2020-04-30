@@ -22,7 +22,7 @@ public class NotificationHubTest {
                 assertNotNull("Installation to be visited should never be null", subject);
            });
 
-        specimen.reinstallInstance();
+        specimen.beginInstanceInstallationUpdate();
 
         assertEquals("InstallationEnricher should have been invoked exactly once.", 1, callCount[0]);
     }
@@ -44,7 +44,7 @@ public class NotificationHubTest {
             callCount[1]++;
         });
 
-        specimen.reinstallInstance();
+        specimen.beginInstanceInstallationUpdate();
 
         for (int x: callCount) {
             assertEquals("each visitor should be called exactly once", 1, x);

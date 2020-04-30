@@ -39,14 +39,14 @@ public class NetworkStatusReceiverTest {
         when(networkInfo.isConnectedOrConnecting()).thenReturn(true);
         NotificationHub nh = new NotificationHub();
         NotificationHub nhSpy = spy(nh);
-        doNothing().when(nhSpy).reinstallInstance();
+        doNothing().when(nhSpy).beginInstanceInstallationUpdate();
         mReceiver = new NetworkStatusReceiver(nhSpy);
 
         // Exercise
         mReceiver.onReceive(context, new Intent(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Verify
-        verify(nhSpy, times(1)).reinstallInstance();
+        verify(nhSpy, times(1)).beginInstanceInstallationUpdate();
     }
 
     @Test
@@ -55,13 +55,13 @@ public class NetworkStatusReceiverTest {
         when(networkInfo.isConnectedOrConnecting()).thenReturn(false);
         NotificationHub nh = new NotificationHub();
         NotificationHub nhSpy = spy(nh);
-        doNothing().when(nhSpy).reinstallInstance();
+        doNothing().when(nhSpy).beginInstanceInstallationUpdate();
         mReceiver = new NetworkStatusReceiver(nhSpy);
 
         // Exercise
         mReceiver.onReceive(context, new Intent(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Verify
-        verify(nhSpy, times(0)).reinstallInstance();
+        verify(nhSpy, times(0)).beginInstanceInstallationUpdate();
     }
 }
