@@ -75,7 +75,7 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Application application, InstallationAdapter adapter) {
+    static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationAdapter(adapter);
         instance.mApplication = application;
@@ -160,7 +160,7 @@ public final class NotificationHub {
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public static void setInstallationAdapter(InstallationAdapter adapter) {
+    static void setInstallationAdapter(InstallationAdapter adapter) {
         getInstance().setInstanceInstallationAdapter(adapter);
     }
 
@@ -168,7 +168,7 @@ public final class NotificationHub {
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public void setInstanceInstallationAdapter(InstallationAdapter adapter) {
+    void setInstanceInstallationAdapter(InstallationAdapter adapter) {
         this.mManager = adapter;
     }
 
