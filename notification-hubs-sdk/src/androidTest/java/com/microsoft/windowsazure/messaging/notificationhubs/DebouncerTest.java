@@ -48,7 +48,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerDoesNotInvokeSaveImmediately() {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
     }
@@ -56,7 +56,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveAfterDelayHappyPath() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
@@ -65,7 +65,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveForMostRecent() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         debouncer.saveInstallation(context, installation_second);
         debouncer.saveInstallation(context, installation_third);
@@ -78,7 +78,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerInvokesSaveTwice() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation_second);
@@ -90,7 +90,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerRestartsDelay() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayInMillisec - 1000);
         // Invoke second call during delay, scheduler should be restarted, delay 2seconds
@@ -107,7 +107,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerDoesNotInvokeSaveForSameInstallation() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation);
@@ -118,7 +118,7 @@ public class DebouncerTest {
     @Test
     public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
         NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
 
