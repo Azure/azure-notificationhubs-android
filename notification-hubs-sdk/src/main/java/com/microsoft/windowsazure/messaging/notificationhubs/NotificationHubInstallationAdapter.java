@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.android.volley.ClientError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -22,6 +25,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import javax.crypto.Mac;
@@ -32,6 +36,9 @@ import javax.crypto.spec.SecretKeySpec;
  * notifications.
  */
 class NotificationHubInstallationAdapter implements InstallationAdapter {
+
+    private static final int SC_TOOMANYREQUESTS = 429;
+    private static final int SC_SERVICEUNAVAILABLE = 503;
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
@@ -53,8 +60,8 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
 
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
-
-        StringRequest request = new StringRequest(
+        StringRequest request;
+        request = new StringRequest(
                 Request.Method.PUT,
                 url,
                 response -> {
@@ -62,6 +69,16 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
                 },
                 error -> {
                     Log.e("ANH", "Couldn't update installation: " + error);
+                    String retryAfter = error.networkResponse.headers.get("Retry-After");
+                    Boolean isRetryNeeded = error.networkResponse.statusCode == SC_TOOMANYREQUESTS
+                            || error.networkResponse.statusCode == SC_SERVICEUNAVAILABLE;
+                    if (isRetryNeeded && retryAfter != null && !retryAfter.isEmpty()){
+                        try {
+                            Thread.sleep(Integer.parseInt(retryAfter));
+                        } catch (InterruptedException e) {
+                        }
+                        saveInstallation(context, installation);
+                    }
                 }
         ){
             @Override
