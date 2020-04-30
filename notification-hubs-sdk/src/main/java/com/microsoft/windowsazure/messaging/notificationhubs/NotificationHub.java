@@ -117,7 +117,7 @@ public final class NotificationHub {
      * @param activity TODO
      * @param intent TODO
      */
-    public static void checkLaunchedFromNotification(Activity activity, Intent intent) {
+    static void checkLaunchedFromNotification(Activity activity, Intent intent) {
         // TODO: Cache the activity and intent extras that were passed to us.
     }
 
