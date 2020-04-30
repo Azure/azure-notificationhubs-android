@@ -60,7 +60,7 @@ public final class NotificationHub {
      *                         receive notifications.
      */
     public static void initialize(Application application, String hubName, String connectionString) {
-        initialize(application, new DebounceInstallationAdapter(new NotificationHubInstallationAdapter(
+        initialize(application, new DebounceInstallationAdapter(application, new NotificationHubInstallationAdapter(
                 hubName,
                 connectionString)));
     }

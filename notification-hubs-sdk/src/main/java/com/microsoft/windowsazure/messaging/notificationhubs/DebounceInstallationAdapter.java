@@ -19,26 +19,20 @@ class DebounceInstallationAdapter implements InstallationAdapter {
     private ScheduledFuture<?> mSchedFuture;
     private SharedPreferences mPreferences;
 
-    public DebounceInstallationAdapter(InstallationAdapter installationAdapter) {
-        this(installationAdapter, 2000);
+    public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter) {
+        this(context, installationAdapter, 2000);
     }
 
-    public DebounceInstallationAdapter(InstallationAdapter installationAdapter, long interval) {
+    public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter, long interval) {
         super();
         this.mInstallationAdapter = installationAdapter;
         mInterval = interval;
-    }
-
-    private void setPreferences(Context context) {
         mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
     }
 
+
     @Override
     public void saveInstallation(Context context, Installation installation) {
-        if (mPreferences == null) {
-            setPreferences(context);
-        }
-
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
