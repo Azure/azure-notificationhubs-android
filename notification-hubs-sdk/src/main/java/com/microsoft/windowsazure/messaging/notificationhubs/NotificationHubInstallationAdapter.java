@@ -32,6 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
  * notifications.
  */
 class NotificationHubInstallationAdapter implements InstallationAdapter {
+    private static final long EXPIRE_SECONDS = 5 * 60;
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
@@ -116,9 +117,7 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
         }
 
         // Set expiration in seconds
-        Calendar expireDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        expireDate.add(Calendar.MINUTE, 5);
-        long expires = expireDate.getTimeInMillis() / 1000;
+        long expires = (System.currentTimeMillis() / 1000) + EXPIRE_SECONDS;
 
         String toSign = url + '\n' + expires;
 
