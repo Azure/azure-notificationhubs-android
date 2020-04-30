@@ -2,11 +2,12 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.messaging.RemoteMessage;
-
 import java.util.Map;
 
-public class NotificationMessage {
+/**
+ * A basic implementation of INotification.
+ */
+public class NotificationMessage implements INotification {
 
     /**
      * Notification title. Will be null when Notification is received from click in system tray.
@@ -23,28 +24,45 @@ public class NotificationMessage {
      */
     private final Map<String, String> mCustomData;
 
-    public NotificationMessage(String title, String message, @NonNull Map<String, String> customData) {
+    /**
+     * Instantiates a basic notification.
+     * @param title The primary text associated with this notification.
+     * @param message The secondary text associated with this notification.
+     * @param data The key/value pairs of data associated with this notification.
+     */
+    public NotificationMessage(String title, String message, @NonNull Map<String, String> data) {
         mTitle = title;
         mMessage = message;
-        mCustomData = customData;
+        mCustomData = data;
     }
 
     /**
-     * @return
+     * Fetches the primary text associated with a Notification.
+     *
+     * @return The title of the notification.
      */
+    @Override
     public String getTitle() {
         return mTitle;
     }
 
-    public String getMessage() {
+    /**
+     * Fetches the secondary text associated with a notification.
+     *
+     * @return The body of the notification.
+     */
+    @Override
+    public String getBody() {
         return mMessage;
     }
 
     /**
-     * Get the data fields that were sent with this message.
-     * @return A collection of key/value pairs that were sent with this message. Can be empty, but not null.
+     * Key/value pairs associated with the notification.
+     *
+     * @return Fields associated with this notification.
      */
-    public Map<String, String> getCustomData(){
+    @Override
+    public Map<String, String> getData() {
         return mCustomData;
     }
 }

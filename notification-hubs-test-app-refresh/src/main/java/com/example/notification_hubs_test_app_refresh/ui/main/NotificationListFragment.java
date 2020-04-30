@@ -66,8 +66,8 @@ public class NotificationListFragment extends Fragment {
         notificationDisplayAdapter.setClickListener(message -> {
             Intent i  = new Intent(this.getActivity(), NotificationDetailActivity.class);
             i.putExtra(NotificationDetailActivity.INTENT_TITLE_KEY, message.getTitle());
-            i.putExtra(NotificationDetailActivity.INTENT_BODY_KEY, message.getMessage());
-            for (Map.Entry<String, String> row : message.getCustomData().entrySet()) {
+            i.putExtra(NotificationDetailActivity.INTENT_BODY_KEY, message.getBody());
+            for (Map.Entry<String, String> row : message.getData().entrySet()) {
                 i.putExtra(row.getKey(), row.getValue());
             }
             startActivity(i);
