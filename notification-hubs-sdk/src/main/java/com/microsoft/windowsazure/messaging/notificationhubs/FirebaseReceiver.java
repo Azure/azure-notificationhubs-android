@@ -17,6 +17,25 @@ import com.google.firebase.messaging.RemoteMessage;
  */
 public final class FirebaseReceiver extends FirebaseMessagingService {
 
+    private final NotificationHub mHub;
+
+    /**
+     * Creates a new instance that will inform the static-global-instance of {@link NotificationHub}
+     * when a new message is received.
+     */
+    public FirebaseReceiver() {
+        this(NotificationHub.getInstance());
+    }
+
+    /**
+     * Creates a new instance that will inform the given {@link NotificationHub} instance when a
+     * message is received.
+     * @param hub The hub that should be informed when a new notification arrives.
+     */
+    public FirebaseReceiver(NotificationHub hub) {
+        mHub = hub;
+    }
+
     /**
      * Loads all resources that the service will need to execute.
      */
@@ -25,7 +44,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
         super.onCreate();
 
 
-        if (NotificationHub.getPushChannel() == null) {
+        if (mHub.getPushChannel() == null) {
             FirebaseInstanceId.getInstance()
                     .getInstanceId()
                     .addOnCompleteListener(task -> {
@@ -33,7 +52,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
                             Log.e("ANH", "unable to fetch FirebaseInstanceId");
                             return;
                         }
-                        NotificationHub.setPushChannel(task.getResult().getToken());
+                        mHub.setPushChannel(task.getResult().getToken());
                     });
         }
     }
@@ -44,7 +63,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        NotificationHub.relayMessage(getNotificationMessage(remoteMessage));
+        mHub.relayMessage(getNotificationMessage(remoteMessage));
     }
 
     /**
@@ -54,7 +73,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(@NonNull String s) {
-        NotificationHub.setPushChannel(s);
+        mHub.setPushChannel(s);
     }
 
     /**
