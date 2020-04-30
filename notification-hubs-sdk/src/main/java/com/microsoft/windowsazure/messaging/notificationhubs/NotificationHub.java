@@ -29,9 +29,7 @@ public final class NotificationHub {
 
     private InstallationAdapter mManager;
     private Application mApplication;
-    private Class mReceiver;
 
-    private boolean mIsEnabled = true;
     private SharedPreferences mPreferences;
     private static final String IS_ENABLED_PREFERENCE_KEY = "isEnabled";
 
