@@ -39,11 +39,11 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
     }
 
     /**
-     * Converts from a {@link RemoteMessage} to a {@link NotificationMessage}.
+     * Converts from a {@link RemoteMessage} to a {@link BasicNotificationMessage}.
      * @param remoteMessage The message intended for this device, as delivered by Firebase.
-     * @return A fully instantiated {@link NotificationMessage}.
+     * @return A fully instantiated {@link BasicNotificationMessage}.
      */
-    static NotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
+    static BasicNotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         String title = null;
         String body = null;
@@ -51,7 +51,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
             title = notification.getTitle();
             body = notification.getBody();
         }
-        return new NotificationMessage(
+        return new BasicNotificationMessage(
                 title,
                 body,
                 remoteMessage.getData());
