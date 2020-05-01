@@ -1,6 +1,7 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -20,11 +21,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -101,6 +100,7 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
                         put("Content-Type", "application/json");
                         put("x-ms-version", "2015-01");
                         put("Authorization", generateAuthToken(url));
+                        put("User-Agent", getUserAgent());
                     }};
                     return params;
                 } catch (InvalidKeyException e) {
@@ -151,5 +151,16 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
 
         // construct authorization string
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
+    }
+
+
+    /**
+     * Generates the User-Agent
+     */
+    private String getUserAgent() {
+        String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
+                "2015-01", "AndroidSdkV1FcmV1.0.0-preview1", "Android", Build.VERSION.RELEASE);
+
+        return userAgent;
     }
 }
