@@ -52,7 +52,7 @@ import android.preference.PreferenceManager;
  * The notification hub client
  */
 public class NotificationHub {
-
+	
 	/**
 	 * Prefix for Storage keys
 	 */
