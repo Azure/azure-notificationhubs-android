@@ -32,7 +32,7 @@ class DebounceInstallationAdapter implements InstallationAdapter {
 
 
     @Override
-    public void saveInstallation(Context context, Installation installation) {
+    public void saveInstallation(final Context context, final Installation installation) {
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
@@ -42,13 +42,15 @@ class DebounceInstallationAdapter implements InstallationAdapter {
             return;
         }
 
-        mSchedFuture = mScheduler.schedule(() ->
-        {
-            try {
-                mInstallationAdapter.saveInstallation(context, installation);
-                mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
-            } catch (Exception e) {
+        mSchedFuture = mScheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mInstallationAdapter.saveInstallation(context, installation);
+                    mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
+                } catch (Exception e) {
 
+                }
             }
         }, mInterval, TimeUnit.MILLISECONDS);
     }

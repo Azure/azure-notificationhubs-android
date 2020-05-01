@@ -27,7 +27,7 @@ public class TagVisitor implements InstallationVisitor, Taggable {
     }
 
     private Set<String> getTagsSet() {
-        return new HashSet<>(mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>()));
+        return new HashSet<String>(mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<String>()));
     }
 
     @Override

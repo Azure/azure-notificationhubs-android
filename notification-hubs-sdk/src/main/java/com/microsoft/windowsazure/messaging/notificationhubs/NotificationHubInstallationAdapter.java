@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -49,26 +51,32 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @return A future, with the Installation ID as the value.
      */
     @Override
-    public void saveInstallation(Context context, Installation installation) {
+    public void saveInstallation(Context context, final Installation installation) {
         RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
 
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
         StringRequest request = new StringRequest(
                 Request.Method.PUT,
                 url,
-                response -> {
-                    Log.i("ANH", "Installation Updated");
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("ANH", "Installation Updated");
+                    }
                 },
-                error -> {
-                    Log.e("ANH", "Couldn't update installation: " + error);
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ANH", "Couldn't update installation: " + error);
+                    }
                 }
         ){
             @Override
             public byte[] getBody() {
                 try {
-                    JSONArray tagList = new JSONArray();
+                    final JSONArray tagList = new JSONArray();
                     for (String tag: installation.getTags()) {
                         tagList.put(tag);
                     }
