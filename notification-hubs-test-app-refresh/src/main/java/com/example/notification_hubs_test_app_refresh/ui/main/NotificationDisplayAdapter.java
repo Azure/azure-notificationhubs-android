@@ -58,13 +58,13 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
         return new ViewHolder(v);
     }
 
-    public void setNotifications(List<NotificationMessage> mNotifications) {
-        this.mNotifications = mNotifications;
+    public void setNotifications(List<NotificationMessage> notifications) {
+        mNotifications = notifications;
         notifyDataSetChanged();
     }
 
     public void setClickListener(NotificationClickListener listener) {
-        this.mClickListener = listener;
+        mClickListener = listener;
     }
 
     /**
@@ -91,8 +91,8 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NotificationMessage entry = mNotifications.get(position);
         holder.mTitle.setText(entry.getTitle());
-        holder.mBody.setText(entry.getMessage());
-        holder.mDataCardinality.setText(String.valueOf(entry.getCustomData().size()));
+        holder.mBody.setText(entry.getBody());
+        holder.mDataCardinality.setText(String.valueOf(entry.getData().size()));
     }
 
     /**

@@ -2,7 +2,11 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import androidx.test.filters.SmallTest;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +19,15 @@ import static org.junit.Assert.assertTrue;
 @SmallTest
 public class TagVisitorTest {
     private Context context = getInstrumentation().getTargetContext();
-    private List<String> tagList = Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList());
+    private List<String> tagList = new ArrayList<String>();
+
+    @Before
+    public void Before(){
+        tagList.clear();
+        tagList.add("tag1");
+        tagList.add("tag2");
+        tagList.add("tag3");
+    }
 
     @Test
     public void TagEnricherAddTag () {
@@ -29,7 +41,10 @@ public class TagVisitorTest {
     public void TagEnricherAddTags () {
         TagVisitor te = new TagVisitor(context);
 
-        List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
+        List<String> secondTagList = new ArrayList<String>();
+        secondTagList.add("tag4");
+        secondTagList.add("tag5");
+        secondTagList.add("tag6");
 
         assertTrue(te.addTags(tagList));
         assertTrue(te.addTags(secondTagList));

@@ -19,8 +19,11 @@ public class SetupViewModel extends ViewModel {
     private final MutableLiveData<String> mInstallationId = new MutableLiveData<String>();
     private final MutableLiveData<List<String>> mTags = new MutableLiveData<List<String>>();
 
+    private final MutableLiveData<Boolean> mIsEnabled = new MutableLiveData<Boolean>();
+
     public SetupViewModel() {
         mTags.setValue(iterableToList(NotificationHub.getTags()));
+        mIsEnabled.setValue(NotificationHub.isEnabled());
 
         String pushChannel = NotificationHub.getPushChannel();
         if (pushChannel != null) {
@@ -50,6 +53,15 @@ public class SetupViewModel extends ViewModel {
         mInstallationId.setValue(installationId);
     }
 
+    public LiveData<Boolean> getIsEnabled() {
+        return mIsEnabled;
+    }
+
+    public void setIsEnabled(boolean b) {
+        NotificationHub.setEnabled(b);
+        mIsEnabled.setValue(NotificationHub.isEnabled());
+    }
+
     public LiveData<List<String>> getTags() {
         return mTags;
     }
@@ -77,8 +89,8 @@ public class SetupViewModel extends ViewModel {
         return mUnknownText;
     }
 
-    public void setUnknownText(String mUnknownText) {
-        this.mUnknownText = mUnknownText;
+    public void setUnknownText(String unknownText) {
+        mUnknownText = unknownText;
     }
 
     static <T> List<T> iterableToList(Iterable<T> iterable) {

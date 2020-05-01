@@ -3,8 +3,6 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.core.graphics.drawable.IconCompat;
-
 import com.microsoft.windowsazure.messaging.R;
 
 public class PushChannelVisitor implements InstallationVisitor {

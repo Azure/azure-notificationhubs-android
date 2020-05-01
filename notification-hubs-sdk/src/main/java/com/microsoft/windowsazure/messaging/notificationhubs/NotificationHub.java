@@ -2,7 +2,13 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+
+import com.microsoft.windowsazure.messaging.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +29,9 @@ public final class NotificationHub {
 
     private InstallationAdapter mManager;
     private Application mApplication;
+
+    private SharedPreferences mPreferences;
+    private static final String IS_ENABLED_PREFERENCE_KEY = "isEnabled";
 
     NotificationHub() {
         mVisitors = new ArrayList<>();
@@ -51,7 +60,7 @@ public final class NotificationHub {
      *                         receive notifications.
      */
     public static void initialize(Application application, String hubName, String connectionString) {
-        initialize(application, new DebounceInstallationAdapter(new NotificationHubInstallationAdapter(
+        initialize(application, new DebounceInstallationAdapter(application, new NotificationHubInstallationAdapter(
                 hubName,
                 connectionString)));
     }
@@ -66,10 +75,12 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Application application, InstallationAdapter adapter) {
+    static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.setInstanceInstallationManager(adapter);
+        instance.setInstanceInstallationAdapter(adapter);
         instance.mApplication = application;
+
+        instance.mPreferences = instance.mApplication.getSharedPreferences(instance.mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
@@ -80,10 +91,16 @@ public final class NotificationHub {
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
-        instance.useInstanceVisitor(instance.mPushChannelVisitor);
-
         Intent i =  new Intent(application, FirebaseReceiver.class);
         application.startService(i);
+
+        // Why is this done here instead of being in the manifest like everything else?
+        // BroadcastReceivers are special, and starting in Android 8.0 the ability to start them
+        // from the manifest was removed. See documentation from Google here:
+        // https://developer.android.com/guide/components/broadcasts#android_80
+        IntentFilter connectivityFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        connectivityFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        application.registerReceiver(new NetworkStatusReceiver(), connectivityFilter);
     }
 
     /**
@@ -100,7 +117,7 @@ public final class NotificationHub {
      * @param activity TODO
      * @param intent TODO
      */
-    public static void checkLaunchedFromNotification(Activity activity, Intent intent) {
+    static void checkLaunchedFromNotification(Activity activity, Intent intent) {
         // TODO: Cache the activity and intent extras that were passed to us.
     }
 
@@ -116,20 +133,26 @@ public final class NotificationHub {
     /**
      * Registers {@link InstallationVisitor} for use when a new {@link Installation} is to be
      * created and registered.
+     *
+     * Visitors are applied in the order that they are added via calls to this method.
+     *
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    public static void useVisitor(InstallationVisitor visitor) {
+    static void useVisitor(InstallationVisitor visitor) {
         getInstance().useInstanceVisitor(visitor);
     }
 
     /**
      * Registers an {@link InstallationVisitor} for use when a new {@link Installation} is to be
      * created and registered.
+     *
+     * Visitors are applied in the order that they are added via calls to this method.
+     *
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    public void useInstanceVisitor(InstallationVisitor visitor) {
+    void useInstanceVisitor(InstallationVisitor visitor) {
         mVisitors.add(visitor);
     }
 
@@ -137,29 +160,33 @@ public final class NotificationHub {
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public static void setInstallationManger(InstallationAdapter adapter) {
-        getInstance().setInstanceInstallationManager(adapter);
+    static void setInstallationAdapter(InstallationAdapter adapter) {
+        getInstance().setInstanceInstallationAdapter(adapter);
     }
 
     /**
      * Updates the mechanism that will be used to inform a backend service of the new installation.
      * @param adapter An instance of the {@link InstallationAdapter} that should be used.
      */
-    public void setInstanceInstallationManager(InstallationAdapter adapter) {
-        this.mManager = adapter;
+    void setInstanceInstallationAdapter(InstallationAdapter adapter) {
+        mManager = adapter;
     }
 
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public static void reinstall() {
-        getInstance().reinstallInstance();
+    public static void beginInstallationUpdate() {
+        getInstance().beginInstanceInstallationUpdate();
     }
 
     /**
      * Creates a new {@link Installation} and registers it with a backend that tracks devices.
      */
-    public void reinstallInstance() {
+    public void beginInstanceInstallationUpdate() {
+        if (!isInstanceEnabled()) {
+            return;
+        }
+
         Installation installation = new Installation();
         for (InstallationVisitor visitor: mVisitors) {
             visitor.visitInstallation(installation);
@@ -185,7 +212,7 @@ public final class NotificationHub {
 
     void setInstancePushChannel(String token) {
         mPushChannelVisitor.setPushChannel(token);
-        reinstallInstance();
+        beginInstanceInstallationUpdate();
     }
 
     /**
@@ -222,20 +249,30 @@ public final class NotificationHub {
     }
 
     /**
-     * Updateds the unique identifier that will be associated with the record of this device.
+     * Updates the unique identifier that will be associated with the record of this device.
      * @param id The value to treat as the unique identifier of the record of this device.
      */
     public void setInstanceInstallationId(String id) {
         mIdAssignmentVisitor.setInstallationId(id);
-        reinstallInstance();
+        beginInstanceInstallationUpdate();
     }
 
+    /**
+     * Informs this {@link NotificationHub} that a new message has been delivered.
+     * @param message The newly received message.
+     */
     static void relayMessage(NotificationMessage message) {
         getInstance().relayInstanceMessage(message);
     }
 
+    /**
+     * Informs this {@link NotificationHub} that a new message has been delivered.
+     * @param message The newly received message.
+     */
     void relayInstanceMessage(NotificationMessage message) {
-        mListener.onPushNotificationReceived(mApplication, message);
+        if (mListener != null) {
+            mListener.onPushNotificationReceived(mApplication, message);
+        }
     }
 
     /**
@@ -256,7 +293,7 @@ public final class NotificationHub {
      */
     public boolean addInstanceTag(String tag) {
         if(mTagVisitor.addTag(tag)){
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -282,7 +319,7 @@ public final class NotificationHub {
      */
     public boolean addInstanceTags(Collection<? extends String> tags) {
         if(mTagVisitor.addTags(tags)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -306,7 +343,7 @@ public final class NotificationHub {
      */
     public boolean removeInstanceTag(String tag) {
         if(mTagVisitor.removeTag(tag)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -330,7 +367,7 @@ public final class NotificationHub {
      */
     public boolean removeInstanceTags(Collection<? extends String> tags) {
         if(mTagVisitor.removeTags(tags)) {
-            reinstallInstance();
+            beginInstanceInstallationUpdate();
             return true;
         }
         return false;
@@ -367,7 +404,34 @@ public final class NotificationHub {
     public void clearInstanceTags() {
         if (mTagVisitor.getTags().iterator().hasNext()) {
             mTagVisitor.clearTags();
-            this.reinstallInstance();
+            this.beginInstanceInstallationUpdate();
         }
+    }
+
+    /**
+     * Controls whether or not this application should be listening for Notifications.
+     * @param enable true if the application should be listening for notifications, false if not.
+     */
+    public static void setEnabled(boolean enable) {
+        getInstance().setInstanceEnabled(enable);
+    }
+
+    /**
+     * Controls whether or not this application should be listening for Notifications.
+     * @param enable true if the application should be listening for notifications, false if not.
+     */
+    public void setInstanceEnabled(boolean enable) {
+        mPreferences.edit().putBoolean(IS_ENABLED_PREFERENCE_KEY, enable).apply();
+        if (enable) {
+            beginInstanceInstallationUpdate();
+        }
+    }
+
+    public static boolean isEnabled() {
+        return getInstance().isInstanceEnabled();
+    }
+
+    public boolean isInstanceEnabled() {
+        return mPreferences.getBoolean(IS_ENABLED_PREFERENCE_KEY, true);
     }
 }

@@ -1,11 +1,14 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -18,11 +21,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -32,6 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
  * notifications.
  */
 class NotificationHubInstallationAdapter implements InstallationAdapter {
+    private static final long EXPIRE_SECONDS = 5 * 60;
 
     private static final int SC_TOOMANYREQUESTS = 429;
     private static final int SC_SERVICEUNAVAILABLE = 503;
@@ -51,36 +53,43 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @return A future, with the Installation ID as the value.
      */
     @Override
-    public void saveInstallation(Context context, Installation installation) {
+    public void saveInstallation(final Context context, final Installation installation) {
         RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
 
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+
         StringRequest request;
         request = new StringRequest(
                 Request.Method.PUT,
                 url,
-                response -> {
-                    Log.i("ANH", "Installation Updated");
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("ANH", "Installation Updated");
+                    }
                 },
-                error -> {
-                    Log.e("ANH", "Couldn't update installation: " + error);
-                    String retryAfter = error.networkResponse.headers.get("Retry-After");
-                    Boolean isRetryNeeded = error.networkResponse.statusCode == SC_TOOMANYREQUESTS
-                            || error.networkResponse.statusCode == SC_SERVICEUNAVAILABLE;
-                    if (isRetryNeeded && retryAfter != null && !retryAfter.isEmpty()){
-                        try {
-                            Thread.sleep(Integer.parseInt(retryAfter));
-                        } catch (InterruptedException e) {
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ANH", "Couldn't update installation: " + error);
+                        String retryAfter = error.networkResponse.headers.get("Retry-After");
+                        Boolean isRetryNeeded = error.networkResponse.statusCode == SC_TOOMANYREQUESTS
+                                || error.networkResponse.statusCode == SC_SERVICEUNAVAILABLE;
+                        if (isRetryNeeded && retryAfter != null && !retryAfter.isEmpty()) {
+                            try {
+                                Thread.sleep(Integer.parseInt(retryAfter));
+                            } catch (InterruptedException e) {
+                            }
+                            saveInstallation(context, installation);
                         }
-                        saveInstallation(context, installation);
                     }
                 }
         ){
             @Override
             public byte[] getBody() {
                 try {
-                    JSONArray tagList = new JSONArray();
+                    final JSONArray tagList = new JSONArray();
                     for (String tag: installation.getTags()) {
                         tagList.put(tag);
                     }
@@ -99,12 +108,13 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
             }
 
             @Override
-            public  Map<String, String> getHeaders(){
+            public Map<String, String> getHeaders(){
                 try {
                     Map<String,String> params = new HashMap<String, String>(){{
                         put("Content-Type", "application/json");
                         put("x-ms-version", "2015-01");
                         put("Authorization", generateAuthToken(url));
+                        put("User-Agent", getUserAgent());
                     }};
                     return params;
                 } catch (InvalidKeyException e) {
@@ -129,9 +139,7 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
         }
 
         // Set expiration in seconds
-        Calendar expireDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        expireDate.add(Calendar.MINUTE, 5);
-        long expires = expireDate.getTimeInMillis() / 1000;
+        long expires = (System.currentTimeMillis() / 1000) + EXPIRE_SECONDS;
 
         String toSign = url + '\n' + expires;
 
@@ -157,5 +165,16 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
 
         // construct authorization string
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
+    }
+
+
+    /**
+     * Generates the User-Agent
+     */
+    private String getUserAgent() {
+        String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
+                "2015-01", "AndroidSdkV1FcmV1.0.0-preview1", "Android", Build.VERSION.RELEASE);
+
+        return userAgent;
     }
 }
