@@ -17,10 +17,13 @@ public class NotificationHubTest {
         final int[] callCount = new int[]{0};
 
         specimen.useInstanceVisitor(
-           subject -> {
-                callCount[0]++;
-                assertNotNull("Installation to be visited should never be null", subject);
-           });
+                new InstallationVisitor() {
+                    @Override
+                    public void visitInstallation(Installation subject) {
+                        callCount[0]++;
+                        assertNotNull("Installation to be visited should never be null", subject);
+                    }
+                });
 
         specimen.beginInstanceInstallationUpdate();
 
@@ -34,14 +37,20 @@ public class NotificationHubTest {
         final String INCORRECT_ORDER_MESSAGE = "Installation visitors should be called in the order they were added";
         final int[] callCount = new int[]{0, 0};
 
-        specimen.useInstanceVisitor(subject -> {
+        specimen.useInstanceVisitor(new InstallationVisitor() {
+            @Override
+            public void visitInstallation(Installation subject) {
                 assertEquals(INCORRECT_ORDER_MESSAGE, 0, callCount[1]);
                 callCount[0]++;
-            });
+            }
+        });
 
-        specimen.useInstanceVisitor(subject -> {
-            assertEquals(INCORRECT_ORDER_MESSAGE, 1, callCount[0]);
-            callCount[1]++;
+        specimen.useInstanceVisitor(new InstallationVisitor() {
+            @Override
+            public void visitInstallation(Installation subject) {
+                assertEquals(INCORRECT_ORDER_MESSAGE, 1, callCount[0]);
+                callCount[1]++;
+            }
         });
 
         specimen.beginInstanceInstallationUpdate();
