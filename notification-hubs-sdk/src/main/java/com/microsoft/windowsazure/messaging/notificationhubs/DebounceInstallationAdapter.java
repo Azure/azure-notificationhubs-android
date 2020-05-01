@@ -3,8 +3,6 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.microsoft.windowsazure.messaging.R;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -27,7 +25,7 @@ class DebounceInstallationAdapter implements InstallationAdapter {
         super();
         mInstallationAdapter = installationAdapter;
         mInterval = interval;
-        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_MULTI_PROCESS);
     }
 
 
