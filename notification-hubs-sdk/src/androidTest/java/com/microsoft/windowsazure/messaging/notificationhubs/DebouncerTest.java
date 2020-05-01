@@ -34,7 +34,9 @@ public class DebouncerTest {
         installation = new Installation();
         installation.setInstallationId("id_first");
         installation.setPushChannel("pushChannel");
-        installation.addTags(Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList()));
+        installation.addTag("tag1");
+        installation.addTag("tag2");
+        installation.addTag("tag3");
 
         installation_second = new Installation();
         installation_second.setInstallationId("id_second");
