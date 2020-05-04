@@ -2,6 +2,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.microsoft.windowsazure.messaging.R;
 
@@ -49,7 +50,7 @@ class DebounceInstallationAdapter implements InstallationAdapter {
                     mInstallationAdapter.saveInstallation(context, installation);
                     mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
                 } catch (Exception e) {
-
+                    Log.i("ANH", "Failed to save installation:" + e);
                 }
             }
         }, mInterval, TimeUnit.MILLISECONDS);

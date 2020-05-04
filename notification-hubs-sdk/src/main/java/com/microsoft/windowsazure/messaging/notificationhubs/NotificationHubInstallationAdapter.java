@@ -5,20 +5,18 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpClient;
+import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpResponse;
+import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils;
+import com.microsoft.windowsazure.messaging.notificationhubs.http.ServiceCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -35,11 +33,9 @@ import javax.crypto.spec.SecretKeySpec;
 class NotificationHubInstallationAdapter implements InstallationAdapter {
     private static final long EXPIRE_SECONDS = 5 * 60;
 
-    private static final int SC_TOOMANYREQUESTS = 429;
-    private static final int SC_SERVICEUNAVAILABLE = 503;
-
     private final String mHubName;
     private final ConnectionString mConnectionString;
+    private HttpClient httpClient;
 
     public NotificationHubInstallationAdapter(String hubName, String connectionString) {
         mHubName = hubName;
@@ -54,79 +50,13 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
      */
     @Override
     public void saveInstallation(final Context context, final Installation installation) {
-        RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
+        httpClient = HttpUtils.createHttpClient(context.getApplicationContext());
 
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        StringRequest request;
-        request = new StringRequest(
-                Request.Method.PUT,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("ANH", "Installation Updated");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("ANH", "Couldn't update installation: " + error);
-                        String retryAfter = error.networkResponse.headers.get("Retry-After");
-                        Boolean isRetryNeeded = error.networkResponse.statusCode == SC_TOOMANYREQUESTS
-                                || error.networkResponse.statusCode == SC_SERVICEUNAVAILABLE;
-                        if (isRetryNeeded && retryAfter != null && !retryAfter.isEmpty()) {
-                            try {
-                                Thread.sleep(Integer.parseInt(retryAfter));
-                            } catch (InterruptedException e) {
-                            }
-                            saveInstallation(context, installation);
-                        }
-                    }
-                }
-        ){
-            @Override
-            public byte[] getBody() {
-                try {
-                    final JSONArray tagList = new JSONArray();
-                    for (String tag: installation.getTags()) {
-                        tagList.put(tag);
-                    }
-
-                    JSONObject jsonBody = new JSONObject(){{
-                        put("installationId", installation.getInstallationId());
-                        put("platform", "GCM");
-                        put("pushChannel", installation.getPushChannel());
-                        put("tags", tagList);
-                    }};
-                    return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            public Map<String, String> getHeaders(){
-                try {
-                    Map<String,String> params = new HashMap<String, String>(){{
-                        put("Content-Type", "application/json");
-                        put("x-ms-version", "2015-01");
-                        put("Authorization", generateAuthToken(url));
-                        put("User-Agent", getUserAgent());
-                    }};
-                    return params;
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
-
-        queue.add(request);
+        httpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback());
     }
-
 
     private String generateAuthToken(String url) throws InvalidKeyException {
         String keyName = mConnectionString.getSharedAccessKeyName();
@@ -165,6 +95,64 @@ class NotificationHubInstallationAdapter implements InstallationAdapter {
 
         // construct authorization string
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
+    }
+
+    private Map<String, String> getHeaders(final String url) {
+        try {
+            Map<String,String> params = new HashMap<String, String>(){{
+                put("Content-Type", "application/json");
+                put("x-ms-version", "2015-01");
+                put("Authorization", generateAuthToken(url));
+                put("User-Agent", getUserAgent());
+            }};
+            return params;
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private HttpClient.CallTemplate buildCallTemplate(final Installation installation) {
+        return new HttpClient.CallTemplate() {
+            @Override
+            public String buildRequestBody() throws JSONException {
+                try {
+                    final JSONArray tagList = new JSONArray();
+                    for (String tag: installation.getTags()) {
+                        tagList.put(tag);
+                    }
+
+                    JSONObject jsonBody = new JSONObject(){{
+                        put("installationId", installation.getInstallationId());
+                        put("platform", "GCM");
+                        put("pushChannel", installation.getPushChannel());
+                        put("tags", tagList);
+                    }};
+                    return jsonBody.toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            public void onBeforeCalling(URL url, Map<String, String> headers) {
+            }
+        };
+    }
+
+    private ServiceCallback buildServiceCallback() {
+        return new ServiceCallback() {
+            @Override
+            public void onCallSucceeded(HttpResponse httpResponse) {
+                Log.i("ANH", "Installation Updated");
+            }
+
+            @Override
+            public void onCallFailed(Exception e) {
+                Log.e("ANH", "Couldn't update installation: " + e.getMessage());
+            }
+        };
     }
 
 
