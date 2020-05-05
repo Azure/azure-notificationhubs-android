@@ -76,6 +76,7 @@ public class HttpClientRetryer extends HttpClientDecorator {
     /**
      * Retry wrapper logic.
      */
+    @VisibleForTesting
     private class RetryableCall extends HttpClientCallDecorator {
 
         /**

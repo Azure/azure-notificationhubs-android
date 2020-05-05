@@ -5,6 +5,8 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpClient;
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpResponse;
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils;
@@ -30,7 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Responsible for informing Azure Notification Hubs of changes to when this device should receive
  * notifications.
  */
-class NotificationHubInstallationAdapter implements InstallationAdapter {
+public class NotificationHubInstallationAdapter implements InstallationAdapter {
     private static final long EXPIRE_SECONDS = 5 * 60;
 
     private final String mHubName;
