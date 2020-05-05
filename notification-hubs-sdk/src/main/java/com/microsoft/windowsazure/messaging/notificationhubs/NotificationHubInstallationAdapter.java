@@ -47,8 +47,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     /**
      * Updates a backend with the updated Installation information for this device.
      *
-     * @param installation The record to update.
-     * @return A future, with the Installation ID as the value.
+     * @param installation The record to update.\
      */
     @Override
     public void saveInstallation(final Context context, final Installation installation) {
