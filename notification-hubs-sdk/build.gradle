@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-def version = '1.0.0-preview1'
+def VERSION = '1.0.0-preview1'
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
-def groupId = 'com.microsoft.azure'
+def GROUP_ID = 'com.microsoft.azure'
 
 def BINTRAY_USERNAME = "$System.env.BINTRAY_USERNAME"
 def BINTRAY_APIKEY = "$System.env.BINTRAY_APIKEY"
@@ -20,7 +20,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName version
+        versionName VERSION
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
@@ -84,30 +84,25 @@ task makeJar(type: Copy) {
 
 makeJar.dependsOn(clearJar, build)
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = GROUP_ID
+                artifactId = PUBLISH_ARTIFACT_ID
+                version = VERSION
 
-// step 2
-uploadArchives {
-    repositories.mavenDeployer {
-        pom.groupId = groupId
-        pom.artifactId = PUBLISH_ARTIFACT_ID
-        pom.version = version
-        pom.project {
-            packaging 'aar'
-            name 'Notification Hub'
-            description 'NotificationHub Android SDK'
-            url 'https://github.com/Azure/azure-notificationhubs'
+                from components.release
+            }
         }
-        repository (
-            url: repoUrl
-        ) {
-            authentication(
-                userName: BINTRAY_USERNAME,
-                password: BINTRAY_APIKEY
-            )
+        repositories {
+            maven {
+                name = 'MarStr'
+                url = 'file://C:/foo/'
+            }
         }
     }
 }
-
 
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
