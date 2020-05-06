@@ -72,6 +72,7 @@ task writeVersionFile {
         versionFileHandle.write VERSION
     }
 }
+writeVersionFile.dependsOn(publishReleasePublicationToBuildDirRepository)
 
 // step 1
 task makeJar(type: Copy) {
