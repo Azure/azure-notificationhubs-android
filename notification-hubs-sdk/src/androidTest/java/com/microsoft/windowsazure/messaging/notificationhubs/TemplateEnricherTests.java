@@ -2,95 +2,117 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TemplateEnricherTests {
     private Context context = getInstrumentation().getTargetContext();
-    InstallationTemplate template1 = new InstallationTemplate();
-    private List<InstallationTemplate> templateList;
+    String templateName;
+    InstallationTemplate template = new InstallationTemplate();
+    private Map<String, InstallationTemplate> templateMap;
 
     public TemplateEnricherTests() {
-        template1.addTags(Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList()));
-        template1.setHeader("header1", "value1");
-        template1.setBody("body1");
-        templateList = Stream.of(template1).collect(Collectors.toList());
+        templateName = "templateName";
+        template.addTags(Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList()));
+        template.setHeader("header1", "value1");
+        template.setBody("body1");
+        templateMap = new HashMap<String, InstallationTemplate>(){{ put(templateName, template); }};
     }
 
     @Test
     public void templateEnricherAddTemplate() {
-        TemplateEnricher te = new TemplateEnricher();
-        te.setPreferences(context);
+        TemplateEnricher templateEnricher = new TemplateEnricher();
+        templateEnricher.setPreferences(context);
 
-        assertTrue(te.addTemplate(templateList.get(0)));
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).contains(templateList.get(0)));
+        assertTrue(templateEnricher.addTemplate(templateName, template));
+        Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
+        assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
     }
 
     @Test
     public void templateEnricherAddTemplates () {
+        String templateName2 = "templateName2";
         InstallationTemplate template2 = new InstallationTemplate();
         template2.addTags(Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList()));
         template2.setHeader("header2", "value2");
         template2.setBody("body2");
-        templateList.add(template2);
+        templateMap.put(templateName2, template2);
 
-        TemplateEnricher te = new TemplateEnricher();
-        te.setPreferences(context);
+        TemplateEnricher templateEnricher = new TemplateEnricher();
+        templateEnricher.setPreferences(context);
 
-        assertTrue(te.addTemplates(templateList));
-        assertTrue(((HashSet<InstallationTemplate>) te.getTemplates()).containsAll(templateList));
+        assertTrue(templateEnricher.addTemplates(templateMap));
+        Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
+        assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
     }
 
     @Test
     public void templateEnricherRemoveTemplate () {
-        TemplateEnricher te = new TemplateEnricher();
-        te.setPreferences(context);
+        TemplateEnricher templateEnricher = new TemplateEnricher();
+        templateEnricher.setPreferences(context);
 
-        assertTrue(te.addTemplates(templateList));
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).containsAll(templateList));
-        te.removeTemplate(templateList.get(0));
-        assertEquals(templateList.size() - 1, ((HashSet<InstallationTemplate>)te.getTemplates()).size());
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).containsAll(templateList.subList(1, templateList.size())));
+        assertTrue(templateEnricher.addTemplates(templateMap));
+        Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
+        assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
+        templateEnricher.removeTemplate(templateName);
+        assertEquals(templateMap.size() - 1,
+                ((Set<Map.Entry<String, InstallationTemplate>>) templateEnricher.getTemplates()).size());
+        assertNull(templateEnricher.getTemplate(templateName));
     }
 
     @Test
     public void templateEnricherRemoveTemplates () {
+        String templateName2 = "templateName2";
         InstallationTemplate template2 = new InstallationTemplate();
         template2.addTags(Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList()));
         template2.setHeader("header2", "value2");
         template2.setBody("body2");
-        templateList.add(template2);
+        templateMap.put(templateName2, template2);
 
+        String templateName3 = "templateName3";
         InstallationTemplate template3 = new InstallationTemplate();
         template3.addTags(Stream.of("tag7", "tag8", "tag9").collect(Collectors.toList()));
         template3.setHeader("header3", "value3");
         template3.setBody("body3");
-        templateList.add(template3);
+        templateMap.put(templateName3, template3);
 
-        TemplateEnricher te = new TemplateEnricher();
-        te.setPreferences(context);
+        TemplateEnricher templateEnricher = new TemplateEnricher();
+        templateEnricher.setPreferences(context);
 
-        assertTrue(te.addTemplates(templateList));
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).containsAll(templateList));
-        te.removeTemplates(templateList.subList(0, templateList.size() - 1));
-        assertEquals(templateList.size() - 2, ((HashSet<InstallationTemplate>)te.getTemplates()).size());
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).containsAll(templateList.subList(2, templateList.size())));
+        assertTrue(templateEnricher.addTemplates(templateMap));
+        Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
+        assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
+        templateEnricher.removeTemplates(Stream.of(templateName, templateName2).collect(Collectors.toList()));
+        assertEquals(templateMap.size() - 2,
+                ((Set<Map.Entry<String, InstallationTemplate>>)templateEnricher.getTemplates()).size());
+        assertNull(templateEnricher.getTemplate(templateName));
+        assertNull(templateEnricher.getTemplate(templateName2));
+        assertNotNull(templateEnricher.getTemplate(templateName3));
     }
 
     @Test
-    public void templateEnricherClearTaemplates () {
-        TemplateEnricher te = new TemplateEnricher();
-        te.setPreferences(context);
+    public void templateEnricherClearTemplates () {
+        TemplateEnricher templateEnricher = new TemplateEnricher();
+        templateEnricher.setPreferences(context);
 
-        assertTrue(te.addTemplates(templateList));
-        assertTrue(((HashSet<InstallationTemplate>) te.getTemplates()).contains(template1));
-        te.clearTemplates();
-        assertTrue(((HashSet<InstallationTemplate>)te.getTemplates()).isEmpty());
+        assertTrue(templateEnricher.addTemplates(templateMap));
+        Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
+        assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
+        templateEnricher.clearTemplates();
+        assertTrue(((Set<Map.Entry<String, InstallationTemplate>>) templateEnricher.getTemplates()).isEmpty());
     }
 }
