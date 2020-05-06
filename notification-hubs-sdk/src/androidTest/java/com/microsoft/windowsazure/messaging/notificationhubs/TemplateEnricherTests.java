@@ -41,6 +41,7 @@ public class TemplateEnricherTests {
         assertTrue(templateEnricher.addTemplate(templateName, template));
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
+        assertEquals(template, templateEnricher.getTemplate(templateName));
     }
 
     @Test
@@ -58,6 +59,8 @@ public class TemplateEnricherTests {
         assertTrue(templateEnricher.addTemplates(templateMap));
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateEnricher.getTemplates());
+        assertEquals(template, templateEnricher.getTemplate(templateName));
+        assertEquals(template2, templateEnricher.getTemplate(templateName2));
     }
 
     @Test
