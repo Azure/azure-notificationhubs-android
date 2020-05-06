@@ -11,8 +11,10 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ public class TemplateEnricher implements InstallationEnricher {
      * Creates a TagEnricher with a pre-populated set of templates to apply.
      * @param templates The initial set of templates that should be applied to future {@link Installation}s.
      */
-    public TemplateEnricher(Context context, Collection<? extends InstallationTemplate> templates) {
+    public TemplateEnricher(Context context, Map<String, InstallationTemplate> templates) {
         this();
         setPreferences(context);
         addTemplates(templates);
@@ -52,10 +54,10 @@ public class TemplateEnricher implements InstallationEnricher {
      *
      * @return A set of templates.
      */
-    private Set<InstallationTemplate> getTemplatesSet() {
+    private Map<String, InstallationTemplate> getTemplatesSet() {
         Set<String> preferencesSet = mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>());
         if (preferencesSet == null) {
-            return new HashSet<>();
+            return new HashMap<>();
         }
         return deserializeInstallationTemplateToJson(preferencesSet);
     }
@@ -73,8 +75,9 @@ public class TemplateEnricher implements InstallationEnricher {
      * @param template The template to include with this collection.
      * @return True if the provided template was not previously associated with this collection.
      */
-    public boolean addTemplate(InstallationTemplate template) {
-        return addTemplates(Collections.singletonList(template));
+    public boolean addTemplate(String templateName, InstallationTemplate template) {
+
+        return addTemplates(Collections.singletonMap(templateName, template));
     }
 
     /**
@@ -85,12 +88,12 @@ public class TemplateEnricher implements InstallationEnricher {
      * Installation.
      */
 
-    public boolean addTemplates(Collection<? extends InstallationTemplate> templates) {
-        Set<InstallationTemplate> set = getTemplatesSet();
-        set.addAll(templates);
+    public boolean addTemplates(Map<String, InstallationTemplate> templates) {
+        Map<String, InstallationTemplate> set = getTemplatesSet();
+        set.putAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();
-        for (InstallationTemplate template: set) {
-            serializedTemplatesSet.add(serializeInstallationTemplateToJson(template));
+        for (Map.Entry<String, InstallationTemplate> template: set.entrySet()) {
+            serializedTemplatesSet.add(serializeInstallationTemplateToJson(template.getKey(), template.getValue()));
         }
         mPreferences.edit().putStringSet(PREFERENCE_KEY, serializedTemplatesSet).apply();
         return true;
@@ -99,28 +102,33 @@ public class TemplateEnricher implements InstallationEnricher {
     /**
      * Deletes one template from this collection.
      *
-     * @param template The template that should no longer be in the collection.
+     * @param templateName The template name that should no longer be in the collection.
      * @return True if the template had previously been associated with this collection.
      */
-    public boolean removeTemplate(InstallationTemplate template) {
-        return removeTemplates(Collections.singletonList(template));
+    public boolean removeTemplate(String templateName) {
+        return removeTemplates(Collections.singletonList(templateName));
     }
 
     /**
      * Deletes several templates from this collection.
      *
-     * @param templates The templates that should no longer be in the collection.
+     * @param templates The templates name that should no longer be in the collection.
      * @return True if any of the templates had previously been associated with this collection.
      */
-    public boolean removeTemplates(Collection<? extends InstallationTemplate> templates) {
-        Set<InstallationTemplate> set = getTemplatesSet();
-        set.removeAll(templates);
+    public boolean removeTemplates(List<String> templates) {
+        Map<String, InstallationTemplate> set = getTemplatesSet();
+        set.keySet().removeAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();
-        for (InstallationTemplate template: set) {
-            serializedTemplatesSet.add(serializeInstallationTemplateToJson(template));
+        for (Map.Entry<String, InstallationTemplate> installation: set.entrySet()) {
+            serializedTemplatesSet.add(serializeInstallationTemplateToJson(installation.getKey(), installation.getValue()));
         }
         mPreferences.edit().putStringSet(PREFERENCE_KEY, serializedTemplatesSet).apply();
         return true;
+    }
+
+    public InstallationTemplate getTemplate(String templateName) {
+        Map<String, InstallationTemplate> templates = getTemplatesSet();
+        return templates.get(templateName);
     }
 
     /**
@@ -128,8 +136,8 @@ public class TemplateEnricher implements InstallationEnricher {
      *
      * @return A set of templates.
      */
-    public Iterable<InstallationTemplate> getTemplates() {
-        return getTemplatesSet();
+    public Iterable<Map.Entry<String, InstallationTemplate>> getTemplates() {
+        return getTemplatesSet().entrySet();
     }
 
     /**
@@ -145,9 +153,10 @@ public class TemplateEnricher implements InstallationEnricher {
      * @param installationTemplate The templates that should no longer be in the collection.
      * @return serialized templateObject.
      */
-    private static String serializeInstallationTemplateToJson(InstallationTemplate installationTemplate) {
+    private static String serializeInstallationTemplateToJson(String name, InstallationTemplate installationTemplate) {
         JSONObject templateObject = new JSONObject();
         try {
+            templateObject.put("name", name);
             templateObject.put("body", installationTemplate.getBody());
             JSONObject headers = new JSONObject();
             Iterator<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders().iterator();
@@ -171,12 +180,13 @@ public class TemplateEnricher implements InstallationEnricher {
      * @param installationTemplatesSet The templates that should no longer be in the collection.
      * @return A set of deserialized templates.
      */
-    private static Set<InstallationTemplate> deserializeInstallationTemplateToJson(Set<String> installationTemplatesSet) {
-        Set<InstallationTemplate> templates = new HashSet<>();
+    private static Map<String, InstallationTemplate> deserializeInstallationTemplateToJson(Set<String> installationTemplatesSet) {
+        Map<String, InstallationTemplate> templates = new HashMap<>();
         try {
             for (String preferenceString : installationTemplatesSet) {
                 JSONObject preference = new JSONObject(preferenceString);
                 InstallationTemplate template = new InstallationTemplate();
+                String name = preference.getString("name");
                 template.setBody(preference.getString("body"));
                 JSONArray tags = preference.getJSONArray("tags");
                 for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
@@ -188,7 +198,7 @@ public class TemplateEnricher implements InstallationEnricher {
                     String headerKey = headersIterators.next();
                     template.setHeader(headerKey, headers.getString(headerKey));
                 }
-                templates.add(template);
+                templates.put(name, template);
             }
         } catch(JSONException ex) {
             ex.printStackTrace();
