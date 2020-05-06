@@ -8,7 +8,7 @@ public interface NotificationListener {
      * when a push is received.
      *
      * @param context A reference to the {@link android.app.Application} context that
-     * @param message
+     * @param message Notification message
      */
     void onPushNotificationReceived(Context context, NotificationMessage message);
 }

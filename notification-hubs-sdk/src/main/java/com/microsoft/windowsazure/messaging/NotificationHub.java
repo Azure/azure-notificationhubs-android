@@ -129,7 +129,7 @@ public class NotificationHub {
 	 * @param pnsHandle	PNS specific identifier
 	 * @param tags	Tags to use in the registration
 	 * @return	The created registration
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	public Registration register(String pnsHandle, String... tags) throws Exception {
 		if (isNullOrWhiteSpace(pnsHandle)) {
@@ -150,7 +150,7 @@ public class NotificationHub {
 	 * @param channelId Baidu channel Id
 	 * @param tags	Tags to use in the registration
 	 * @return The created registration
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	public Registration registerBaidu(String userId, String channelId, String... tags) throws Exception {
 		if (isNullOrWhiteSpace(userId)) {
@@ -173,7 +173,7 @@ public class NotificationHub {
 	 * @param template	The template body
 	 * @param tags	The tags to use in the registration
 	 * @return	The created registration
-	 * @throws Exception
+	 * @throws Exception IllegalArgumentException
 	 */
 	public TemplateRegistration registerTemplate(String pnsHandle, String templateName, String template, String... tags) throws Exception {
 		if (isNullOrWhiteSpace(pnsHandle)) {
@@ -205,7 +205,7 @@ public class NotificationHub {
 	 * @param template	The template body
 	 * @param tags	The tags to use in the registration
 	 * @return	The created registration
-	 * @throws Exception
+	 * @throws Exception IllegalArgumentException,
 	 */
 	public TemplateRegistration registerBaiduTemplate(String userId, String channelId, String templateName, String template, String... tags) throws Exception {
 		if (isNullOrWhiteSpace(userId)) {
@@ -232,7 +232,7 @@ public class NotificationHub {
 	
 	/**
 	 * Unregisters the client for native notifications
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	public void unregister() throws Exception {
 		unregisterInternal(Registration.DEFAULT_REGISTRATION_NAME);
@@ -241,9 +241,9 @@ public class NotificationHub {
 	/**
 	 * Unregisters the client for template notifications of a specific template
 	 * @param templateName	The template name
-	 * @throws Exception
+	 * @throws Exception IllegalArgumentException
 	 */
-	public void unregisterTemplate(String templateName) throws Exception {
+	public void unregisterTemplate(String templateName) throws Exception{
 		if (isNullOrWhiteSpace(templateName)) {
 			throw new IllegalArgumentException("templateName");
 		}
@@ -254,7 +254,7 @@ public class NotificationHub {
 	/**
 	 * Unregisters the client for all notifications
 	 * @param pnsHandle	PNS specific identifier
-	 * @throws Exception
+	 * @throws Exception IllegalArgumentException
 	 */
 	public void unregisterAll(String pnsHandle) throws Exception {
 		refreshRegistrationInformation(pnsHandle);
@@ -331,6 +331,7 @@ public class NotificationHub {
 	
 	/**
 	 * Gets the Notification Hub connection string
+	 * @return Notification Hub connection string
 	 */
 	public String getConnectionString() {
 		return mConnectionString;
@@ -338,6 +339,7 @@ public class NotificationHub {
 
 	/**
 	 * Sets the Notification Hub connection string
+	 * @param connectionString	Notification Hub connection string
 	 */
 	public void setConnectionString(String connectionString) {
 
@@ -356,6 +358,7 @@ public class NotificationHub {
 
 	/**
 	 * Gets the Notification Hub path
+	 * @return Notification Hub connection string
 	 */
 	public String getNotificationHubPath() {
 		return mNotificationHubPath;
@@ -363,6 +366,7 @@ public class NotificationHub {
 
 	/**
 	 * Sets the Notification Hub path
+	 * @param notificationHubPath The notification hub path
 	 */
 	public void setNotificationHubPath(String notificationHubPath) {
 
@@ -471,8 +475,8 @@ public class NotificationHub {
 	
 	/**
 	 * Deletes a registration and removes it from local storage
-	 * @param regInfo	The reginfo JSON object
-	 * @throws Exception
+	 * @param registrationName	Registration name
+	 * @param registrationId	Registration id
 	 */
 	private void deleteRegistrationInternal(String registrationName, String registrationId) throws Exception {
 		Connection conn = new Connection(mConnectionString);

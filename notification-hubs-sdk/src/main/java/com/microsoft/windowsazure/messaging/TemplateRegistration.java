@@ -86,6 +86,7 @@ public abstract class TemplateRegistration extends Registration {
 
 	/**
 	 * Gets the template body
+	 * @return Template body
 	 */
 	public String getBodyTemplate() {
 		return mBodyTemplate;
@@ -100,6 +101,7 @@ public abstract class TemplateRegistration extends Registration {
 
 	/**
 	 * Gets the template name
+	 * @return Template name
 	 */
 	public String getTemplateName() {
 		return getName();

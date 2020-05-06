@@ -52,6 +52,7 @@ public final class PnsSpecificRegistrationFactory {
 
 	/**
 	 * Returns the instance of PnsSpecificRegistrationFactory
+	 * @return Instance of PnsSpecificRegistrationFactory
 	 */
 	public static PnsSpecificRegistrationFactory getInstance(){
 		return mInstance;
@@ -64,6 +65,7 @@ public final class PnsSpecificRegistrationFactory {
 	/**
 	 * Creates native registration according the PNS supported on device
 	 * @param notificationHubPath The Notification Hub path
+	 * @return Native registration
 	 */
 	public Registration createNativeRegistration(String notificationHubPath){
 		switch(mRegistrationType) {
@@ -89,6 +91,7 @@ public final class PnsSpecificRegistrationFactory {
 	 * Creates template registration according the PNS supported on device
 	 * TODO: This API needs to be deprecated
 	 * @param notificationHubPath The Notification Hub path
+	 * @return Template registration
 	 */
 	public TemplateRegistration createTemplateRegistration(String notificationHubPath){
 		switch(mRegistrationType) {
@@ -108,6 +111,7 @@ public final class PnsSpecificRegistrationFactory {
 	/**
 	 * Indicates if a registration xml is a Template Registration
 	 * @param xml	The xml to check
+	 * @return bool
 	 */
 	public boolean isTemplateRegistration(String xml){
 
@@ -145,6 +149,7 @@ public final class PnsSpecificRegistrationFactory {
 	
 	/**
 	 * Returns PNS handle field name according the PNS supported on device
+	 * @return Returns PNS handle field name
 	 */
 	public String getPNSHandleFieldName(){
 		switch(mRegistrationType)
@@ -169,6 +174,7 @@ public final class PnsSpecificRegistrationFactory {
 	
 	/**
 	 * Returns API origin value according the PNS supported on device
+	 * @return API origin value
 	 */
 	public String getAPIOrigin(){
 		

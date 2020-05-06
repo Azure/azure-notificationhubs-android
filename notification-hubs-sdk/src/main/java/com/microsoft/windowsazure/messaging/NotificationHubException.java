@@ -40,6 +40,7 @@ public class NotificationHubException extends Exception {
 
 	/**
 	 * Gets the status code that the server returned
+	 * @return HTTP status code.
 	 */
 	public int getStatusCode() {
 		return mStatusCode;

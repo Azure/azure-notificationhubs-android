@@ -21,6 +21,7 @@ public class TagVisitor implements InstallationVisitor, Taggable {
 
     /**
      * Creates an TagEnricher, with the tags previously associated with this application.
+     * @param context Application context
      */
     public TagVisitor(Context context) {
         mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);

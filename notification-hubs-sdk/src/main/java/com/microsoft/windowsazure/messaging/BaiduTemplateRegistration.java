@@ -71,6 +71,7 @@ public class BaiduTemplateRegistration extends TemplateRegistration {
 	
 	/**
 	 * Gets the Baidu user Id.
+	 * @return User Id.
 	 */
 	public String getUserId() {
 		return mUserId;
@@ -85,6 +86,7 @@ public class BaiduTemplateRegistration extends TemplateRegistration {
 	
 	/**
 	 * Gets the Baidu channel Id.
+	 * @return Channel Id.
 	 */
 	public String getChannelId() {
 		return mChannelId;

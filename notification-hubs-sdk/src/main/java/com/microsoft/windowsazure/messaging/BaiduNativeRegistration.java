@@ -97,6 +97,7 @@ public class BaiduNativeRegistration extends Registration {
 
 	/**
 	 * Gets the Baidu user Id.
+	 * @return User Id.
 	 */
 	public String getUserId() {
 		return mUserId;
@@ -111,6 +112,7 @@ public class BaiduNativeRegistration extends Registration {
 	
 	/**
 	 * Gets the Baidu channel Id.
+	 * @return Channel Id.
 	 */
 	public String getChannelId() {
 		return mChannelId;

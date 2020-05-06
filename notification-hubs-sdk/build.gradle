@@ -47,28 +47,33 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
+configurations {
+    javadocDeps
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     api 'com.google.firebase:firebase-messaging:20.1.5'
 
-    androidTestImplementation 'androidx.test:core:1.0.0'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestUtil 'androidx.test:orchestrator:1.1.0'
-    androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.0.0'
+    javadocDeps 'com.android.support:support-annotations:22.2.0'
+
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestUtil 'androidx.test:orchestrator:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'com.crittercism.dexmaker:dexmaker-dx:1.4'
     androidTestImplementation 'com.crittercism.dexmaker:dexmaker-mockito:1.4'
 
-    testImplementation 'androidx.test:core:1.0.0'
-    testImplementation 'androidx.test:runner:1.1.0'
-    testImplementation 'androidx.test:rules:1.1.0'
-    testImplementation 'androidx.test.ext:junit:1.0.0'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'androidx.test:runner:1.2.0'
+    testImplementation 'androidx.test:rules:1.2.0'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
     testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
     testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.6.5'
 }
-
 
 
 task clearJar(type: Delete) {
@@ -113,6 +118,7 @@ uploadArchives {
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.javadocDeps
 }
 
 task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
