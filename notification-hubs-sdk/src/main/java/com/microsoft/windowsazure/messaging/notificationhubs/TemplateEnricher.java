@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,14 +27,15 @@ public class TemplateEnricher implements InstallationEnricher {
     private SharedPreferences mPreferences;
 
     /**
-     * Creates an empty TagEnricher.
+     * Creates an empty TemplateEnricher.
      */
     public TemplateEnricher() {
 
     }
 
     /**
-     * Creates a TagEnricher with a pre-populated set of templates to apply.
+     * Creates a TemplateEnricher with a pre-populated set of templates to apply.
+     * @param context application context
      * @param templates The initial set of templates that should be applied to future {@link Installation}s.
      */
     public TemplateEnricher(Context context, Map<String, InstallationTemplate> templates) {
@@ -46,15 +46,15 @@ public class TemplateEnricher implements InstallationEnricher {
 
     @Override
     public void enrichInstallation(Installation subject) {
-        subject.addTemplates(getTemplatesSet());
+        subject.addTemplates(getSharedPreferenceTemplates());
     }
 
     /**
      * Get a set of templates.
      *
-     * @return A set of templates.
+     * @return A map of templates.
      */
-    private Map<String, InstallationTemplate> getTemplatesSet() {
+    private Map<String, InstallationTemplate> getSharedPreferenceTemplates() {
         Set<String> preferencesSet = mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>());
         if (preferencesSet == null) {
             return new HashMap<>();
@@ -72,6 +72,7 @@ public class TemplateEnricher implements InstallationEnricher {
     /**
      * Adds a single template to this collection.
      *
+     * @param templateName Name of template
      * @param template The template to include with this collection.
      * @return True if the provided template was not previously associated with this collection.
      */
@@ -83,16 +84,16 @@ public class TemplateEnricher implements InstallationEnricher {
     /**
      * Adds several templates to the collection.
      *
-     * @param templates The templates to include with this collection.
+     * @param templates The collection of named templates to include with this collection.
      * @return True if any of the provided templates had not previously been associated with this
      * Installation.
      */
 
     public boolean addTemplates(Map<String, InstallationTemplate> templates) {
-        Map<String, InstallationTemplate> set = getTemplatesSet();
-        set.putAll(templates);
+        Map<String, InstallationTemplate> sharedPreferenceTemplates = getSharedPreferenceTemplates();
+        sharedPreferenceTemplates.putAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();
-        for (Map.Entry<String, InstallationTemplate> template: set.entrySet()) {
+        for (Map.Entry<String, InstallationTemplate> template: sharedPreferenceTemplates.entrySet()) {
             serializedTemplatesSet.add(serializeInstallationTemplateToJson(template.getKey(), template.getValue()));
         }
         mPreferences.edit().putStringSet(PREFERENCE_KEY, serializedTemplatesSet).apply();
@@ -100,9 +101,9 @@ public class TemplateEnricher implements InstallationEnricher {
     }
 
     /**
-     * Deletes one template from this collection.
+     * Deletes one template from this collection by name.
      *
-     * @param templateName The template name that should no longer be in the collection.
+     * @param templateName The name of template that should no longer be in the collection.
      * @return True if the template had previously been associated with this collection.
      */
     public boolean removeTemplate(String templateName) {
@@ -112,22 +113,27 @@ public class TemplateEnricher implements InstallationEnricher {
     /**
      * Deletes several templates from this collection.
      *
-     * @param templates The templates name that should no longer be in the collection.
+     * @param templates The templates name collection that should no longer be in the collection.
      * @return True if any of the templates had previously been associated with this collection.
      */
     public boolean removeTemplates(List<String> templates) {
-        Map<String, InstallationTemplate> set = getTemplatesSet();
-        set.keySet().removeAll(templates);
+        Map<String, InstallationTemplate> sharedPreferenceTemplates = getSharedPreferenceTemplates();
+        sharedPreferenceTemplates.keySet().removeAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();
-        for (Map.Entry<String, InstallationTemplate> installation: set.entrySet()) {
+        for (Map.Entry<String, InstallationTemplate> installation: sharedPreferenceTemplates.entrySet()) {
             serializedTemplatesSet.add(serializeInstallationTemplateToJson(installation.getKey(), installation.getValue()));
         }
         mPreferences.edit().putStringSet(PREFERENCE_KEY, serializedTemplatesSet).apply();
         return true;
     }
 
+    /**
+     * Fetches the template by name
+     * @param templateName Name of template
+     * @return Return template associated with name
+     */
     public InstallationTemplate getTemplate(String templateName) {
-        Map<String, InstallationTemplate> templates = getTemplatesSet();
+        Map<String, InstallationTemplate> templates = getSharedPreferenceTemplates();
         return templates.get(templateName);
     }
 
@@ -137,7 +143,7 @@ public class TemplateEnricher implements InstallationEnricher {
      * @return A set of templates.
      */
     public Iterable<Map.Entry<String, InstallationTemplate>> getTemplates() {
-        return getTemplatesSet().entrySet();
+        return getSharedPreferenceTemplates().entrySet();
     }
 
     /**
@@ -150,6 +156,7 @@ public class TemplateEnricher implements InstallationEnricher {
     /**
      * Serialize InstallationTemplate to JSONObject.
      *
+     * @param name Name of template
      * @param installationTemplate The templates that should no longer be in the collection.
      * @return serialized templateObject.
      */
