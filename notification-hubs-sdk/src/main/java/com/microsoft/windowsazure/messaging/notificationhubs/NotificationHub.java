@@ -25,6 +25,7 @@ public final class NotificationHub {
     private final List<InstallationVisitor> mVisitors;
     private PushChannelVisitor mPushChannelVisitor;
     private TagVisitor mTagVisitor;
+    private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
     private InstallationAdapter mManager;
@@ -87,6 +88,9 @@ public final class NotificationHub {
 
         instance.mTagVisitor = new TagVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTagVisitor);
+
+        instance.mTemplateVisitor = new TemplateVisitor();
+        instance.useInstanceVisitor(instance.mTemplateVisitor);
 
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
@@ -433,5 +437,51 @@ public final class NotificationHub {
 
     public boolean isInstanceEnabled() {
         return mPreferences.getBoolean(IS_ENABLED_PREFERENCE_KEY, true);
+    }
+
+    /**
+     * Add template to the collection
+     *
+     * @param templateName Name of template
+     * @param template Template instance
+     */
+    public static void addTemplate(String templateName, InstallationTemplate template) {
+        getInstance().addInstanceTemplate(templateName, template);
+    }
+
+    public void addInstanceTemplate(String templateName, InstallationTemplate template) {
+        mTemplateVisitor.addTemplate(templateName, template);
+        beginInstanceInstallationUpdate();
+    }
+
+    /**
+     * Remove template from collection
+     *
+     * @param templateName The name of template that should no longer be in the collection.
+     * @return True if any of the templates had previously been associated with this name.
+     */
+    public static boolean removeTemplate(String templateName) {
+        return getInstance().removeInstanceTemplate(templateName);
+    }
+
+    public boolean removeInstanceTemplate(String templateName) {
+        if(mTemplateVisitor.removeTemplate(templateName)){
+            beginInstanceInstallationUpdate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param templateName Name of template
+     * @return Instance of template associated with name
+     */
+    public static InstallationTemplate getTemplate(String templateName) {
+        return getInstance().getInstanceTemplate(templateName);
+    }
+
+    public InstallationTemplate getInstanceTemplate(String templateName) {
+        return mTemplateVisitor.getTemplate(templateName);
     }
 }
