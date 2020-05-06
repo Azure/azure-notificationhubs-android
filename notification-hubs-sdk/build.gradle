@@ -5,14 +5,6 @@ def VERSION = '1.0.0-preview1'
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
 def GROUP_ID = 'com.microsoft.azure'
 
-def BINTRAY_USERNAME = "$System.env.BINTRAY_USERNAME"
-def BINTRAY_APIKEY = "$System.env.BINTRAY_APIKEY"
-
-// def isCI = project.hasProperty('isCI') ? Boolean.valueOf(isCI) : false
-// def repoUrl = isCI ? "file://" + "$System.env.BUILD_ARTIFACTSTAGINGDIRECTORY" : 'https://api.bintray.com/maven/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK'
-def repoUrl = "file://C:/code/github.com/Azure/azure-notificationhubs-android/notification-hubs-sdk/build/foo"
-// def repoUrl = 'https://api.bintray.com/maven/marstr/NH-experiments/nh-android-experiments'
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
