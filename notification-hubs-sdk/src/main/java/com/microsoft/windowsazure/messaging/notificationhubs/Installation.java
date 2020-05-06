@@ -8,9 +8,9 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Wraps a record of a device, for use resolving future requests to broadcast notifications.
+ * Wraps a record of a device, for use resolving future requests of broadcast notifications.
  */
-public class Installation implements Tagable {
+public class Installation implements Taggable {
     private String mPushChannel;
     private Set<String> mTags;
     private Map<String, InstallationTemplate> mTemplates;
@@ -36,7 +36,7 @@ public class Installation implements Tagable {
      *                    for new notifications.
      */
     public void setPushChannel(String pushChannel) {
-        this.mPushChannel = pushChannel;
+        mPushChannel = pushChannel;
     }
 
     /**

@@ -1,18 +1,15 @@
 package com.example.notification_hubs_test_app_refresh;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.notification_hubs_test_app_refresh.ui.main.SectionsPagerAdapter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        NotificationHub.initialize(this.getApplicationContext(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
+        NotificationHub.initialize(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_refresh:0.1.0");
     }
 }

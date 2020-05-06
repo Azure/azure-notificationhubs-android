@@ -3,8 +3,6 @@ package com.example.notification_hubs_test_app_refresh.ui.main;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,20 +10,29 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification_hubs_test_app_refresh.R;
+import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.ViewHolder> {
+public class NotificationDisplayAdapter extends RecyclerView.Adapter<NotificationDisplayAdapter.ViewHolder> {
 
-    private List<String> mTags;
-    private final SetupViewModel mViewModel;
+    private List<NotificationMessage> mNotifications;
+    private NotificationClickListener mClickListener;
 
-    public TagDisplayAdapter(SetupViewModel viewModel) {
-        mViewModel = viewModel;
+    public NotificationDisplayAdapter() {
+        this(new ArrayList<NotificationMessage>(0));
+    }
+
+    public NotificationDisplayAdapter(List<NotificationMessage> initialList) {
+        mNotifications = initialList;
+        mClickListener = message -> {
+            // Intentionally Left Blank
+        };
     }
 
     /**
-     * Called when RecyclerView needs a new {@link androidx.recyclerview.widget.RecyclerView.ViewHolder} of the given type to represent
+     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
      * an item.
      * <p>
      * This new ViewHolder should be constructed with a new View that can represent the items
@@ -33,7 +40,7 @@ public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.Vi
      * layout file.
      * <p>
      * The new ViewHolder will be used to display items of the adapter using
-     * {@link #onBindViewHolder(androidx.recyclerview.widget.RecyclerView.ViewHolder, int, List)}. Since it will be re-used to display
+     * {@link #onBindViewHolder(ViewHolder, int, List)}. Since it will be re-used to display
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
@@ -42,19 +49,27 @@ public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.Vi
      * @param viewType The view type of the new View.
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
-     * @see #onBindViewHolder(androidx.recyclerview.widget.RecyclerView.ViewHolder, int)
+     * @see #onBindViewHolder(ViewHolder, int)
      */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tag_row_item, parent, false);
-
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_item, parent, false);
         return new ViewHolder(v);
+    }
+
+    public void setNotifications(List<NotificationMessage> notifications) {
+        mNotifications = notifications;
+        notifyDataSetChanged();
+    }
+
+    public void setClickListener(NotificationClickListener listener) {
+        mClickListener = listener;
     }
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link androidx.recyclerview.widget.RecyclerView.ViewHolder#itemView} to reflect the item at the given
+     * update the contents of the {@link ViewHolder#itemView} to reflect the item at the given
      * position.
      * <p>
      * Note that unlike {@link ListView}, RecyclerView will not call this method
@@ -62,10 +77,10 @@ public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.Vi
      * invalidated or the new position cannot be determined. For this reason, you should only
      * use the <code>position</code> parameter while acquiring the related data item inside
      * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use {@link androidx.recyclerview.widget.RecyclerView.ViewHolder#getAdapterPosition()} which will
+     * on (e.g. in a click listener), use {@link ViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
      * <p>
-     * Override {@link #onBindViewHolder(androidx.recyclerview.widget.RecyclerView.ViewHolder, int, List)} instead if Adapter can
+     * Override {@link #onBindViewHolder(ViewHolder, int, List)} instead if Adapter can
      * handle efficient partial bind.
      *
      * @param holder   The ViewHolder which should be updated to represent the contents of the
@@ -74,7 +89,10 @@ public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.Vi
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getTagText().setText(mTags.get(position));
+        NotificationMessage entry = mNotifications.get(position);
+        holder.mTitle.setText(entry.getTitle());
+        holder.mBody.setText(entry.getBody());
+        holder.mDataCardinality.setText(String.valueOf(entry.getData().size()));
     }
 
     /**
@@ -84,36 +102,27 @@ public class TagDisplayAdapter extends RecyclerView.Adapter<TagDisplayAdapter.Vi
      */
     @Override
     public int getItemCount() {
-        return mTags == null ? 0 : mTags.size();
-    }
-
-    public void setTags(List<String> tags) {
-        mTags = tags;
-        notifyDataSetChanged();
+        return mNotifications.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mTagText;
-        private final ImageButton mDeleteButton;
+        private final TextView mTitle;
+        private final TextView mBody;
+        private final TextView mDataCardinality;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTagText = (TextView) itemView.findViewById(R.id.tag_entry_value);
-            mDeleteButton = (ImageButton) itemView.findViewById(R.id.tag_delete_button);
-            mDeleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewModel.removeTag(mTagText.getText().toString());
-                }
+            mTitle = (TextView) itemView.findViewById(R.id.titleValue);
+            mBody = (TextView) itemView.findViewById(R.id.bodyValue);
+            mDataCardinality = (TextView) itemView.findViewById(R.id.dataCardinalityValue);
+            itemView.setOnClickListener(v -> {
+                NotificationMessage clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
+                NotificationDisplayAdapter.this.mClickListener.onNotificationClicked(clicked);
             });
         }
+    }
 
-        public TextView getTagText() {
-            return mTagText;
-        }
-
-        public ImageButton getDeleteButton() {
-            return mDeleteButton;
-        }
+    public interface NotificationClickListener {
+        void onNotificationClicked(NotificationMessage message);
     }
 }

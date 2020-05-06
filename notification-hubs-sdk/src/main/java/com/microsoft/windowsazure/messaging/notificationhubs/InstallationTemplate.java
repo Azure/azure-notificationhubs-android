@@ -9,7 +9,7 @@ import java.util.Set;
 
 import androidx.annotation.Nullable;
 
-public class InstallationTemplate {
+class InstallationTemplate {
     private String mBody;
     private Set<String> mTags = new HashSet<>();
     private Map<String, String> mHeaders = new HashMap<>();

@@ -12,60 +12,51 @@ public class NotificationHubTest {
 
     @Test
     @Ignore
-    public void useInstanceMiddleware() {
+    public void useInstanceVisitor() {
         NotificationHub specimen = new NotificationHub();
-        final int[] callCount = new int[]{0, 0};
+        final int[] callCount = new int[]{0};
 
-        specimen.useInstanceMiddleware(next -> {
-            callCount[0]++;
-            assertNotNull("Next InstallationEnricher should never be null.", next);
-            return subject -> {
-                callCount[1]++;
-                next.enrichInstallation(subject);
-                assertNotNull("Installation to be enriched should never be null", subject);
-            };
-        });
+        specimen.useInstanceVisitor(
+                new InstallationVisitor() {
+                    @Override
+                    public void visitInstallation(Installation subject) {
+                        callCount[0]++;
+                        assertNotNull("Installation to be visited should never be null", subject);
+                    }
+                });
 
-        specimen.reinstallInstance();
+        specimen.beginInstanceInstallationUpdate();
 
-        assertEquals("Middleware should have been invoked exactly once.", 1, callCount[0]);
-        assertEquals("InstallationEnricher should have been invoked exactly once.", 1, callCount[1]);
+        assertEquals("InstallationEnricher should have been invoked exactly once.", 1, callCount[0]);
     }
 
     @Test
     @Ignore
     public void testUseInstanceMiddleware() {
         NotificationHub specimen = new NotificationHub();
+        final String INCORRECT_ORDER_MESSAGE = "Installation visitors should be called in the order they were added";
+        final int[] callCount = new int[]{0, 0};
 
-        final int[] callCount = new int[]{0, 0, 0, 0};
+        specimen.useInstanceVisitor(new InstallationVisitor() {
+            @Override
+            public void visitInstallation(Installation subject) {
+                assertEquals(INCORRECT_ORDER_MESSAGE, 0, callCount[1]);
+                callCount[0]++;
+            }
+        });
 
-        specimen.useInstanceMiddleware(next -> {
-            assertEquals("Middleware should be called as a stack", 1, callCount[2]);
-            callCount[0]++;
-            return subject -> {
-                assertEquals("Installation Enrichers are called in the order the middleware was added", 0, callCount[3]);
+        specimen.useInstanceVisitor(new InstallationVisitor() {
+            @Override
+            public void visitInstallation(Installation subject) {
+                assertEquals(INCORRECT_ORDER_MESSAGE, 1, callCount[0]);
                 callCount[1]++;
-                next.enrichInstallation(subject);
-            };
+            }
         });
 
-        specimen.useInstanceMiddleware(next -> {
-            assertEquals("Middleware should be called as a stack", 0, callCount[0]);
-            callCount[2]++;
-            return new InstallationEnricher() {
-                @Override
-                public void enrichInstallation(Installation subject) {
-                    assertEquals("Installation Enrichers are called in the order the middleware was added", 1, callCount[1]);
-                    callCount[3]++;
-                    next.enrichInstallation(subject);
-                }
-            };
-        });
-
-        specimen.reinstallInstance();
+        specimen.beginInstanceInstallationUpdate();
 
         for (int x: callCount) {
-            assertEquals("each method should be called exactly once", 1, x);
+            assertEquals("each visitor should be called exactly once", 1, x);
         }
     }
 

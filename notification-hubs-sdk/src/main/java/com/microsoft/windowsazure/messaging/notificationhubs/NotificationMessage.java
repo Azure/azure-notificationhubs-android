@@ -1,58 +1,26 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.messaging.RemoteMessage;
-
 import java.util.Map;
 
-public class NotificationMessage {
+/**
+ * Wraps the notifications that may be delivered via any channel.
+ */
+public interface NotificationMessage {
+    /**
+     * Fetches the primary text associated with a Notification.
+     * @return The title of the notification.
+     */
+    String getTitle();
 
     /**
-     * Notification title. Will be null when Notification is received from click in system tray.
+     * Fetches the secondary text associated with a notification.
+     * @return The body of the notification.
      */
-    private final String mTitle;
+    String getBody();
 
     /**
-     * Notification message. Will be null when Notification is received from click in system tray.
+     * Key/value pairs associated with the notification.
+     * @return Fields associated with this notification.
      */
-    private final String mMessage;
-
-    /**
-     * Key/value pairs sent with a Push Notification.
-     */
-    private final Map<String, String> mCustomData;
-
-    public NotificationMessage(String title, String message, @NonNull Map<String, String> customData) {
-        mTitle = title;
-        mMessage = message;
-        mCustomData = customData;
-    }
-
-    public NotificationMessage(RemoteMessage message) {
-        RemoteMessage.Notification notification = message.getNotification();
-        mTitle = notification.getTitle();
-        mMessage = notification.getBody();
-
-        mCustomData = message.getData();
-    }
-
-    /**
-     * @return
-     */
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public String getMessage() {
-        return mMessage;
-    }
-
-    /**
-     * Get the data fields that were sent with this message.
-     * @return A collection of key/value pairs that were sent with this message. Can be empty, but not null.
-     */
-    public Map<String, String> getCustomData(){
-        return mCustomData;
-    }
+    Map<String, String> getData();
 }

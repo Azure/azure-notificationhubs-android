@@ -5,7 +5,7 @@ import java.util.Collection;
 /**
  * Standardizes the contract for supporting tags.
  */
-interface Tagable {
+interface Taggable {
     /**
      * Adds a single tag to this collection.
      * @param tag The tag to include with this collection.

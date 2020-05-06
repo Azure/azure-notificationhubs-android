@@ -2,7 +2,11 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import androidx.test.filters.SmallTest;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,14 +17,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
-public class TagEnricherTest {
+public class TagVisitorTest {
     private Context context = getInstrumentation().getTargetContext();
-    private List<String> tagList = Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList());
+    private List<String> tagList = new ArrayList<String>();
+
+    @Before
+    public void Before(){
+        tagList.clear();
+        tagList.add("tag1");
+        tagList.add("tag2");
+        tagList.add("tag3");
+    }
 
     @Test
     public void TagEnricherAddTag () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTag(tagList.get(0)));
         assertTrue(((HashSet<String>)te.getTags()).contains(tagList.get(0)));
@@ -28,10 +39,12 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherAddTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
-        List<String> secondTagList = Stream.of("tag4", "tag5", "tag6").collect(Collectors.toList());
+        List<String> secondTagList = new ArrayList<String>();
+        secondTagList.add("tag4");
+        secondTagList.add("tag5");
+        secondTagList.add("tag6");
 
         assertTrue(te.addTags(tagList));
         assertTrue(te.addTags(secondTagList));
@@ -42,8 +55,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherClearTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -53,8 +65,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTag () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));
@@ -65,8 +76,7 @@ public class TagEnricherTest {
 
     @Test
     public void TagEnricherRemoveTags () {
-        TagEnricher te = new TagEnricher();
-        te.setPreferences(context);
+        TagVisitor te = new TagVisitor(context);
 
         assertTrue(te.addTags(tagList));
         assertTrue(((HashSet<String>)te.getTags()).containsAll(tagList));

@@ -10,7 +10,6 @@ import com.microsoft.windowsazure.messaging.R;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,7 +34,9 @@ public class DebouncerTest {
         installation = new Installation();
         installation.setInstallationId("id_first");
         installation.setPushChannel("pushChannel");
-        installation.addTags(Stream.of("tag1", "tag2", "tag3").collect(Collectors.toList()));
+        installation.addTag("tag1");
+        installation.addTag("tag2");
+        installation.addTag("tag3");
 
         installation_second = new Installation();
         installation_second.setInstallationId("id_second");
@@ -48,16 +49,16 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerDoesNotInvokeSaveImmediately() {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         verify(nhInstallationManager, times(0)).saveInstallation(context, installation);
     }
 
     @Test
     public void DebouncerInvokesSaveAfterDelayHappyPath() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         verify(nhInstallationManager, times(1)).saveInstallation(context, installation);
@@ -65,8 +66,8 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerInvokesSaveForMostRecent() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         debouncer.saveInstallation(context, installation_second);
         debouncer.saveInstallation(context, installation_third);
@@ -78,8 +79,8 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerInvokesSaveTwice() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation_second);
@@ -90,8 +91,8 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerRestartsDelay() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayInMillisec - 1000);
         // Invoke second call during delay, scheduler should be restarted, delay 2seconds
@@ -107,8 +108,8 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerDoesNotInvokeSaveForSameInstallation() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
         debouncer.saveInstallation(context, installation);
@@ -118,13 +119,13 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
-        NotificationHubInstallationManager nhInstallationManager = mock(NotificationHubInstallationManager.class);
-        DebounceInstallationManager debouncer = new DebounceInstallationManager(nhInstallationManager);
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(context, installation);
         Thread.sleep(debouncerDelayPlusSecond);
 
         String PREFERENCE_KEY = "recentInstallation";
-        SharedPreferences mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
         int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());

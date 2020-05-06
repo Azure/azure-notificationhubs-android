@@ -1,8 +1,6 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,70 +10,94 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.microsoft.windowsazure.messaging.R;
 
+/**
+ * Facilitates processing messages that are delivered to the device via Firebase Cloud Messaging
+ * (FCM).
+ *
+ * This class must be public to be invoked by Android. However, there should be no need for
+ * consumers to interact directly with this class.
+ */
 public final class FirebaseReceiver extends FirebaseMessagingService {
 
-    private static final String DEVICE_TOKEN_KEY = "DeviceToken";
+    private final NotificationHub mHub;
 
-    private SharedPreferences mFirebasePreferences;
-
+    /**
+     * Creates a new instance that will inform the static-global-instance of {@link NotificationHub}
+     * when a new message is received.
+     */
     public FirebaseReceiver() {
-        mFirebasePreferences = this.getSharedPreferences(
-                getString(R.string.firebase_preference_file_key),
-                Context.MODE_PRIVATE);
+        this(NotificationHub.getInstance());
+    }
 
-        if (!mFirebasePreferences.contains(DEVICE_TOKEN_KEY)) {
+    /**
+     * Creates a new instance that will inform the given {@link NotificationHub} instance when a
+     * message is received.
+     * @param hub The hub that should be informed when a new notification arrives.
+     */
+    public FirebaseReceiver(NotificationHub hub) {
+        mHub = hub;
+    }
+
+    /**
+     * Loads all resources that the service will need to execute.
+     */
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+
+        if (mHub.getPushChannel() == null) {
             FirebaseInstanceId.getInstance()
                     .getInstanceId()
-                    .addOnCompleteListener(task -> {
-                        if (!task.isSuccessful()){
-                            // TODO: log an exception.
-                            return;
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Log.e("ANH", "unable to fetch FirebaseInstanceId");
+                                return;
+                            }
+                            mHub.setPushChannel(task.getResult().getToken());
                         }
-                        FirebaseReceiver.this.setDeviceToken(task.getResult().getToken());
                     });
         }
     }
 
+    /**
+     * Callback for the system when a new RemoteMessage is received.
+     * @param remoteMessage the newly acquired message.
+     */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        NotificationHub.relayMessage(remoteMessage);
+        mHub.relayMessage(getNotificationMessage(remoteMessage));
     }
 
+    /**
+     * Callback for when Firebase assigns a new unique identifier for pushing notifications to this
+     * application on this device.
+     * @param s The new unique identifier for this application.
+     */
     @Override
     public void onNewToken(@NonNull String s) {
-        setDeviceToken(s);
+        mHub.setPushChannel(s);
     }
 
     /**
-     * Converts from a {@link RemoteMessage} to a {@link NotificationMessage}.
+     * Converts from a RemoteMessage to a {@link BasicNotificationMessage}.
      * @param remoteMessage The message intended for this device, as delivered by Firebase.
-     * @return A fully instantiated {@link NotificationMessage}.
+     * @return A fully instantiated {@link BasicNotificationMessage}.
      */
-    static NotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
+    static BasicNotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        return new NotificationMessage(
-                notification.getTitle(),
-                notification.getBody(),
-                remoteMessage.getData());
-    }
-
-    public void setDeviceToken(String token){
-        NotificationHub.setPushChannel(token);
-        mFirebasePreferences.edit().putString(DEVICE_TOKEN_KEY, token);
-    }
-
-    /**
-     * Fetches the current Push Channel.
-     * @return The current string that identifies this device as Push notification receiver. Null if
-     *         it hasn't been initialized yet.
-     */
-    public String getDeviceToken() {
-        String retval = NotificationHub.getPushChannel();
-        if (retval == null) {
-            retval = mFirebasePreferences.getString(DEVICE_TOKEN_KEY, null);
+        String title = null;
+        String body = null;
+        if (notification != null) {
+            title = notification.getTitle();
+            body = notification.getBody();
         }
-        return retval;
+        return new BasicNotificationMessage(
+                title,
+                body,
+                remoteMessage.getData());
     }
 }
