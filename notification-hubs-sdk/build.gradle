@@ -66,6 +66,11 @@ task clearJar(type: Delete) {
     delete 'build/release/' + PUBLISH_ARTIFACT_ID + '-' + version + '.jar'
 }
 
+task writeVersionFile() {
+    File versionFileHandle = new File("$buildDir/repo/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
+    versionFileHandle.write VERSION
+}
+
 // step 1
 task makeJar(type: Copy) {
     from('build/intermediates/aar_main_jar/release/')
