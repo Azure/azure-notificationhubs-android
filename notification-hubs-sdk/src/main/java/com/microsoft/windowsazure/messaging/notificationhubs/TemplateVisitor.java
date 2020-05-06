@@ -21,31 +21,31 @@ import java.util.Set;
  * Collects a set of distinct templates, in order to apply them to {@link Installation}s as they are
  * created.
  */
-public class TemplateEnricher implements InstallationEnricher {
+public class TemplateVisitor implements InstallationVisitor {
 
     private static final String PREFERENCE_KEY = "templates";
     private SharedPreferences mPreferences;
 
     /**
-     * Creates an empty TemplateEnricher.
+     * Creates an empty TemplateVisitor.
      */
-    public TemplateEnricher() {
+    public TemplateVisitor() {
 
     }
 
     /**
-     * Creates a TemplateEnricher with a pre-populated set of templates to apply.
+     * Creates a TemplateVisitor with a pre-populated set of templates to apply.
      * @param context application context
      * @param templates The initial set of templates that should be applied to future {@link Installation}s.
      */
-    public TemplateEnricher(Context context, Map<String, InstallationTemplate> templates) {
+    public TemplateVisitor(Context context, Map<String, InstallationTemplate> templates) {
         this();
         setPreferences(context);
         addTemplates(templates);
     }
 
     @Override
-    public void enrichInstallation(Installation subject) {
+    public void visitInstallation(Installation subject) {
         subject.addTemplates(getSharedPreferenceTemplates());
     }
 
@@ -55,7 +55,7 @@ public class TemplateEnricher implements InstallationEnricher {
      * @return A map of templates.
      */
     private Map<String, InstallationTemplate> getSharedPreferenceTemplates() {
-        Set<String> preferencesSet = mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<>());
+        Set<String> preferencesSet = mPreferences.getStringSet(PREFERENCE_KEY, new HashSet<String>());
         if (preferencesSet == null) {
             return new HashMap<>();
         }
@@ -173,7 +173,9 @@ public class TemplateEnricher implements InstallationEnricher {
             }
             templateObject.put("headers", headers);
             JSONArray tagsArray = new JSONArray();
-            installationTemplate.getTags().forEach(tag -> tagsArray.put(tag));
+            for (String tag : installationTemplate.getTags()) {
+                tagsArray.put(tag);
+            }
             templateObject.put("tags", tagsArray);
         } catch (JSONException ex) {
             ex.printStackTrace();

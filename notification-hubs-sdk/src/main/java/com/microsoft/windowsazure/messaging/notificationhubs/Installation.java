@@ -117,7 +117,7 @@ public class Installation implements Taggable {
         Installation that = (Installation) o;
         return mPushChannel.equals(that.mPushChannel) &&
                 mTags.equals(that.mTags) &&
-//                mTemplates.equals(that.mTemplates) &&
+                mTemplates.equals(that.mTemplates) &&
                 mInstallationId.equals(that.mInstallationId);
     }
 
