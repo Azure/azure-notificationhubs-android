@@ -71,7 +71,7 @@ task clearJar(type: Delete) {
 
 task writeVersionFile {
     doLast {
-        File versionFileHandle = new File(REPO_URL + "/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
+        File versionFileHandle = file(REPO_URL + "/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
         versionFileHandle.write VERSION
     }
 }
