@@ -72,8 +72,8 @@ public class Installation implements Taggable {
     }
 
     /**
-     * Fetches the tags associated with this Installation.
-     * @return
+     * Fetches the tags associated with this collection.
+     * @return A set of tags.
      */
     public Iterable<String> getTags() {
         return mTags;
@@ -88,14 +88,19 @@ public class Installation implements Taggable {
     }
 
     /**
-     *
-     * @param tag
-     * @return
+     * Remove specific tag from this Installation.
+     * @param tag The tag that should no longer be in the collection.
+     * @return True if the tag had previously been associated with this collection.
      */
     public boolean removeTag(String tag) {
         return mTags.remove(tag);
     }
 
+    /**
+     * Deletes several tags from this collection.
+     * @param tags The tags that should no longer be in the collection.
+     * @return True if any of the tags had previously been associated with this collection.
+     */
     public boolean removeTags(Collection<? extends String> tags) {
         return mTags.removeAll(tags);
     }

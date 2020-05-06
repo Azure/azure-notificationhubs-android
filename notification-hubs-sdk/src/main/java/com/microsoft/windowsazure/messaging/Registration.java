@@ -289,6 +289,7 @@ public abstract class Registration {
 
 	/**
 	 * Gets the registration type
+	 * @return Registration type
 	 */
 	public RegistrationType getRegistrationType() {
 		return mRegistrationType;
@@ -303,6 +304,7 @@ public abstract class Registration {
 	
 	/**
 	 * Gets the registration ID
+	 * @return Registration ID
 	 */
 	public String getRegistrationId() {
 		return mRegistrationId;
@@ -317,6 +319,7 @@ public abstract class Registration {
 
 	/**
 	 * Gets the notification hub path
+	 * @return The notification hub path
 	 */
 	public String getNotificationHubPath() {
 		return mNotificationHubPath;
@@ -324,6 +327,7 @@ public abstract class Registration {
 
 	/**
 	 * Sets the notification hub path
+	 * @param notificationHubPath The notification hub path
 	 */
 	void setNotificationHubPath(String notificationHubPath) {
 		mNotificationHubPath = notificationHubPath;
@@ -345,6 +349,7 @@ public abstract class Registration {
 
 	/**
 	 * Gets the registration tags
+	 * @return List of registration tags
 	 */
 	public List<String> getTags() {
 		return new ArrayList<String>(mTags);
@@ -352,6 +357,7 @@ public abstract class Registration {
 
 	/**
 	 * Gets the registration URI
+	 * @return Registration URI
 	 */
 	public String getURI() {
 		return getNotificationHubPath() + "/Registrations/" + mRegistrationId;
@@ -422,6 +428,7 @@ public abstract class Registration {
 
 	/**
 	 * Gets the PNS specific identifier
+	 * @return PNS identifier
 	 */
 	public String getPNSHandle() {
 		return mPNSHandle;
@@ -436,7 +443,8 @@ public abstract class Registration {
 
 	/**
 	 * Gets the expiration time
-	 * @throws java.text.ParseException
+	 * @throws java.text.ParseException on date string parse error
+	 * @return Expiration time
 	 */
 	public Date getExpirationTime() throws ParseException {
 		return UTCDateStringToDate(mExpirationTime);

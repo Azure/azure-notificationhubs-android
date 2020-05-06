@@ -19,6 +19,7 @@ public class TagVisitor implements InstallationVisitor, Taggable {
 
     /**
      * Creates an TagEnricher, with the tags previously associated with this application.
+     * @param context Application context
      */
     public TagVisitor(Context context) {
         mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);

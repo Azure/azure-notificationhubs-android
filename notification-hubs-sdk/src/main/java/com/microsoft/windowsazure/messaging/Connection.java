@@ -139,7 +139,7 @@ class Connection {
 	 * @param targetHeaderName The header name when we need to get value from it in instead of content
 	 * @param extraHeaders	Extra headers to include in the request
 	 * @return	The response content body
-	 * @throws Exception
+	 * @throws Exception MalformedUrlException, IOException, ProtocolException
 	 */
 	public String executeRequest(String resource, String content, String contentType, String method, String targetHeaderName, SimpleEntry<String, String>... extraHeaders) throws Exception {
 		URI endpointURI = URI.create(mConnectionData.get(ENDPOINT_KEY));
@@ -194,9 +194,11 @@ class Connection {
 	 * @param conn	The HttpURLConnection to execute
 	 * @param targetHeaderName The header name when we need to get value from it in instead of content
 	 * @return	The content string or header value
-	 * @throws Exception
+	 * @throws Exception InvalidKeyException, IOException, UnsupportedEncodingException,
+	 * NotificationHubException, NotificationHubUnauthorizedException, RegistrationGoneException,
+	 * NotificationHubException
 	 */
-	private String executeRequest(HttpURLConnection conn, String targetHeaderName, String postContent) throws Exception {
+	private String executeRequest(HttpURLConnection conn, String targetHeaderName, String postContent) throws Exception{
 		addAuthorizationHeader(conn);
 
 		int status;

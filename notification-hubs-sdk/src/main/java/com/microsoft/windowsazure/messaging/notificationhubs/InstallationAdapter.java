@@ -5,6 +5,7 @@ import android.content.Context;
 interface InstallationAdapter {
     /**
      * Updates a backend with the updated Installation information for this device.
+     * @param context Application context.
      * @param installation The record to update.
      */
     void saveInstallation(Context context, Installation installation);
