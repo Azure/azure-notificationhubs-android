@@ -5,6 +5,9 @@ def VERSION = '1.0.0-preview1'
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
 def GROUP_ID = 'com.microsoft.azure'
 
+def IS_CI = project.hasProperty('isCI') ? Boolean.valueOf(isCI) : false
+def REPO_URL = IS_CI ? "file://" + "$System.env.BUILD_ARTIFACTSTAGINGDIRECTORY" : "$buildDir/repo"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -68,7 +71,7 @@ task clearJar(type: Delete) {
 
 task writeVersionFile {
     doLast {
-        File versionFileHandle = new File("$buildDir/repo/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
+        File versionFileHandle = file(REPO_URL + "/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
         versionFileHandle.write VERSION
     }
 }
@@ -97,7 +100,7 @@ afterEvaluate {
         repositories {
             maven {
                 name = 'BuildDir'
-                url = "file://$buildDir/repo"
+                url = REPO_URL
             }
         }
     }
