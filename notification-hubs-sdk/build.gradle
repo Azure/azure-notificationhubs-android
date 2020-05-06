@@ -97,8 +97,8 @@ afterEvaluate {
         }
         repositories {
             maven {
-                name = 'MarStr'
-                url = 'file://C:/foo/'
+                name = 'BuildDir'
+                url = "file://$buildDir/repo"
             }
         }
     }
