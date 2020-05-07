@@ -29,8 +29,8 @@ public class TemplateVisitor implements InstallationVisitor {
     /**
      * Creates an empty TemplateVisitor.
      */
-    public TemplateVisitor() {
-
+    public TemplateVisitor(Context context) {
+        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     /**
@@ -39,8 +39,7 @@ public class TemplateVisitor implements InstallationVisitor {
      * @param templates The initial set of templates that should be applied to future {@link Installation}s.
      */
     public TemplateVisitor(Context context, Map<String, InstallationTemplate> templates) {
-        this();
-        setPreferences(context);
+        this(context);
         addTemplates(templates);
     }
 
@@ -63,33 +62,23 @@ public class TemplateVisitor implements InstallationVisitor {
     }
 
     /**
-     * Save templates to shared preference.
-     */
-    void setPreferences(Context context) {
-        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
-    }
-
-    /**
      * Adds a single template to this collection.
      *
      * @param templateName Name of template
      * @param template The template to include with this collection.
-     * @return True if the provided template was not previously associated with this collection.
      */
-    public boolean addTemplate(String templateName, InstallationTemplate template) {
-
-        return addTemplates(Collections.singletonMap(templateName, template));
+    public void addTemplate(String templateName, InstallationTemplate template) {
+        addTemplates(Collections.singletonMap(templateName, template));
     }
 
     /**
      * Adds several templates to the collection.
      *
      * @param templates The collection of named templates to include with this collection.
-     * @return True if any of the provided templates had not previously been associated with this
      * Installation.
      */
 
-    public boolean addTemplates(Map<String, InstallationTemplate> templates) {
+    public void addTemplates(Map<String, InstallationTemplate> templates) {
         Map<String, InstallationTemplate> sharedPreferenceTemplates = getSharedPreferenceTemplates();
         sharedPreferenceTemplates.putAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();
@@ -97,7 +86,6 @@ public class TemplateVisitor implements InstallationVisitor {
             serializedTemplatesSet.add(serializeInstallationTemplateToJson(template.getKey(), template.getValue()));
         }
         mPreferences.edit().putStringSet(PREFERENCE_KEY, serializedTemplatesSet).apply();
-        return true;
     }
 
     /**
@@ -166,10 +154,9 @@ public class TemplateVisitor implements InstallationVisitor {
             templateObject.put("name", name);
             templateObject.put("body", installationTemplate.getBody());
             JSONObject headers = new JSONObject();
-            Iterator<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders().iterator();
-            while (headersIterators.hasNext()) {
-                Map.Entry<String, String> headerKey = headersIterators.next();
-                headers.put(headerKey.getKey(), headerKey.getValue());
+            Iterable<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders();
+            for(Map.Entry<String, String> header: headersIterators){
+                headers.put(header.getKey(), header.getValue());
             }
             templateObject.put("headers", headers);
             JSONArray tagsArray = new JSONArray();

@@ -123,6 +123,6 @@ public class Installation implements Taggable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(mPushChannel, mTags, mInstallationId);
+        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId);
     }
 }
