@@ -89,7 +89,7 @@ public final class NotificationHub {
         instance.mTagVisitor = new TagVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTagVisitor);
 
-        instance.mTemplateVisitor = new TemplateVisitor();
+        instance.mTemplateVisitor = new TemplateVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTemplateVisitor);
 
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
