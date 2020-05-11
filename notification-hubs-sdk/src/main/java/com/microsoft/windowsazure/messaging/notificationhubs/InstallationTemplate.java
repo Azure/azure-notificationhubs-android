@@ -13,10 +13,6 @@ class InstallationTemplate {
     private String mBody;
     private Set<String> mTags = new HashSet<>();
     private Map<String, String> mHeaders = new HashMap<>();
-
-    public InstallationTemplate() {
-
-    }
     
     /**
      * Get template body.
