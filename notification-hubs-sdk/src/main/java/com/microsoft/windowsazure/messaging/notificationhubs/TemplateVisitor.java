@@ -58,7 +58,13 @@ public class TemplateVisitor implements InstallationVisitor {
         if (preferencesSet == null) {
             return new HashMap<>();
         }
-        return deserializeInstallationTemplateToJson(preferencesSet);
+
+        try {
+            return deserializeInstallationTemplateToJson(preferencesSet);
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException("Unable to deserialize installation template", ex);
+        }
     }
 
     /**
@@ -165,7 +171,10 @@ public class TemplateVisitor implements InstallationVisitor {
             }
             templateObject.put("tags", tagsArray);
         } catch (JSONException ex) {
-            ex.printStackTrace();
+            // Investigating the possible sources of JSONException, it seems the only time it is
+            // thrown is when a Number is invalid. Because we are exclusively serializing strings
+            // above, this exception _should_ never be thrown.
+            throw new RuntimeException("Invalid template, unable to serialize", ex);
         }
         return templateObject.toString();
     }
@@ -175,30 +184,30 @@ public class TemplateVisitor implements InstallationVisitor {
      *
      * @param installationTemplatesSet The templates that should no longer be in the collection.
      * @return A set of deserialized templates.
+     * @throws JSONException When there's a schema-mismatch of the object to populate, and what
+     * appears in the serialized form of the template.
      */
-    private static Map<String, InstallationTemplate> deserializeInstallationTemplateToJson(Set<String> installationTemplatesSet) {
+    private static Map<String, InstallationTemplate> deserializeInstallationTemplateToJson(Set<String> installationTemplatesSet) throws JSONException {
         Map<String, InstallationTemplate> templates = new HashMap<>();
-        try {
-            for (String preferenceString : installationTemplatesSet) {
-                JSONObject preference = new JSONObject(preferenceString);
-                InstallationTemplate template = new InstallationTemplate();
-                String name = preference.getString("name");
-                template.setBody(preference.getString("body"));
-                JSONArray tags = preference.getJSONArray("tags");
-                for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
-                    template.addTag(tags.getString(tagKey));
-                }
-                JSONObject headers = preference.getJSONObject("headers");
-                Iterator<String> headersIterators = headers.keys();
-                while (headersIterators.hasNext()) {
-                    String headerKey = headersIterators.next();
-                    template.setHeader(headerKey, headers.getString(headerKey));
-                }
-                templates.put(name, template);
+
+        for (String preferenceString : installationTemplatesSet) {
+            JSONObject preference = new JSONObject(preferenceString);
+            InstallationTemplate template = new InstallationTemplate();
+            String name = preference.getString("name");
+            template.setBody(preference.getString("body"));
+            JSONArray tags = preference.getJSONArray("tags");
+            for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
+                template.addTag(tags.getString(tagKey));
             }
-        } catch(JSONException ex) {
-            ex.printStackTrace();
+            JSONObject headers = preference.getJSONObject("headers");
+            Iterator<String> headersIterators = headers.keys();
+            while (headersIterators.hasNext()) {
+                String headerKey = headersIterators.next();
+                template.setHeader(headerKey, headers.getString(headerKey));
+            }
+            templates.put(name, template);
         }
+
         return templates;
     }
 }
