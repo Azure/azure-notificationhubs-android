@@ -1,7 +1,9 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -11,10 +13,12 @@ import java.util.Set;
 public class Installation implements Taggable {
     private String mPushChannel;
     private Set<String> mTags;
+    private Map<String, InstallationTemplate> mTemplates;
     private String mInstallationId;
 
     public Installation() {
         mTags = new HashSet<String>();
+        mTemplates = new HashMap<String, InstallationTemplate>();
     }
 
     /**
@@ -105,6 +109,12 @@ public class Installation implements Taggable {
         return mTags.removeAll(tags);
     }
 
+    /**
+     * Adds several tamplates to this Installation.
+     * @param templates The templates to include with this Installation.
+     */
+    public void addTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,11 +122,12 @@ public class Installation implements Taggable {
         Installation that = (Installation) o;
         return mPushChannel.equals(that.mPushChannel) &&
                 mTags.equals(that.mTags) &&
+                mTemplates.equals(that.mTemplates) &&
                 mInstallationId.equals(that.mInstallationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mPushChannel, mTags, mInstallationId);
+        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId);
     }
 }
