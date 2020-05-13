@@ -55,10 +55,10 @@ steps:
     tasks: 'cleanTest connectedAndroidTest'
 
 - task: Gradle@2
-  displayName: 'gradlew makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+  displayName: 'gradlew makeJar uploadArchives'
   inputs:
     options: '-PisCI="true"'
-    tasks: 'makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+    tasks: 'makeJar uploadArchives'
     publishJUnitResults: false
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
