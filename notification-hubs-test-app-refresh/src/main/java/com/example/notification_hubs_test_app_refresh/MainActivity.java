@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.notification_hubs_test_app_refresh.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
+import com.microsoft.windowsazure.messaging.notificationhubs.InstallationTemplate;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,5 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationHub.initialize(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_refresh:0.1.0");
+        InstallationTemplate testTemplate = new InstallationTemplate();
+        testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");
+        NotificationHub.addTemplate("testTemplate", testTemplate);
     }
 }
