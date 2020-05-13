@@ -145,15 +145,21 @@ public class InstallationTemplate {
     public static InstallationTemplate deserialize(JSONObject installationTemplate) throws JSONException {
         InstallationTemplate template = new InstallationTemplate();
         template.setBody(installationTemplate.getString("body"));
-        JSONArray tags = installationTemplate.getJSONArray("tags");
-        for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
-            template.addTag(tags.getString(tagKey));
+
+        if (installationTemplate.has("tags")) {
+            JSONArray tags = installationTemplate.getJSONArray("tags");
+            for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
+                template.addTag(tags.getString(tagKey));
+            }
         }
-        JSONObject headers = installationTemplate.getJSONObject("headers");
-        Iterator<String> headersIterators = headers.keys();
-        while (headersIterators.hasNext()) {
-            String headerKey = headersIterators.next();
-            template.setHeader(headerKey, headers.getString(headerKey));
+
+        if (installationTemplate.has("tags")) {
+            JSONObject headers = installationTemplate.getJSONObject("headers");
+            Iterator<String> headersIterators = headers.keys();
+            while (headersIterators.hasNext()) {
+                String headerKey = headersIterators.next();
+                template.setHeader(headerKey, headers.getString(headerKey));
+            }
         }
 
         return template;
