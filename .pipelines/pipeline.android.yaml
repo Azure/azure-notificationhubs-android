@@ -1,0 +1,104 @@
+trigger:
+- master
+- push-refresh
+- v1-preview
+
+pr:
+- master
+- push-refresh
+- v1-preview
+
+pool:
+  name: Hosted Mac Internal
+  demands: java
+
+steps:
+- task: Gradle@2
+  displayName: 'gradlew cleanTest test '
+  inputs:
+    options: '-p notification-hubs-sdk'
+    tasks: 'cleanTest test '
+
+- bash: |
+   #!/usr/bin/env bash
+   
+   set -ev
+   
+   # List available system-images images
+   $ANDROID_HOME/tools/bin/sdkmanager --list | grep system-images
+   
+   SYSTEM_IMAGE='system-images;android-27;google_apis;x86'
+   
+   # Install AVD files
+   echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install ${SYSTEM_IMAGE}
+   
+   # Create emulator
+   echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k ${SYSTEM_IMAGE} --force
+   
+   $ANDROID_HOME/emulator/emulator -list-avds
+   
+   echo "Starting emulator"
+   
+   # Start emulator in background
+   nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -no-snapshot > /dev/null 2>&1 &
+   $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+   
+   $ANDROID_HOME/platform-tools/adb devices
+   
+   echo "Emulator started"
+  displayName: 'Install and Run Android Emulator'
+
+- task: Gradle@2
+  displayName: 'gradlew cleanTest connectedAndroidTest'
+  inputs:
+    options: '-p notification-hubs-sdk'
+    tasks: 'cleanTest connectedAndroidTest'
+
+- task: Gradle@2
+  displayName: 'gradlew makeJar uploadArchives'
+  inputs:
+    options: '-PisCI="true"'
+    tasks: 'makeJar uploadArchives'
+    publishJUnitResults: false
+
+- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
+  displayName: 'ESRP CodeSigning'
+  inputs:
+    ConnectedServiceName: 'App Center - Code Signing'
+    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
+    Pattern: '*.jar, *.aar'
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+         {
+             "keyCode": "CP-447347-Java",
+             "operationSetCode": "JavaSign",
+             "parameters": [
+                 {
+                     "parameterName": "SigAlg",
+                     "parameterValue": "SHA256withRSA"
+                 },
+                 {
+                     "parameterName": "TimeStamp",
+                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
+                 }
+             ],
+             "toolName": "Jarsigner.exe",
+             "toolVersion": "V1.8.112"
+         },
+         {
+             "keyCode": "CP-447347-Java",
+             "operationSetCode": "JavaVerify",
+             "parameters": null,
+             "toolName": "Jarsigner.exe",
+             "toolVersion": "V1.8.112"
+         }
+     ]
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: /
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
