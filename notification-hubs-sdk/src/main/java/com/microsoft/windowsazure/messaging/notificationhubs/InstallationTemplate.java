@@ -109,7 +109,7 @@ public class InstallationTemplate {
      * @param installationTemplate The templates that should no longer be in the collection.
      * @return serialized templateObject.
      */
-    public static JSONObject serialize(String name, InstallationTemplate installationTemplate) {
+    static JSONObject serialize(String name, InstallationTemplate installationTemplate) {
         JSONObject templateObject = new JSONObject();
         try {
             templateObject.put("name", name);
@@ -142,7 +142,7 @@ public class InstallationTemplate {
      * @throws JSONException When there's a schema-mismatch of the object to populate, and what
      * appears in the serialized form of the template.
      */
-    public static InstallationTemplate deserialize(JSONObject installationTemplate) throws JSONException {
+    static InstallationTemplate deserialize(JSONObject installationTemplate) throws JSONException {
         InstallationTemplate template = new InstallationTemplate();
         template.setBody(installationTemplate.getString("body"));
 
