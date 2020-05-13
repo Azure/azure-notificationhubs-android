@@ -29,7 +29,7 @@ steps:
    # List available system-images images
    $ANDROID_HOME/tools/bin/sdkmanager --list | grep system-images
    
-   SYSTEM_IMAGE='system-images;android-29;google_apis;x86'
+   SYSTEM_IMAGE='system-images;android-27;google_apis;x86'
    
    # Install AVD files
    echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install ${SYSTEM_IMAGE}
