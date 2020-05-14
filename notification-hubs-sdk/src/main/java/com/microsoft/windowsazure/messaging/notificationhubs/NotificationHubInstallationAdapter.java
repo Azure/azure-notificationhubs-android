@@ -5,8 +5,6 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpClient;
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpResponse;
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils;
@@ -123,11 +121,18 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
                         tagList.put(tag);
                     }
 
+                    final JSONObject serializedTemplates = new JSONObject();
+                    for (Map.Entry<String, InstallationTemplate> template: installation.getTemplates().entrySet()) {
+                        String templateName = template.getKey();
+                        serializedTemplates.put(templateName, InstallationTemplate.serialize(templateName, template.getValue()));
+                    }
+
                     JSONObject jsonBody = new JSONObject(){{
                         put("installationId", installation.getInstallationId());
                         put("platform", "GCM");
                         put("pushChannel", installation.getPushChannel());
                         put("tags", tagList);
+                        put("templates", serializedTemplates);
                     }};
                     return jsonBody.toString();
                 } catch (JSONException e) {

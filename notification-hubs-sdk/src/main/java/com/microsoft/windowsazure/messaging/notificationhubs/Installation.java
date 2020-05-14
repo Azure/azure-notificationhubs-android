@@ -115,6 +115,8 @@ public class Installation implements Taggable {
      */
     public void addTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
 
+    public Map<String, InstallationTemplate> getTemplates() { return mTemplates; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

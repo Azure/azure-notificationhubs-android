@@ -5,14 +5,12 @@ import android.content.SharedPreferences;
 
 import com.microsoft.windowsazure.messaging.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +58,7 @@ public class TemplateVisitor implements InstallationVisitor {
         }
 
         try {
-            return deserializeInstallationTemplateToJson(preferencesSet);
+            return deserializeInstallationTemplateFromJson(preferencesSet);
         }
         catch (JSONException ex) {
             throw new RuntimeException("Unable to deserialize installation template", ex);
@@ -155,28 +153,7 @@ public class TemplateVisitor implements InstallationVisitor {
      * @return serialized templateObject.
      */
     private static String serializeInstallationTemplateToJson(String name, InstallationTemplate installationTemplate) {
-        JSONObject templateObject = new JSONObject();
-        try {
-            templateObject.put("name", name);
-            templateObject.put("body", installationTemplate.getBody());
-            JSONObject headers = new JSONObject();
-            Iterable<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders();
-            for(Map.Entry<String, String> header: headersIterators){
-                headers.put(header.getKey(), header.getValue());
-            }
-            templateObject.put("headers", headers);
-            JSONArray tagsArray = new JSONArray();
-            for (String tag : installationTemplate.getTags()) {
-                tagsArray.put(tag);
-            }
-            templateObject.put("tags", tagsArray);
-        } catch (JSONException ex) {
-            // Investigating the possible sources of JSONException, it seems the only time it is
-            // thrown is when a Number is invalid. Because we are exclusively serializing strings
-            // above, this exception _should_ never be thrown.
-            throw new RuntimeException("Invalid template, unable to serialize", ex);
-        }
-        return templateObject.toString();
+        return InstallationTemplate.serialize(name, installationTemplate).toString();
     }
 
     /**
@@ -187,24 +164,13 @@ public class TemplateVisitor implements InstallationVisitor {
      * @throws JSONException When there's a schema-mismatch of the object to populate, and what
      * appears in the serialized form of the template.
      */
-    private static Map<String, InstallationTemplate> deserializeInstallationTemplateToJson(Set<String> installationTemplatesSet) throws JSONException {
+    private static Map<String, InstallationTemplate> deserializeInstallationTemplateFromJson(Set<String> installationTemplatesSet) throws JSONException {
         Map<String, InstallationTemplate> templates = new HashMap<>();
 
         for (String preferenceString : installationTemplatesSet) {
             JSONObject preference = new JSONObject(preferenceString);
-            InstallationTemplate template = new InstallationTemplate();
             String name = preference.getString("name");
-            template.setBody(preference.getString("body"));
-            JSONArray tags = preference.getJSONArray("tags");
-            for (int tagKey = 0; tagKey < tags.length(); tagKey++) {
-                template.addTag(tags.getString(tagKey));
-            }
-            JSONObject headers = preference.getJSONObject("headers");
-            Iterator<String> headersIterators = headers.keys();
-            while (headersIterators.hasNext()) {
-                String headerKey = headersIterators.next();
-                template.setHeader(headerKey, headers.getString(headerKey));
-            }
+            InstallationTemplate template = InstallationTemplate.deserialize(preference);
             templates.put(name, template);
         }
 
