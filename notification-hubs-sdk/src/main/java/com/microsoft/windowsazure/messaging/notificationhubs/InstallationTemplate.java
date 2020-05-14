@@ -14,6 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Offers a mechanism for predefining a Notification body and headers to be delivered to this
+ * device.
+ */
 public class InstallationTemplate {
     private String mBody;
     private Set<String> mTags = new HashSet<>();
@@ -106,7 +110,7 @@ public class InstallationTemplate {
      * Serialize InstallationTemplate to JSONObject.
      *
      * @param name Name of template
-     * @param installationTemplate The templates that should no longer be in the collection.
+     * @param installationTemplate The template that be serialized.
      * @return serialized templateObject.
      */
     static JSONObject serialize(String name, InstallationTemplate installationTemplate) {
