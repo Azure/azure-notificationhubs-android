@@ -14,6 +14,18 @@ class ConnectionString {
     private String mSharedAccessKey;
 
     ConnectionString(String endpoint, String sharedAccessKeyName, String sharedAccessKey) {
+        if (isNullOrWhiteSpace(endpoint)) {
+            throw new IllegalArgumentException(ENDPOINT_KEY);
+        }
+
+        if (isNullOrWhiteSpace(sharedAccessKeyName)) {
+            throw new IllegalArgumentException(SHARED_ACCESS_KEY_NAME_KEY);
+        }
+
+        if (isNullOrWhiteSpace(sharedAccessKey)) {
+            throw new IllegalArgumentException(SHARED_ACCESS_KEY);
+        }
+
         mEndpoint = endpoint;
         mSharedAccessKeyName = sharedAccessKeyName;
         mSharedAccessKey = sharedAccessKey;
@@ -38,6 +50,7 @@ class ConnectionString {
                     break;
             }
         }
+
         ConnectionString result = new ConnectionString(Endpoint, SharedAccessKeyName, SharedAccessKey);
         return result;
     }
@@ -87,5 +100,9 @@ class ConnectionString {
         builder.append(';');
 
         return builder.toString();
+    }
+
+    private static boolean isNullOrWhiteSpace(String str) {
+        return str == null || str.trim().equals("");
     }
 }
