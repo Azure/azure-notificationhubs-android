@@ -78,7 +78,7 @@ public final class NotificationHub {
      */
     public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.setInstanceInstallationAdapter(adapter);
+        instance.mManager = adapter;
         instance.mApplication = application;
 
         instance.mPreferences = instance.mApplication.getSharedPreferences(INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
@@ -158,22 +158,6 @@ public final class NotificationHub {
      */
     void useInstanceVisitor(InstallationVisitor visitor) {
         mVisitors.add(visitor);
-    }
-
-    /**
-     * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
-     */
-    static void setInstallationAdapter(InstallationAdapter adapter) {
-        getInstance().setInstanceInstallationAdapter(adapter);
-    }
-
-    /**
-     * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
-     */
-    void setInstanceInstallationAdapter(InstallationAdapter adapter) {
-        mManager = adapter;
     }
 
     /**
