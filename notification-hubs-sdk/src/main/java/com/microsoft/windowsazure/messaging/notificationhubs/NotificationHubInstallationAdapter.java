@@ -3,7 +3,6 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
 
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpClient;
 import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpResponse;
@@ -35,11 +34,12 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
-    private HttpClient httpClient;
+    private HttpClient mHttpClient;
 
-    public NotificationHubInstallationAdapter(String hubName, String connectionString) {
+    public NotificationHubInstallationAdapter(Context context, String hubName, String connectionString) {
         mHubName = hubName;
         mConnectionString = ConnectionString.parse(connectionString);
+        mHttpClient = HttpUtils.createHttpClient(context.getApplicationContext());
     }
 
     /**
@@ -48,13 +48,11 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @param installation The record to update.\
      */
     @Override
-    public void saveInstallation(final Context context, final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
-        httpClient = HttpUtils.createHttpClient(context.getApplicationContext());
-
+    public void saveInstallation(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        httpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onSuccess, onFailure));
+        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onSuccess, onFailure));
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {

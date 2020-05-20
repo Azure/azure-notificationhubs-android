@@ -1,7 +1,5 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import android.content.Context;
-
 /**
  * Defines the operations that must implemented in order to communicate with a backend that is
  * keeps track of registered devices.
@@ -12,10 +10,9 @@ import android.content.Context;
 public interface InstallationAdapter {
     /**
      * Updates a backend with the updated Installation information for this device.
-     * @param context Application context.
      * @param installation The record to update.
      */
-    void saveInstallation(Context context, Installation installation, Listener onSuccess, ErrorListener onFailure);
+    void saveInstallation(Installation installation, Listener onSuccess, ErrorListener onFailure);
 
     /**
      * Defines the callback that should be invoked when an Installation is successfully processed by

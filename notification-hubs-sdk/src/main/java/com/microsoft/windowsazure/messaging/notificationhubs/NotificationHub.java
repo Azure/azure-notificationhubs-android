@@ -79,6 +79,7 @@ public final class NotificationHub {
      */
     public static void initialize(Application application, String hubName, String connectionString) {
         initialize(application, new DebounceInstallationAdapter(application, new NotificationHubInstallationAdapter(
+                application,
                 hubName,
                 connectionString)));
     }
@@ -215,7 +216,7 @@ public final class NotificationHub {
         }
 
         if (mAdapter != null) {
-            mAdapter.saveInstallation(mApplication, installation, mOnSavedInstallation, mOnInstallationFailure);
+            mAdapter.saveInstallation(installation, mOnSavedInstallation, mOnInstallationFailure);
         }
     }
 
