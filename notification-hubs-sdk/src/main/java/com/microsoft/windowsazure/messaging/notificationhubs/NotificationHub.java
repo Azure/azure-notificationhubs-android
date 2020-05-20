@@ -28,7 +28,7 @@ public final class NotificationHub {
     private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
-    private InstallationAdapter mManager;
+    private InstallationAdapter mAdapter;
     private Application mApplication;
 
     private SharedPreferences mPreferences;
@@ -78,7 +78,7 @@ public final class NotificationHub {
      */
     public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.mManager = adapter;
+        instance.mAdapter = adapter;
         instance.mApplication = application;
 
         instance.mPreferences = instance.mApplication.getSharedPreferences(INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
@@ -180,8 +180,8 @@ public final class NotificationHub {
             visitor.visitInstallation(installation);
         }
 
-        if (mManager != null) {
-            mManager.saveInstallation(mApplication, installation);
+        if (mAdapter != null) {
+            mAdapter.saveInstallation(mApplication, installation);
         }
     }
 
