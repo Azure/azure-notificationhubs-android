@@ -15,15 +15,15 @@ class ConnectionString {
 
     ConnectionString(String endpoint, String sharedAccessKeyName, String sharedAccessKey) {
         if (isNullOrWhiteSpace(endpoint)) {
-            throw new IllegalArgumentException(ENDPOINT_KEY);
+            throw new IllegalArgumentException("Endpoint parameter can not be null or empty");
         }
 
         if (isNullOrWhiteSpace(sharedAccessKeyName)) {
-            throw new IllegalArgumentException(SHARED_ACCESS_KEY_NAME_KEY);
+            throw new IllegalArgumentException("SharedAccessKeyName parameter can not be null or empty");
         }
 
         if (isNullOrWhiteSpace(sharedAccessKey)) {
-            throw new IllegalArgumentException(SHARED_ACCESS_KEY);
+            throw new IllegalArgumentException("SharedAccessKey parameter can not be null or empty");
         }
 
         mEndpoint = endpoint;

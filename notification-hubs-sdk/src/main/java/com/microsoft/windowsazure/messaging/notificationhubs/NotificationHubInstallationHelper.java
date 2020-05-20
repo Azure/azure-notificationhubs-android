@@ -8,7 +8,12 @@ class NotificationHubInstallationHelper {
 
     static String parseSbEndpoint(String endpoint){
         Matcher matcher = ENDPOINT_FORMAT_PATTERN.matcher(endpoint);
-        return matcher.matches() ? matcher.group(1): "";
+
+        if (!matcher.matches()){
+            throw new IllegalArgumentException("Wrong endpoint format");
+        }
+
+        return matcher.group(1);
     }
 
     static String getInstallationUrl(String endpoint, String hubName, String installationId){
