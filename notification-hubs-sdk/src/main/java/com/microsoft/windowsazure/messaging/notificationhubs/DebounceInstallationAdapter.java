@@ -9,7 +9,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-class DebounceInstallationAdapter implements InstallationAdapter {
+/**
+ * Protects the {@link InstallationAdapter} from rapid changes to the current Installation, as well
+ * as weeding out calls that match the last request that was sent to the server.
+ */
+public class DebounceInstallationAdapter implements InstallationAdapter {
 
     private static final String PREFERENCE_KEY = "recentInstallation";
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
