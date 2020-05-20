@@ -19,7 +19,7 @@ import java.util.Set;
  * Collects a set of distinct templates, in order to apply them to {@link Installation}s as they are
  * created.
  */
-public class TemplateVisitor implements InstallationVisitor {
+class TemplateVisitor implements InstallationVisitor {
 
     private static final String PREFERENCE_KEY = "templates";
     private SharedPreferences mPreferences;

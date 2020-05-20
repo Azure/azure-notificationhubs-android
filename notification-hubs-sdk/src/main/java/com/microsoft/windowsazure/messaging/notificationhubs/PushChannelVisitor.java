@@ -3,7 +3,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class PushChannelVisitor implements InstallationVisitor {
+class PushChannelVisitor implements InstallationVisitor {
     private static final String PREFERENCE_KEY = "pushChannel";
     private final SharedPreferences mPreferences;
 

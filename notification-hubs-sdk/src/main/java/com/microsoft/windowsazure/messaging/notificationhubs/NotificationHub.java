@@ -28,7 +28,7 @@ public final class NotificationHub {
     private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
 
-    private InstallationAdapter mManager;
+    private InstallationAdapter mAdapter;
     private Application mApplication;
 
     private SharedPreferences mPreferences;
@@ -76,9 +76,9 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    static void initialize(Application application, InstallationAdapter adapter) {
+    public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
-        instance.setInstanceInstallationAdapter(adapter);
+        instance.mAdapter = adapter;
         instance.mApplication = application;
 
         instance.mPreferences = instance.mApplication.getSharedPreferences(INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
@@ -143,7 +143,7 @@ public final class NotificationHub {
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    static void useVisitor(InstallationVisitor visitor) {
+    public static void useVisitor(InstallationVisitor visitor) {
         getInstance().useInstanceVisitor(visitor);
     }
 
@@ -156,24 +156,8 @@ public final class NotificationHub {
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    void useInstanceVisitor(InstallationVisitor visitor) {
+    public void useInstanceVisitor(InstallationVisitor visitor) {
         mVisitors.add(visitor);
-    }
-
-    /**
-     * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
-     */
-    static void setInstallationAdapter(InstallationAdapter adapter) {
-        getInstance().setInstanceInstallationAdapter(adapter);
-    }
-
-    /**
-     * Updates the mechanism that will be used to inform a backend service of the new installation.
-     * @param adapter An instance of the {@link InstallationAdapter} that should be used.
-     */
-    void setInstanceInstallationAdapter(InstallationAdapter adapter) {
-        mManager = adapter;
     }
 
     /**
@@ -196,8 +180,8 @@ public final class NotificationHub {
             visitor.visitInstallation(installation);
         }
 
-        if (mManager != null) {
-            mManager.saveInstallation(mApplication, installation);
+        if (mAdapter != null) {
+            mAdapter.saveInstallation(mApplication, installation);
         }
     }
 
