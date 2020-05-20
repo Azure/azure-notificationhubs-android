@@ -3,6 +3,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.microsoft.windowsazure.messaging.R;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,7 +24,7 @@ class TagVisitor implements InstallationVisitor, Taggable {
      * @param context Application context
      */
     public TagVisitor(Context context) {
-        mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     private Set<String> getTagsSet() {

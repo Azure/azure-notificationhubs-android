@@ -2,6 +2,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.microsoft.windowsazure.messaging.R;
 import java.util.UUID;
 
 /**
@@ -12,7 +13,7 @@ class IdAssignmentVisitor implements InstallationVisitor {
     private final SharedPreferences mPreferences;
 
     public IdAssignmentVisitor(Context context) {
-        mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     /**
