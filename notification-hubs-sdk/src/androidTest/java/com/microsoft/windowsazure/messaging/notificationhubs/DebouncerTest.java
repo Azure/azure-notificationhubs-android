@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
 
+import com.microsoft.windowsazure.messaging.R;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -137,7 +139,7 @@ public class DebouncerTest {
         Thread.sleep(debouncerDelayPlusSecond);
 
         String PREFERENCE_KEY = "recentInstallation";
-        SharedPreferences mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_MULTI_PROCESS);
+        SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
         int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());

@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import com.microsoft.windowsazure.messaging.R;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,8 +20,6 @@ import java.util.List;
  * Notification Hubs.
  */
 public final class NotificationHub {
-    static final String INSTALLATION_PREFERENCE_LOCATION = "com.microsoft.windowsazure.messaging.notificationhubs.InstallationSharedPreferences";
-
     private static NotificationHub sInstance;
 
     private NotificationListener mListener;
@@ -98,7 +98,7 @@ public final class NotificationHub {
         instance.mAdapter = adapter;
         instance.mApplication = application;
 
-        instance.mPreferences = instance.mApplication.getSharedPreferences(INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
+        instance.mPreferences = instance.mApplication.getSharedPreferences(instance.mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);

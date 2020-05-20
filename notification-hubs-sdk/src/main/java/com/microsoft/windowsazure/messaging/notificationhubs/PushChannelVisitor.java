@@ -3,12 +3,14 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-class PushChannelVisitor implements InstallationVisitor {
+import com.microsoft.windowsazure.messaging.R;
+
+public class PushChannelVisitor implements InstallationVisitor {
     private static final String PREFERENCE_KEY = "pushChannel";
     private final SharedPreferences mPreferences;
 
     public PushChannelVisitor(Context context) {
-        mPreferences = context.getSharedPreferences(NotificationHub.INSTALLATION_PREFERENCE_LOCATION, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
     }
 
     /**
