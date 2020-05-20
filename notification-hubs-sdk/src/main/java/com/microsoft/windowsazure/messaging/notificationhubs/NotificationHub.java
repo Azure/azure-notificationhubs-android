@@ -76,7 +76,7 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    static void initialize(Application application, InstallationAdapter adapter) {
+    public static void initialize(Application application, InstallationAdapter adapter) {
         NotificationHub instance = getInstance();
         instance.setInstanceInstallationAdapter(adapter);
         instance.mApplication = application;
