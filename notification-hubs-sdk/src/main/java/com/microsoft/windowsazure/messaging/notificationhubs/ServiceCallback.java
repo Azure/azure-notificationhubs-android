@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 /**
  * The callback used for client side asynchronous operations.
  */
-public interface ServiceCallback {
+interface ServiceCallback {
 
     /**
      * Implement this method to handle successful REST call results.

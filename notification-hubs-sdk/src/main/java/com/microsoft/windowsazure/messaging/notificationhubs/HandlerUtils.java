@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +12,7 @@ import androidx.annotation.VisibleForTesting;
 /**
  * Utilities related to Handler class.
  */
-public class HandlerUtils {
+class HandlerUtils {
 
     /**
      * Main/UI thread Handler.

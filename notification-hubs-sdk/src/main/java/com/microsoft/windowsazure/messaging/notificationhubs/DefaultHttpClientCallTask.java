@@ -3,13 +3,10 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.net.TrafficStats;
 import android.os.AsyncTask;
-import android.util.Log;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,17 +23,17 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CHARSET_NAME;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_ENCODING_KEY;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_ENCODING_VALUE;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_TYPE_KEY;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_TYPE_VALUE;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.METHOD_POST;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.METHOD_PUT;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils.READ_BUFFER_SIZE;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils.THREAD_STATS_TAG;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils.WRITE_BUFFER_SIZE;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils.createHttpsConnection;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CHARSET_NAME;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_ENCODING_KEY;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_ENCODING_VALUE;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_TYPE_KEY;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_TYPE_VALUE;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.METHOD_POST;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.METHOD_PUT;
+import static com.microsoft.windowsazure.messaging.notificationhubs.HttpUtils.READ_BUFFER_SIZE;
+import static com.microsoft.windowsazure.messaging.notificationhubs.HttpUtils.THREAD_STATS_TAG;
+import static com.microsoft.windowsazure.messaging.notificationhubs.HttpUtils.WRITE_BUFFER_SIZE;
+import static com.microsoft.windowsazure.messaging.notificationhubs.HttpUtils.createHttpsConnection;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 

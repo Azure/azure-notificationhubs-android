@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.os.Build;
@@ -29,7 +29,7 @@ import javax.net.ssl.SSLException;
 /**
  * HTTP utilities.
  */
-public class HttpUtils {
+class HttpUtils {
 
     /**
      * Thread stats tag for App Center HTTP calls.

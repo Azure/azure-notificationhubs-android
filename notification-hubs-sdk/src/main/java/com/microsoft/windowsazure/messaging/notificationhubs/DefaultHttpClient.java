@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,7 +18,7 @@ import java.util.concurrent.RejectedExecutionException;
 /**
  * Default HTTP client without the additional behaviors.
  */
-public class DefaultHttpClient implements HttpClient, DefaultHttpClientCallTask.Tracker {
+class DefaultHttpClient implements HttpClient, DefaultHttpClientCallTask.Tracker {
 
     /**
      * HTTP GET method.

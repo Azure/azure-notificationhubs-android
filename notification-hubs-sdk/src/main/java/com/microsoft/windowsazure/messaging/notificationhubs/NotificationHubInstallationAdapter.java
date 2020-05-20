@@ -4,11 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Base64;
 
-import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpClient;
-import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpResponse;
-import com.microsoft.windowsazure.messaging.notificationhubs.http.HttpUtils;
-import com.microsoft.windowsazure.messaging.notificationhubs.http.ServiceCallback;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

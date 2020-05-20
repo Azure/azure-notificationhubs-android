@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -33,7 +33,7 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 /**
  * Network state helper.
  */
-public class NetworkStateHelper implements Closeable {
+class NetworkStateHelper implements Closeable {
 
     /**
      * Shared instance.

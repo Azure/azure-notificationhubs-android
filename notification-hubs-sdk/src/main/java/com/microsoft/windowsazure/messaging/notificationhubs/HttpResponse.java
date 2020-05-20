@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import androidx.annotation.NonNull;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * HTTP response.
  */
-public class HttpResponse {
+class HttpResponse {
 
     /**
      * HTTP status code.

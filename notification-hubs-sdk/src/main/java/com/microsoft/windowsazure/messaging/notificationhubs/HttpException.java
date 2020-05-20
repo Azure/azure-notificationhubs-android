@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * HTTP exception.
  */
-public class HttpException extends IOException {
+class HttpException extends IOException {
 
     /**
      * HTTP response.

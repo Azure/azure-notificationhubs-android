@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import org.json.JSONException;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * HTTP client abstraction.
  */
-public interface HttpClient extends Closeable {
+interface HttpClient extends Closeable {
 
     /**
      * Make an HTTP call.
