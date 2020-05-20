@@ -143,7 +143,7 @@ public final class NotificationHub {
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    static void useVisitor(InstallationVisitor visitor) {
+    public static void useVisitor(InstallationVisitor visitor) {
         getInstance().useInstanceVisitor(visitor);
     }
 
@@ -156,7 +156,7 @@ public final class NotificationHub {
      * @param visitor A {@link InstallationVisitor} to invoke when creating a new
      *                   {@link Installation}.
      */
-    void useInstanceVisitor(InstallationVisitor visitor) {
+    public void useInstanceVisitor(InstallationVisitor visitor) {
         mVisitors.add(visitor);
     }
 
