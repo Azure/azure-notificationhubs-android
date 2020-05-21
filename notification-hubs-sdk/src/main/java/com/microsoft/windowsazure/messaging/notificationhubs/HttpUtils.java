@@ -32,7 +32,7 @@ import javax.net.ssl.SSLException;
 class HttpUtils {
 
     /**
-     * Thread stats tag for App Center HTTP calls.
+     * Thread stats tag for Notification Hubs HTTP calls.
      */
     public static final int THREAD_STATS_TAG = 0xD83DDC19;
 
@@ -213,14 +213,14 @@ class HttpUtils {
     @NonNull
     public static HttpsURLConnection createHttpsConnection(@NonNull URL url) throws IOException {
         if (!"https".equals(url.getProtocol())) {
-            throw new IOException("App Center support only HTTPS connection.");
+            throw new IOException("Notification Hubs only supports HTTPS connections.");
         }
         URLConnection urlConnection = url.openConnection();
         HttpsURLConnection httpsURLConnection;
         if (urlConnection instanceof HttpsURLConnection) {
             httpsURLConnection = (HttpsURLConnection) urlConnection;
         } else {
-            throw new IOException("App Center supports only HTTPS connection.");
+            throw new IOException("Notification Hubs only supports only HTTPS connections.");
         }
 
         /*
