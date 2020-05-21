@@ -52,26 +52,6 @@ class DefaultHttpClientCallTask extends AsyncTask<Void, Void, Object> {
      */
     private static final int MIN_GZIP_LENGTH = 1400;
 
-    /**
-     * Maximum payload length to use prettify for logging.
-     */
-    private static final int MAX_PRETTIFY_LOG_LENGTH = 4 * 1024;
-
-    /**
-     * Pattern used to replace token in url encoded parameters.
-     */
-    private static final Pattern TOKEN_REGEX_URL_ENCODED = Pattern.compile("token=[^&]+");
-
-    /**
-     * Pattern used to replace token in json responses.
-     */
-    private static final Pattern TOKEN_REGEX_JSON = Pattern.compile("token\":\"[^\"]+\"");
-
-    /**
-     * Pattern used to replace redirect URI in json responses.
-     */
-    private static final Pattern REDIRECT_URI_REGEX_JSON = Pattern.compile("redirect_uri\":\"[^\"]+\"");
-
     private final String mUrl;
 
     private final String mMethod;
