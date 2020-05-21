@@ -20,7 +20,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -76,11 +75,6 @@ class HttpUtils {
      * Some transient exceptions can only be detected by interpreting the message...
      */
     private static final Pattern CONNECTION_ISSUE_PATTERN = Pattern.compile("connection (time|reset|abort)|failure in ssl library, usually a protocol error|anchor for certification path not found");
-
-    /**
-     * One Collector Ingestion API key pattern (secret key within the header value).
-     */
-    private static final Pattern API_KEY_PATTERN = Pattern.compile("-[^,]+(,|$)");
 
     @VisibleForTesting
     HttpUtils() {
@@ -143,32 +137,6 @@ class HttpUtils {
         char[] fill = new char[hidingEndIndex];
         Arrays.fill(fill, '*');
         return new String(fill) + secret.substring(hidingEndIndex);
-    }
-
-    /**
-     * Hide secret parts in api keys, expecting One Collector header format.
-     *
-     * @param apiKeys api keys string header value.
-     * @return obfuscated api keys or the original string as is if the format does not match.
-     */
-    public static String hideApiKeys(@NonNull String apiKeys) {
-
-        /* Replace all secret parts. */
-        StringBuilder buffer = new StringBuilder();
-        Matcher matcher = API_KEY_PATTERN.matcher(apiKeys);
-        int lastEnd = 0;
-        while (matcher.find()) {
-            buffer.append(apiKeys.substring(lastEnd, matcher.start()));
-            buffer.append("-***");
-
-            /* This will be either comma or end of line, thus empty string, for the last key. */
-            buffer.append(matcher.group(1));
-            lastEnd = matcher.end();
-        }
-        if (lastEnd < apiKeys.length()) {
-            buffer.append(apiKeys.substring(lastEnd));
-        }
-        return buffer.toString();
     }
 
     public static HttpClient createHttpClient(@NonNull Context context) {
