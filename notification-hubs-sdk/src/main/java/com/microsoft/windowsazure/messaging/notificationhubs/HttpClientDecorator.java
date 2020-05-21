@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.io.IOException;
 
-public abstract class HttpClientDecorator implements HttpClient {
+abstract class HttpClientDecorator implements HttpClient {
 
     final HttpClient mDecoratedApi;
 

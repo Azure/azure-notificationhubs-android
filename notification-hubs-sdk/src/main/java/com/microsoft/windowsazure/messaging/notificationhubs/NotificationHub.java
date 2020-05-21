@@ -95,7 +95,7 @@ public final class NotificationHub {
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
     public static void initialize(Application application, InstallationAdapter adapter) {
-        NotificationHub instance = getInstance();
+        final NotificationHub instance = getInstance();
         instance.mAdapter = adapter;
         instance.mApplication = application;
 
@@ -122,7 +122,14 @@ public final class NotificationHub {
         // https://developer.android.com/guide/components/broadcasts#android_80
         IntentFilter connectivityFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         connectivityFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        application.registerReceiver(new NetworkStatusReceiver(), connectivityFilter);
+        NetworkStateHelper.getSharedInstance(application).addListener(new NetworkStateHelper.Listener() {
+            @Override
+            public void onNetworkStateUpdated(boolean connected) {
+                if (connected) {
+                    instance.beginInstanceInstallationUpdate();
+                }
+            }
+        });
     }
 
     /**

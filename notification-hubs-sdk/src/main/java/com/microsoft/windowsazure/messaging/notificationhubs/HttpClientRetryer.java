@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.X_MS_RETRY_AFTER_MS_HEADER;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.X_MS_RETRY_AFTER_MS_HEADER;
 
 /**
  * Decorator managing retries.
  */
-public class HttpClientRetryer extends HttpClientDecorator {
+class HttpClientRetryer extends HttpClientDecorator {
 
     /**
      * Retry intervals to use, array index is to use the value for each retry. When we used all the array values, we give up and forward the last error.

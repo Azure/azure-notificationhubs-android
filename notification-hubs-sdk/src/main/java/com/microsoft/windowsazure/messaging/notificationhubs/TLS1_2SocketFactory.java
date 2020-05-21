@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.io.IOException;
 import java.net.InetAddress;

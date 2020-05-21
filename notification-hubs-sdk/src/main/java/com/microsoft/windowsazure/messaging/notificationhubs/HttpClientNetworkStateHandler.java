@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.util.Log;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Decorator pausing calls while network is down.
  */
-public class HttpClientNetworkStateHandler extends HttpClientDecorator implements NetworkStateHelper.Listener {
+class HttpClientNetworkStateHandler extends HttpClientDecorator implements NetworkStateHelper.Listener {
 
     /**
      * Network state helper.

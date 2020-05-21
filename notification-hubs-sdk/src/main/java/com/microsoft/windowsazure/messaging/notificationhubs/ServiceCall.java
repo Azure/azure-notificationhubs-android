@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
-public interface ServiceCall {
+interface ServiceCall {
 
     /**
      * Cancel the call if possible.

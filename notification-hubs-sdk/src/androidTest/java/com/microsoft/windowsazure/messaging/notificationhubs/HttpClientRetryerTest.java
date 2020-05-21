@@ -3,11 +3,18 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.windowsazure.messaging.notificationhubs.http;
+package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+
+import com.microsoft.windowsazure.messaging.notificationhubs.HttpClient;
+import com.microsoft.windowsazure.messaging.notificationhubs.HttpClientRetryer;
+import com.microsoft.windowsazure.messaging.notificationhubs.HttpException;
+import com.microsoft.windowsazure.messaging.notificationhubs.HttpResponse;
+import com.microsoft.windowsazure.messaging.notificationhubs.ServiceCall;
+import com.microsoft.windowsazure.messaging.notificationhubs.ServiceCallback;
 
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -17,9 +24,9 @@ import org.mockito.stubbing.Answer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_TYPE_KEY;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.CONTENT_TYPE_VALUE;
-import static com.microsoft.windowsazure.messaging.notificationhubs.http.DefaultHttpClient.X_MS_RETRY_AFTER_MS_HEADER;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_TYPE_KEY;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.CONTENT_TYPE_VALUE;
+import static com.microsoft.windowsazure.messaging.notificationhubs.DefaultHttpClient.X_MS_RETRY_AFTER_MS_HEADER;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.anyString;
