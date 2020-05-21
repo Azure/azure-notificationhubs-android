@@ -78,11 +78,6 @@ class HttpUtils {
     private static final Pattern CONNECTION_ISSUE_PATTERN = Pattern.compile("connection (time|reset|abort)|failure in ssl library, usually a protocol error|anchor for certification path not found");
 
     /**
-     * Pattern for token value within ticket header (to replace with * characters).
-     */
-    private static final Pattern TOKEN_VALUE_PATTERN = Pattern.compile(":[^\"]+");
-
-    /**
      * One Collector Ingestion API key pattern (secret key within the header value).
      */
     private static final Pattern API_KEY_PATTERN = Pattern.compile("-[^,]+(,|$)");
@@ -174,16 +169,6 @@ class HttpUtils {
             buffer.append(apiKeys.substring(lastEnd));
         }
         return buffer.toString();
-    }
-
-    /**
-     * Hide token values in Tickets header string, expecting One Collector format.
-     *
-     * @param tickets tickets string header value.
-     * @return obfuscated tickets or the original string as is if the format does not match.
-     */
-    public static String hideTickets(@NonNull String tickets) {
-        return TOKEN_VALUE_PATTERN.matcher(tickets).replaceAll(":***");
     }
 
     public static HttpClient createHttpClient(@NonNull Context context) {
