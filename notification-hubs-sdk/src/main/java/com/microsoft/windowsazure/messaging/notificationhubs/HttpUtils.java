@@ -17,7 +17,6 @@ import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.regex.Pattern;
@@ -54,12 +53,6 @@ class HttpUtils {
      * HTTP read timeout.
      */
     public static final int READ_TIMEOUT = 10000;
-
-    /**
-     * Maximum characters to be displayed in a log for application secret.
-     */
-    @VisibleForTesting
-    static final int MAX_CHARACTERS_DISPLAYED_FOR_SECRET = 8;
 
     /**
      * Types of exception that can be retried, no matter what the details are. Sub-classes are included.
@@ -122,21 +115,6 @@ class HttpUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Hide secret string.
-     *
-     * @param secret like an app secret or a bearer token.
-     * @return obfuscated secret.
-     */
-    public static String hideSecret(@NonNull String secret) {
-
-        /* Hide secret if string is neither null nor empty string. */
-        int hidingEndIndex = secret.length() - (secret.length() >= MAX_CHARACTERS_DISPLAYED_FOR_SECRET ? MAX_CHARACTERS_DISPLAYED_FOR_SECRET : 0);
-        char[] fill = new char[hidingEndIndex];
-        Arrays.fill(fill, '*');
-        return new String(fill) + secret.substring(hidingEndIndex);
     }
 
     public static HttpClient createHttpClient(@NonNull Context context) {
