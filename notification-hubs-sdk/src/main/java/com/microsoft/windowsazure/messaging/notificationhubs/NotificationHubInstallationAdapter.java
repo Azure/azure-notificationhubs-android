@@ -43,11 +43,11 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @param installation The record to update.\
      */
     @Override
-    public void saveInstallation(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
+    public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onSuccess, onFailure));
+        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {

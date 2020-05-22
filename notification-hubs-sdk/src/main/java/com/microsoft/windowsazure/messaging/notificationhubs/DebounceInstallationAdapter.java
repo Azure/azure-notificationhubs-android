@@ -37,7 +37,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
 
 
     @Override
-    public void saveInstallation(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
+    public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
@@ -51,10 +51,10 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             @Override
             public void run() {
                 try {
-                    mInstallationAdapter.saveInstallation(installation, onSuccess, onFailure);
+                    mInstallationAdapter.saveInstallation(installation, onInstallationSaved, onInstallationSaveError);
                     mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
                 } catch (Exception e) {
-                    onFailure.onInstallationSaveError(e);
+                    onInstallationSaveError.onInstallationSaveError(e);
                 }
             }
         }, mInterval, TimeUnit.MILLISECONDS);

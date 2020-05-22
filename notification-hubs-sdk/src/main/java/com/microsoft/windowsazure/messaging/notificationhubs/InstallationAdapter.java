@@ -12,7 +12,7 @@ public interface InstallationAdapter {
      * Updates a backend with the updated Installation information for this device.
      * @param installation The record to update.
      */
-    void saveInstallation(Installation installation, Listener onSuccess, ErrorListener onFailure);
+    void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError);
 
     /**
      * Defines the callback that should be invoked when an Installation is successfully processed by
