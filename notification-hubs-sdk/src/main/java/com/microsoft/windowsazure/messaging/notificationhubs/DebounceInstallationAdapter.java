@@ -2,7 +2,6 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.microsoft.windowsazure.messaging.R;
 
@@ -37,7 +36,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
 
 
     @Override
-    public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
+    public void saveInstallation(final Installation installation, final SaveListener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
@@ -54,7 +53,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
                     mInstallationAdapter.saveInstallation(installation, onInstallationSaved, onInstallationSaveError);
                     mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
                 } catch (Exception e) {
-                    onInstallationSaveError.onInstallationSaveError(e);
+                    onInstallationSaveError.onInstallationOperationError(e);
                 }
             }
         }, mInterval, TimeUnit.MILLISECONDS);

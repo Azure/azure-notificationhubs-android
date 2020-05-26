@@ -35,7 +35,7 @@ public final class NotificationHub {
     private SharedPreferences mPreferences;
     private static final String IS_ENABLED_PREFERENCE_KEY = "isEnabled";
 
-    private InstallationAdapter.Listener mOnSavedInstallation;
+    private InstallationAdapter.SaveListener mOnSavedInstallation;
     private InstallationAdapter.ErrorListener mOnInstallationFailure;
 
     NotificationHub() {
@@ -43,11 +43,11 @@ public final class NotificationHub {
 
         mOnInstallationFailure = new InstallationAdapter.ErrorListener() {
             @Override
-            public void onInstallationSaveError(Exception e) {
+            public void onInstallationOperationError(Exception e) {
                 Log.e("ANH", "unable to save installation: " + e.toString());
             }
         };
-        mOnSavedInstallation = new InstallationAdapter.Listener() {
+        mOnSavedInstallation = new InstallationAdapter.SaveListener() {
             @Override
             public void onInstallationSaved(Installation i) {
                 Log.i("ANH", "updated installation");
@@ -150,12 +150,12 @@ public final class NotificationHub {
         mListener = listener;
     }
 
-    public static void setInstallationSavedListener(InstallationAdapter.Listener listener) {
-        getInstance().setInstanceInstallationSavedListener(listener);
+    public static void setInstallationSavedListener(InstallationAdapter.SaveListener saveListener) {
+        getInstance().setInstanceInstallationSavedListener(saveListener);
     }
 
-    public void setInstanceInstallationSavedListener(InstallationAdapter.Listener listener) {
-        mOnSavedInstallation = listener;
+    public void setInstanceInstallationSavedListener(InstallationAdapter.SaveListener saveListener) {
+        mOnSavedInstallation = saveListener;
     }
 
     public static void setInstallationSaveFailureListener(InstallationAdapter.ErrorListener listener) {

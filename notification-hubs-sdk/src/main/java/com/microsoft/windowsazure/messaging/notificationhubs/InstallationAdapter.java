@@ -12,14 +12,40 @@ public interface InstallationAdapter {
      * Updates a backend with the updated Installation information for this device.
      * @param installation The record to update.
      */
-    void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError);
+    void saveInstallation(Installation installation, SaveListener onInstallationSaved, ErrorListener onInstallationSaveError);
 
     /**
-     * Defines the callback that should be invoked when an Installation is successfully processed by
-     * the backend.
+     * Updates a backend to remove the references to the specified {@link Installation}.
+     * @param id The unique identifier associated with the {@link Installation} to be removed.
+     * @param onInstallationDeleted A callback which will be invoked if the {@link Installation} is
+     *                              successfully deleted.
+     * @param onInstallationDeleteError A callback which will be invoked if the {@link Installation}
+     *                                  was not able to be deleted.
      */
-    interface Listener{
+    void deleteInstallation(String id, DeleteListener onInstallationDeleted, ErrorListener onInstallationDeleteError);
+
+    /**
+     * Defines the callback that should be invoked when an {@link Installation} is successfully
+     * saved by the backend.
+     */
+    interface SaveListener {
+        /**
+         * Invoked when an {@link Installation} is saved.
+         * @param i The record that is now saved on the backend.
+         */
         void onInstallationSaved(Installation i);
+    }
+
+    /**
+     * Defines the callback that should be invoked when an {@link Installation} is successfully
+     * deleted by the backend.
+     */
+    interface DeleteListener {
+        /**
+         * Invoked when an {@link Installation} is deleted.
+         * @param id The id of the record that was just deleted.
+         */
+        void onInstallationDeleted(String id);
     }
 
     /**
@@ -27,6 +53,6 @@ public interface InstallationAdapter {
      * backend.
      */
     interface ErrorListener {
-        void onInstallationSaveError(Exception e);
+        void onInstallationOperationError(Exception e);
     }
 }

@@ -43,11 +43,35 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      * @param installation The record to update.\
      */
     @Override
-    public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
-        String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+    public void saveInstallation(final Installation installation, final SaveListener onInstallationSaved, final ErrorListener onInstallationSaveError) {
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(getEndpoint(), mHubName, installation.getInstallationId());
+        try {
+            mHttpClient.callAsync(url, "PUT", getSaveHeaders(url), buildSaveCallTemplate(installation), buildSaveCallback(installation, onInstallationSaved, onInstallationSaveError));
+        } catch (InvalidKeyException e) {
+            onInstallationSaveError.onInstallationOperationError(e);
+        }
+    }
 
-        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
+    private String getEndpoint() {
+        return NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
+    }
+
+    /**
+     * Updates a backend to remove the references to the specified {@link Installation}.
+     *
+     * @param id                        The unique identifier associated with the {@link Installation} to be removed.
+     * @param onInstallationDeleted     A callback which will be invoked if the {@link Installation} is
+     *                                  successfully deleted.
+     * @param onInstallationDeleteError A callback which will be invoked if the {@link Installation}
+     */
+    @Override
+    public void deleteInstallation(String id, DeleteListener onInstallationDeleted, ErrorListener onInstallationDeleteError) {
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(getEndpoint(), mHubName, id);
+        try {
+            mHttpClient.callAsync(url, "DELETE", getDeleteHeaders(url), null, buildDeleteCallback(id, onInstallationDeleted, onInstallationDeleteError));
+        } catch (InvalidKeyException e) {
+            onInstallationDeleteError.onInstallationOperationError(e);
+        }
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {
@@ -89,22 +113,24 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
     }
 
-    private Map<String, String> getHeaders(final String url) {
-        try {
-            Map<String,String> params = new HashMap<String, String>(){{
-                put("Content-Type", "application/json");
-                put("x-ms-version", "2015-01");
-                put("Authorization", generateAuthToken(url));
-                put("User-Agent", getUserAgent());
-            }};
-            return params;
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private Map<String, String> getSaveHeaders(final String url) throws InvalidKeyException {
+        return new HashMap<String, String>(){{
+            put("Content-Type", "application/json");
+            put("x-ms-version", "2015-01");
+            put("Authorization", generateAuthToken(url));
+            put("User-Agent", getUserAgent());
+        }};
     }
 
-    private HttpClient.CallTemplate buildCallTemplate(final Installation installation) {
+    private Map<String, String> getDeleteHeaders(final String url) throws InvalidKeyException {
+        return new HashMap<String, String>(){{
+            put("x-ms-version", "2015-01");
+            put("Authorization", generateAuthToken(url));
+            put("User-Agent", getUserAgent());
+        }};
+    }
+
+    private HttpClient.CallTemplate buildSaveCallTemplate(final Installation installation) {
         return new HttpClient.CallTemplate() {
             @Override
             public String buildRequestBody() throws JSONException {
@@ -140,20 +166,33 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         };
     }
 
-    private ServiceCallback buildServiceCallback(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
+    private ServiceCallback buildSaveCallback(final Installation installation, final SaveListener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         return new ServiceCallback() {
             @Override
             public void onCallSucceeded(HttpResponse httpResponse) {
-                onSuccess.onInstallationSaved(installation);
+                onInstallationSaved.onInstallationSaved(installation);
             }
 
             @Override
             public void onCallFailed(Exception e) {
-                onFailure.onInstallationSaveError(e);
+                onInstallationSaveError.onInstallationOperationError(e);
             }
         };
     }
 
+    private ServiceCallback buildDeleteCallback(final String installationId, final DeleteListener onInstallationDeleted, final ErrorListener onInstallationDeleteError) {
+        return new ServiceCallback() {
+            @Override
+            public void onCallSucceeded(HttpResponse httpResponse) {
+                onInstallationDeleted.onInstallationDeleted(installationId);
+            }
+
+            @Override
+            public void onCallFailed(Exception e) {
+                onInstallationDeleteError.onInstallationOperationError(e);
+            }
+        };
+    }
 
     /**
      * Generates the User-Agent
