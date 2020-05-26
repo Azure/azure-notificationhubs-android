@@ -55,7 +55,8 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         String key = mConnectionString.getSharedAccessKey();
 
         try {
-            url = URLEncoder.encode(url, "UTF-8").toLowerCase(Locale.ENGLISH);
+            String[] urlParts = url.split("\\?"); //we should't use query params
+            url = URLEncoder.encode(urlParts[0], "UTF-8").toLowerCase(Locale.ENGLISH);
         } catch (UnsupportedEncodingException e) {
             // this shouldn't happen because of the fixed encoding
         }

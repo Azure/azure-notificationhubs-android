@@ -16,10 +16,24 @@ class NotificationHubInstallationHelper {
         return matcher.group(1);
     }
 
-    static String getInstallationUrl(String endpoint, String hubName, String installationId){
+    static String getInstallationUrl(String endpoint, String hubName, String installationId) {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(endpoint).append("/").append(hubName).append("/installations/")
-                .append(installationId).append("?api-version=2017-04");
+                .append(installationId).append("?api-version=").append(getApiVersion(endpoint));
         return url.toString();
+    }
+
+    private static String getApiVersion(String endpoint) {
+        if(endpoint.endsWith(AzureEnvironment.INT7.getDomain())) {
+            return AzureEnvironment.INT7.getApiVersion();
+        } else if(endpoint.endsWith(AzureEnvironment.BFPROD.getDomain())) {
+            return AzureEnvironment.BFPROD.getApiVersion();
+        } else if(endpoint.endsWith(AzureEnvironment.FFPROD.getDomain())) {
+            return AzureEnvironment.FFPROD.getApiVersion();
+        } else if(endpoint.endsWith(AzureEnvironment.CHPROD.getDomain())) {
+            return AzureEnvironment.CHPROD.getApiVersion();
+        } else {
+            return AzureEnvironment.PROD.getApiVersion();
+        }
     }
 }
