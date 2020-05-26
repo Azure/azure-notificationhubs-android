@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -20,7 +21,8 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private InstallationAdapter mInstallationAdapter;
     private long mInterval;
-    private ScheduledFuture<?> mSchedFuture;
+    private ScheduledFuture<?> mSaveSchedFuture;
+    private Map<String, ScheduledFuture<?>> mDeleteSchedFutures;
     private SharedPreferences mPreferences;
 
     public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter) {
@@ -37,8 +39,8 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
 
     @Override
     public void saveInstallation(final Installation installation, final SaveListener onInstallationSaved, final ErrorListener onInstallationSaveError) {
-        if (mSchedFuture != null && !mSchedFuture.isDone()) {
-            mSchedFuture.cancel(true);
+        if (mSaveSchedFuture != null && !mSaveSchedFuture.isDone()) {
+            mSaveSchedFuture.cancel(true);
         }
 
         int recentHash = mPreferences.getInt(PREFERENCE_KEY, 0);
@@ -46,7 +48,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             return;
         }
 
-        mSchedFuture = mScheduler.schedule(new Runnable() {
+        mSaveSchedFuture = mScheduler.schedule(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -54,6 +56,35 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
                     mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
                 } catch (Exception e) {
                     onInstallationSaveError.onInstallationOperationError(e);
+                }
+            }
+        }, mInterval, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Updates a backend to remove the references to the specified {@link Installation}.
+     *
+     * @param id                        The unique identifier associated with the {@link Installation} to be removed.
+     * @param onInstallationDeleted     A callback which will be invoked if the {@link Installation} is
+     *                                  successfully deleted.
+     * @param onInstallationDeleteError A callback which will be invoked if the {@link Installation}
+     */
+    @Override
+    public void deleteInstallation(final String id, final DeleteListener onInstallationDeleted, final ErrorListener onInstallationDeleteError) {
+        ScheduledFuture<?> idFuture = mDeleteSchedFutures.get(id);
+
+        if (idFuture != null && !idFuture.isDone()) {
+            idFuture.cancel(true);
+        }
+
+        idFuture = mScheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mInstallationAdapter.deleteInstallation(id, onInstallationDeleted, onInstallationDeleteError);
+                    mDeleteSchedFutures.remove(id);
+                } catch (Exception e) {
+                    onInstallationDeleteError.onInstallationOperationError(e);
                 }
             }
         }, mInterval, TimeUnit.MILLISECONDS);
