@@ -85,7 +85,9 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
                 public void run() {
                     try {
                         mInstallationAdapter.deleteInstallation(id, onInstallationDeleted, onInstallationDeleteError);
-                        mDeleteSchedFutures.remove(id);
+                        synchronized (mDeleteSchedFutures) {
+                            mDeleteSchedFutures.remove(id);
+                        }
                     } catch (Exception e) {
                         onInstallationDeleteError.onInstallationOperationError(e);
                     }
