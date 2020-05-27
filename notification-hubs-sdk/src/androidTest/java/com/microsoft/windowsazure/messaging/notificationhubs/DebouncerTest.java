@@ -7,6 +7,7 @@ import androidx.test.filters.SmallTest;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,14 @@ public class DebouncerTest {
     private final InstallationAdapter.SaveListener logSuccessSaveListener = new InstallationAdapter.SaveListener() {
         @Override
         public void onInstallationSaved(Installation i) {
-            System.out.println("Success");
+            System.out.println("Successfully Saved");
+        }
+    };
+
+    private final InstallationAdapter.DeleteListener logSuccessDeleteListener = new InstallationAdapter.DeleteListener() {
+        @Override
+        public void onInstallationDeleted(String id) {
+            System.out.println("Successfully Deleted");
         }
     };
 
@@ -140,5 +148,33 @@ public class DebouncerTest {
         int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());
+    }
+
+    @Test
+    public void DebouncerCallsMultipleInstallationDelete() throws InterruptedException {
+        NotificationHubInstallationAdapter nhInstallationAdapter = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationAdapter);
+
+        String firstId = installation.getInstallationId();
+        String secondId = installation_second.getInstallationId();
+
+        debouncer.deleteInstallation(firstId, logSuccessDeleteListener, logFailureListener);
+        debouncer.deleteInstallation(secondId, logSuccessDeleteListener, logFailureListener);
+        Thread.sleep(debouncerDelayPlusSecond);
+        verify(nhInstallationAdapter, times(1)).deleteInstallation(firstId, logSuccessDeleteListener, logFailureListener);
+        verify(nhInstallationAdapter, times(1)).deleteInstallation(secondId, logSuccessDeleteListener, logFailureListener);
+    }
+
+    @Test
+    public void DebouncerCallsInstallationDeleteOnce() throws InterruptedException {
+        NotificationHubInstallationAdapter nhInstallationAdapter = mock(NotificationHubInstallationAdapter.class);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationAdapter);
+
+        String firstId = installation.getInstallationId();
+
+        debouncer.deleteInstallation(firstId, logSuccessDeleteListener, logFailureListener);
+        debouncer.deleteInstallation(firstId, logSuccessDeleteListener, logFailureListener);
+        Thread.sleep(debouncerDelayPlusSecond);
+        verify(nhInstallationAdapter, times(1)).deleteInstallation(firstId, logSuccessDeleteListener, logFailureListener);
     }
 }

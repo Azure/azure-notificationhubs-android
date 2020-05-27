@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,6 +35,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
         mInstallationAdapter = installationAdapter;
         mInterval = interval;
         mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        mDeleteSchedFutures = new HashMap<String, ScheduledFuture<?>>();
     }
 
 
@@ -71,22 +73,25 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
      */
     @Override
     public void deleteInstallation(final String id, final DeleteListener onInstallationDeleted, final ErrorListener onInstallationDeleteError) {
-        ScheduledFuture<?> idFuture = mDeleteSchedFutures.get(id);
+        synchronized (mDeleteSchedFutures) {
+            ScheduledFuture<?> idFuture = mDeleteSchedFutures.get(id);
 
-        if (idFuture != null && !idFuture.isDone()) {
-            idFuture.cancel(true);
-        }
-
-        idFuture = mScheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mInstallationAdapter.deleteInstallation(id, onInstallationDeleted, onInstallationDeleteError);
-                    mDeleteSchedFutures.remove(id);
-                } catch (Exception e) {
-                    onInstallationDeleteError.onInstallationOperationError(e);
-                }
+            if (idFuture != null && !idFuture.isDone()) {
+                idFuture.cancel(true);
             }
-        }, mInterval, TimeUnit.MILLISECONDS);
+
+            idFuture = mScheduler.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mInstallationAdapter.deleteInstallation(id, onInstallationDeleted, onInstallationDeleteError);
+                        mDeleteSchedFutures.remove(id);
+                    } catch (Exception e) {
+                        onInstallationDeleteError.onInstallationOperationError(e);
+                    }
+                }
+            }, mInterval, TimeUnit.MILLISECONDS);
+            mDeleteSchedFutures.put(id, idFuture);
+        }
     }
 }
