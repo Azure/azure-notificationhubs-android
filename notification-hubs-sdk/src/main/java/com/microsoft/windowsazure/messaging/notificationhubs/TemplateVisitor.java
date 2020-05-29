@@ -38,12 +38,12 @@ class TemplateVisitor implements InstallationVisitor {
      */
     public TemplateVisitor(Context context, Map<String, InstallationTemplate> templates) {
         this(context);
-        addTemplates(templates);
+        setTemplates(templates);
     }
 
     @Override
     public void visitInstallation(Installation subject) {
-        subject.addTemplates(getSharedPreferenceTemplates());
+        subject.setTemplates(getSharedPreferenceTemplates());
     }
 
     /**
@@ -66,23 +66,22 @@ class TemplateVisitor implements InstallationVisitor {
     }
 
     /**
-     * Adds a single template to this collection.
+     * Adds or updates single template in this collection.
      *
      * @param templateName Name of template
-     * @param template The template to include with this collection.
+     * @param template The template to include or update in this collection.
      */
-    public void addTemplate(String templateName, InstallationTemplate template) {
-        addTemplates(Collections.singletonMap(templateName, template));
+    public void setTemplate(String templateName, InstallationTemplate template) {
+        setTemplates(Collections.singletonMap(templateName, template));
     }
 
     /**
-     * Adds several templates to the collection.
+     * Adds or updates several templates in the collection.
      *
-     * @param templates The collection of named templates to include with this collection.
+     * @param templates The collection of named templates to include or update in this collection.
      * Installation.
      */
-
-    public void addTemplates(Map<String, InstallationTemplate> templates) {
+    public void setTemplates(Map<String, InstallationTemplate> templates) {
         Map<String, InstallationTemplate> sharedPreferenceTemplates = getSharedPreferenceTemplates();
         sharedPreferenceTemplates.putAll(templates);
         Set<String> serializedTemplatesSet = new HashSet<>();

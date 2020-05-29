@@ -110,10 +110,10 @@ public class Installation implements Taggable {
     }
 
     /**
-     * Adds several tamplates to this Installation.
-     * @param templates The templates to include with this Installation.
+     * Adds or updates several templates in this Installation.
+     * @param templates The templates to include or update in this Installation.
      */
-    public void addTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
+    public void setTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
 
     public Map<String, InstallationTemplate> getTemplates() { return mTemplates; }
 
