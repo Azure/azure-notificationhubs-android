@@ -30,17 +30,33 @@ public class TemplateVisitorTests {
     }
 
     @Test
-    public void templateVisitorAddTemplate() {
+    public void templateVisitorSetTemplateAdd() {
         TemplateVisitor templateVisitor = new TemplateVisitor(context);
 
-        templateVisitor.addTemplate(templateName, template);
+        templateVisitor.setTemplate(templateName, template);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateVisitor.getTemplates());
         assertEquals(template, templateVisitor.getTemplate(templateName));
     }
 
     @Test
-    public void templateVisitorAddTemplates () {
+    public void templateVisitorSetTemplateUpdate() {
+        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+
+        templateVisitor.setTemplate(templateName, template);
+        InstallationTemplate updatedTemplate =  templateVisitor.getTemplate(templateName);
+        updatedTemplate.addTag("tag_updated");
+        updatedTemplate.removeTag("tag1");
+        updatedTemplate.setHeader("header1", "value_updated");
+        updatedTemplate.setHeader("header2", "value2");
+        updatedTemplate.setBody("body_updated");
+
+        templateVisitor.setTemplate(templateName, updatedTemplate);
+        assertEquals(updatedTemplate, templateVisitor.getTemplate(templateName));
+    }
+
+    @Test
+    public void templateVisitorSetTemplates () {
         String templateName2 = "templateName2";
         InstallationTemplate template2 = new InstallationTemplate();
         template2.addTags(new ArrayList<String>(){{ add("tag4"); add("tag5"); add("tag6"); }});
@@ -50,7 +66,7 @@ public class TemplateVisitorTests {
 
         TemplateVisitor templateVisitor = new TemplateVisitor(context);
 
-        templateVisitor.addTemplates(templateMap);
+        templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateVisitor.getTemplates());
         assertEquals(template, templateVisitor.getTemplate(templateName));
@@ -61,7 +77,7 @@ public class TemplateVisitorTests {
     public void templateVisitorRemoveTemplate () {
         TemplateVisitor templateVisitor = new TemplateVisitor(context);
 
-        templateVisitor.addTemplates(templateMap);
+        templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateVisitor.getTemplates());
         templateVisitor.removeTemplate(templateName);
@@ -88,7 +104,7 @@ public class TemplateVisitorTests {
 
         TemplateVisitor templateVisitor = new TemplateVisitor(context);
 
-        templateVisitor.addTemplates(templateMap);
+        templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateVisitor.getTemplates());
         templateVisitor.removeTemplates(new ArrayList<String>(){{ add(templateName); add(templateName2); add("tag3"); }});
@@ -103,7 +119,7 @@ public class TemplateVisitorTests {
     public void templateVisitorClearTemplates () {
         TemplateVisitor templateVisitor = new TemplateVisitor(context);
 
-        templateVisitor.addTemplates(templateMap);
+        templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
         assertEquals(expectedTemplateSet, templateVisitor.getTemplates());
         templateVisitor.clearTemplates();
