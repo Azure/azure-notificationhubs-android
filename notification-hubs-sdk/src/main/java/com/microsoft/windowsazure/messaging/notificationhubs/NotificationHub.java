@@ -24,6 +24,7 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationVisitor> mVisitors;
+    private ExpirationVisitor mExpirationVisitor;
     private PushChannelVisitor mPushChannelVisitor;
     private TagVisitor mTagVisitor;
     private TemplateVisitor mTemplateVisitor;
@@ -103,6 +104,9 @@ public final class NotificationHub {
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
+
+        instance.mExpirationVisitor = new ExpirationVisitor(instance.mApplication);
+        instance.useInstanceVisitor(instance.mExpirationVisitor);
 
         instance.mTagVisitor = new TagVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTagVisitor);

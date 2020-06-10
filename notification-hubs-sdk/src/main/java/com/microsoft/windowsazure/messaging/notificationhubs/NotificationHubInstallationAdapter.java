@@ -13,6 +13,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -30,11 +33,19 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     private final String mHubName;
     private final ConnectionString mConnectionString;
     private HttpClient mHttpClient;
+    private final ExpirationVisitor mExpirationVisitor;
+
+    private final static DateFormat sIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.ENGLISH);
 
     public NotificationHubInstallationAdapter(Context context, String hubName, String connectionString) {
+        this(context, hubName, connectionString, (ExpirationVisitor) null);
+    }
+
+    NotificationHubInstallationAdapter(Context context, String hubName, String connectionString, ExpirationVisitor expirationVisitor) {
         mHubName = hubName;
         mConnectionString = ConnectionString.parse(connectionString);
         mHttpClient = HttpUtils.createHttpClient(context.getApplicationContext());
+        mExpirationVisitor = expirationVisitor;
     }
 
     /**
@@ -127,6 +138,13 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
                         put("tags", tagList);
                         put("templates", serializedTemplates);
                     }};
+
+                    Date expiration = installation.getExpiration();
+                    if(expiration != null) {
+                        String formattedExpiration = sIso8601Format.format(expiration);
+                        jsonBody.put("expirationTime", formattedExpiration);
+                    }
+
                     return jsonBody.toString();
                 } catch (JSONException e) {
                     e.printStackTrace();
