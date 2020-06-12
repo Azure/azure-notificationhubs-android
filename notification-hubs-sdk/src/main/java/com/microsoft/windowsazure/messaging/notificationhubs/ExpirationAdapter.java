@@ -21,7 +21,7 @@ import java.util.Objects;
 class ExpirationAdapter implements InstallationAdapter {
     private final SharedPreferences mSharedPreferences;
     private final InstallationAdapter mDecoratedAdapter;
-    private final ExpirationVisitor mExpirationVisitor;
+    private final NotificationHub mNotificationHub;
     private long mInstallationValidWindow;
     private long mNearExpirationWindow;
 
@@ -58,11 +58,11 @@ class ExpirationAdapter implements InstallationAdapter {
      * as it determines whether or not to
      * @param context
      * @param decoratedAdapter
-     * @param expirationVisitor
+     * @param notificationHub
      */
-    public ExpirationAdapter(Context context, InstallationAdapter decoratedAdapter, ExpirationVisitor expirationVisitor) {
+    public ExpirationAdapter(Context context, InstallationAdapter decoratedAdapter, NotificationHub notificationHub) {
         mDecoratedAdapter = decoratedAdapter;
-        mExpirationVisitor = expirationVisitor;
+        mNotificationHub = notificationHub;
         mSharedPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
         mInstallationValidWindow = INSTALLATION_VALID_WINDOW;
         mNearExpirationWindow = INSTALLATION_NEAR_EXPIRATION_WINDOW;
@@ -89,7 +89,7 @@ class ExpirationAdapter implements InstallationAdapter {
         ) {
             Date expiration = getExpirationDate();
             installation.setExpiration(expiration);
-            mExpirationVisitor.setExpiration(expiration);
+            mNotificationHub.setExpiration(expiration);
         }
 
         int hash = getInstallationHash(installation);

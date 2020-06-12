@@ -13,6 +13,7 @@ import com.microsoft.windowsazure.messaging.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,10 +80,14 @@ public final class NotificationHub {
      *                         receive notifications.
      */
     public static void initialize(Application application, String hubName, String connectionString) {
-        initialize(application, new DebounceInstallationAdapter(application, new NotificationHubInstallationAdapter(
+        InstallationAdapter client = new NotificationHubInstallationAdapter(
                 application,
                 hubName,
-                connectionString)));
+                connectionString);
+        InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
+        InstallationAdapter expirationApplier = new ExpirationAdapter(application, debouncer, getInstance());
+
+        initialize(application, expirationApplier);
     }
 
     /**
@@ -513,5 +518,13 @@ public final class NotificationHub {
 
     public InstallationTemplate getInstanceTemplate(String templateName) {
         return mTemplateVisitor.getTemplate(templateName);
+    }
+
+    Date getExpiration() {
+        return mExpirationVisitor.getExpiration();
+    }
+
+    void setExpiration(Date expiration) {
+        mExpirationVisitor.setExpiration(expiration);
     }
 }
