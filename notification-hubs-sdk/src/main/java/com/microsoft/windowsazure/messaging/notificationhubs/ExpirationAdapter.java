@@ -80,7 +80,7 @@ class ExpirationAdapter implements InstallationAdapter {
     @Override
     public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
         if (
-            installation.getExpiration() == getPreviousExpiration() && // If a separate component is trying to update the expiration, don't interfere.
+            installation.getExpiration().equals(getPreviousExpiration()) && // If a separate component is trying to update the expiration, don't interfere.
             (
                 installation.getExpiration() == null || // If no one has applied an expiration, we should.
                 hasInstallationChanged(installation) || // We won't be adding a new call to the backend, so we may as well update the expiration.
