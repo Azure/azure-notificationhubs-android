@@ -52,7 +52,7 @@ public class RegistrationIntentService extends IntentService {
             }
 
             // Check if the token may have been compromised and needs refreshing.
-            else if ((storedToken=sharedPreferences.getString("FCMtoken", "")) != FCM_token) {
+            else if (!(storedToken = sharedPreferences.getString("FCMtoken", "")).equals(FCM_token)) {
 
                 NotificationHub hub = new NotificationHub(NotificationSettings.HubName,
                         NotificationSettings.HubListenConnectionString, this);
