@@ -32,8 +32,13 @@ public class DevicePropertyProvider {
      * @return A string that can be used to target device using a language.
      */
     public static String getLanguageTag() {
-        // TODO
-        throw new UnsupportedOperationException();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return "Language_" + Locale.getDefault().toLanguageTag();
+        }
+
+        // Do you need this value to be populated in Android versions before Lollipop? Please tell us at:
+        // https://github.com/Azure/azure-notificationhubs-android/issues
+        throw new UnsupportedOperationException("Language tag logic was added to the Android standard library in API Level 21 (Lollipop)");
     }
 
     /**
@@ -93,6 +98,4 @@ public class DevicePropertyProvider {
         builder.append(resolution.y);
         return builder.toString();
     }
-
-
 }
