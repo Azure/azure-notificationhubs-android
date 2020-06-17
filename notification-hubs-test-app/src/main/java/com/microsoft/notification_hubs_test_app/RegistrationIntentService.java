@@ -52,7 +52,7 @@ public class RegistrationIntentService extends IntentService {
 
                 sharedPreferences.edit().putString("registrationID", regID ).apply();
                 sharedPreferences.edit().putString("FCMtoken", FCM_token ).apply();
-            } else if ((storedToken = sharedPreferences.getString("FCMtoken", "")) != FCM_token) {
+            } else if (!(storedToken = sharedPreferences.getString("FCMtoken", "")).equals(FCM_token)) {
 
                 NotificationHub hub = new NotificationHub(BuildConfig.hubName,
                         BuildConfig.hubListenConnectionString, this);
