@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -55,17 +56,38 @@ class ExpirationAdapter implements InstallationAdapter {
 
     /**
      * Creates a new instance of {@link ExpirationAdapter} which will use the provided dependencies
-     * as it determines whether or not to
-     * @param context
-     * @param decoratedAdapter
-     * @param notificationHub
+     * as it determines whether or not to update the expirationTime associated with instances of
+     * {@link Installation} before they are submitted to the backend.
+     *
+     * @param context The Application context to be used for persisting data.
+     * @param decoratedAdapter The {@link InstallationAdapter} that should be invoked once the
+     *                         proper expiration is applied.
      */
-    public ExpirationAdapter(Context context, InstallationAdapter decoratedAdapter, NotificationHub notificationHub) {
+    public ExpirationAdapter(Context context, InstallationAdapter decoratedAdapter) {
+        this(context, decoratedAdapter, NotificationHub.getInstance(), INSTALLATION_VALID_WINDOW, INSTALLATION_NEAR_EXPIRATION_WINDOW);
+    }
+
+    /**
+     * Creates a new instance of {@link ExpirationAdapter} which will use the provided dependencies
+     * as it determines whether or not to update the expirationTime associated with instances of
+     * {@link Installation} before they are submitted to the backend.
+     *
+     * @param context The Application context to be used for persisting data.
+     * @param decoratedAdapter The {@link InstallationAdapter} that should be invoked once the
+     *                         proper expiration is applied.
+     * @param notificationHub The {@link NotificationHub} that should be used to associate
+     *                        expirationDate with future Installations.
+     * @param validWindowMillis The number of milliseconds away that the expirationTime should be
+     *                          set to when apply a new expiration.
+     * @param  nearExpirationMillis The number of milliseconds before the expirationTime which would
+     *                             constitute reason to renew this Installation.
+     */
+    public ExpirationAdapter(Context context, InstallationAdapter decoratedAdapter, NotificationHub notificationHub, long validWindowMillis, long nearExpirationMillis) {
         mDecoratedAdapter = decoratedAdapter;
         mNotificationHub = notificationHub;
         mSharedPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
-        mInstallationValidWindow = INSTALLATION_VALID_WINDOW;
-        mNearExpirationWindow = INSTALLATION_NEAR_EXPIRATION_WINDOW;
+        mInstallationValidWindow = validWindowMillis;
+        mNearExpirationWindow = nearExpirationMillis;
     }
 
     /**

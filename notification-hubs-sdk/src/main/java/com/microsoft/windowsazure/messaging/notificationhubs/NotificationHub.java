@@ -85,7 +85,7 @@ public final class NotificationHub {
                 hubName,
                 connectionString);
         InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
-        InstallationAdapter expirationApplier = new ExpirationAdapter(application, debouncer, getInstance());
+        InstallationAdapter expirationApplier = new ExpirationAdapter(application, debouncer);
 
         initialize(application, expirationApplier);
     }
