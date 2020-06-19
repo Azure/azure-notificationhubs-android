@@ -28,24 +28,25 @@ import javax.crypto.spec.SecretKeySpec;
  * notifications.
  */
 public class NotificationHubInstallationAdapter implements InstallationAdapter {
-    private static final long EXPIRE_SECONDS = 5 * 60;
+    private static final long TOKEN_EXPIRE_SECONDS = 5 * 60;
+    private static final long DEFAULT_INSTALLATION_EXPIRATION_MILLIS = 1000L * 60L * 60L * 24L * 90L;
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
-    private HttpClient mHttpClient;
-    private final ExpirationVisitor mExpirationVisitor;
+    private final HttpClient mHttpClient;
+    private final long mInstallationExpirationWindow;
 
     private final static DateFormat sIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.ENGLISH);
 
     public NotificationHubInstallationAdapter(Context context, String hubName, String connectionString) {
-        this(context, hubName, connectionString, (ExpirationVisitor) null);
+        this(context, hubName, connectionString, DEFAULT_INSTALLATION_EXPIRATION_MILLIS);
     }
 
-    NotificationHubInstallationAdapter(Context context, String hubName, String connectionString, ExpirationVisitor expirationVisitor) {
+    NotificationHubInstallationAdapter(Context context, String hubName, String connectionString, long installationExpirationWindow) {
         mHubName = hubName;
         mConnectionString = ConnectionString.parse(connectionString);
         mHttpClient = HttpUtils.createHttpClient(context.getApplicationContext());
-        mExpirationVisitor = expirationVisitor;
+        mInstallationExpirationWindow = installationExpirationWindow;
     }
 
     /**
@@ -57,6 +58,8 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+
+        addExpiration(installation);
 
         mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
     }
@@ -72,7 +75,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         }
 
         // Set expiration in seconds
-        long expires = (System.currentTimeMillis() / 1000) + EXPIRE_SECONDS;
+        long expires = (System.currentTimeMillis() / 1000) + TOKEN_EXPIRE_SECONDS;
 
         String toSign = url + '\n' + expires;
 
@@ -156,6 +159,21 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
             public void onBeforeCalling(URL url, Map<String, String> headers) {
             }
         };
+    }
+
+    /**
+     * Ensures that the provided {@link Installation} has an expiration.
+     * @param target The instance of {@link Installation} which may not have an expiration.
+     */
+    void addExpiration(Installation target) {
+        if (target.getExpiration() != null) {
+            return;
+        }
+
+        Date expiration = new Date();
+        expiration = new Date(expiration.getTime() + mInstallationExpirationWindow);
+
+        target.setExpiration(expiration);
     }
 
     private ServiceCallback buildServiceCallback(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {

@@ -13,7 +13,6 @@ import com.microsoft.windowsazure.messaging.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +24,6 @@ public final class NotificationHub {
 
     private NotificationListener mListener;
     private final List<InstallationVisitor> mVisitors;
-    private ExpirationVisitor mExpirationVisitor;
     private PushChannelVisitor mPushChannelVisitor;
     private TagVisitor mTagVisitor;
     private TemplateVisitor mTemplateVisitor;
@@ -85,9 +83,8 @@ public final class NotificationHub {
                 hubName,
                 connectionString);
         InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
-        InstallationAdapter expirationApplier = new ExpirationAdapter(application, debouncer);
 
-        initialize(application, expirationApplier);
+        initialize(application, debouncer);
     }
 
     /**
@@ -109,9 +106,6 @@ public final class NotificationHub {
 
         instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
-
-        instance.mExpirationVisitor = new ExpirationVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mExpirationVisitor);
 
         instance.mTagVisitor = new TagVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mTagVisitor);
@@ -518,13 +512,5 @@ public final class NotificationHub {
 
     public InstallationTemplate getInstanceTemplate(String templateName) {
         return mTemplateVisitor.getTemplate(templateName);
-    }
-
-    Date getExpiration() {
-        return mExpirationVisitor.getExpiration();
-    }
-
-    void setExpiration(Date expiration) {
-        mExpirationVisitor.setExpiration(expiration);
     }
 }
