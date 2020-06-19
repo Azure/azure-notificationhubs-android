@@ -14,7 +14,7 @@ pool:
 
 steps:
 - task: Gradle@2
-  displayName: 'gradlew cleanTest test '
+  displayName: 'Clean previous test results'
   inputs:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest test '
@@ -49,7 +49,7 @@ steps:
   displayName: 'Install and Run Android Emulator'
 
 - task: Gradle@2
-  displayName: 'gradlew cleanTest connectedAndroidTest'
+  displayName: 'Test SDK'
   inputs:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest connectedAndroidTest'
@@ -69,14 +69,14 @@ steps:
       cp $(googleServices.secureFilePath) ./notification-hubs-test-app-refresh
 
 - task: Gradle@2
-  displayName: 'Build and Test Sample App'
+  displayName: 'Build and test sample app'
   inputs:
     options: '-PisCI="true"'
     tasks: 'notification-hubs-test-app-refresh:test notification-hubs-test-app-refresh:connectedAndroidTest'
     publishJUnitResults: false
 
 - task: Gradle@2
-  displayName: 'gradlew makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+  displayName: 'Create assets for publication'
   inputs:
     options: '-PisCI="true"'
     tasks: 'makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
