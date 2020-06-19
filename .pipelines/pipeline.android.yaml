@@ -54,12 +54,19 @@ steps:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest connectedAndroidTest'
 
-- task: Gradle@2
-  displayName: 'gradlew makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+- task: DownloadSecureFile@1
+  displayName: 'Download Google Services profile'
+  name: googleServices
   inputs:
-    options: '-PisCI="true"'
-    tasks: 'makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
-    publishJUnitResults: false
+    secureFile: google-services.json
+
+- task: Bash@3
+  displayName: 'Copy Google Service profile to application roots'
+  inputs:
+    targetType: 'inline'
+    script: |
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-refresh
 
 - task: Gradle@2
   displayName: 'Build and Test Sample App'
@@ -67,6 +74,14 @@ steps:
     options: '-PisCI="true"'
     tasks: 'notification-hubs-test-app-refresh:test notification-hubs-test-app-refresh:connectedAndroidTest'
     publishJUnitResults: false
+
+- task: Gradle@2
+  displayName: 'gradlew makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+  inputs:
+    options: '-PisCI="true"'
+    tasks: 'makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+    publishJUnitResults: false
+
 
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
   displayName: 'ESRP CodeSigning'
