@@ -61,6 +61,13 @@ steps:
     tasks: 'makeJar notification-hubs-sdk:publishReleasePublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
     publishJUnitResults: false
 
+- task: Gradle@2
+  displayName: 'Build and Test Sample App'
+  inputs:
+    options: '-PisCI="true"'
+    tasks: 'notification-hubs-test-app-refresh:test notification-hubs-test-app-refresh:connectedAndroidTest'
+    publishJUnitResults: false
+
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
   displayName: 'ESRP CodeSigning'
   inputs:
