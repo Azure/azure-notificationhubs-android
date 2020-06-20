@@ -138,9 +138,8 @@ public class DebouncerTest {
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
         Thread.sleep(debouncerDelayPlusSecond);
 
-        String PREFERENCE_KEY = "recentInstallation";
         SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
-        int recentHash = mPreferences.getInt(PREFERENCE_KEY,0);
+        int recentHash = mPreferences.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());
     }
