@@ -45,9 +45,10 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
+        String apiVersion = NotificationHubInstallationHelper.getApiVersion(formatEndpoint);
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId(), apiVersion);
 
-        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
+        mHttpClient.callAsync(url, "PUT", getHeaders(url, apiVersion), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {
@@ -55,8 +56,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         String key = mConnectionString.getSharedAccessKey();
 
         try {
-            String[] urlParts = url.split("\\?"); //we should't use query params
-            url = URLEncoder.encode(urlParts[0], "UTF-8").toLowerCase(Locale.ENGLISH);
+            url = URLEncoder.encode(url, "UTF-8").toLowerCase(Locale.ENGLISH);
         } catch (UnsupportedEncodingException e) {
             // this shouldn't happen because of the fixed encoding
         }
@@ -90,13 +90,13 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
     }
 
-    private Map<String, String> getHeaders(final String url) {
+    private Map<String, String> getHeaders(final String url, final String apiVersion) {
         try {
             Map<String,String> params = new HashMap<String, String>(){{
                 put("Content-Type", "application/json");
-                put("x-ms-version", "2015-01");
+                put("x-ms-version", apiVersion);
                 put("Authorization", generateAuthToken(url));
-                put("User-Agent", getUserAgent());
+                put("User-Agent", getUserAgent(apiVersion));
             }};
             return params;
         } catch (InvalidKeyException e) {
@@ -159,9 +159,9 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     /**
      * Generates the User-Agent
      */
-    private String getUserAgent() {
+    private String getUserAgent(String apiVersion) {
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                "2015-01", "AndroidSdkV1FcmV1.0.0-preview2", "Android", Build.VERSION.RELEASE);
+                apiVersion, "AndroidSdkV1FcmV1.0.0-preview2", "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
