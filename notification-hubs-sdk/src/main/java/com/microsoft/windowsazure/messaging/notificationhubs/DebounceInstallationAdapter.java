@@ -2,10 +2,11 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -17,24 +18,57 @@ import java.util.concurrent.TimeUnit;
  */
 public class DebounceInstallationAdapter implements InstallationAdapter {
 
-    private static final String PREFERENCE_KEY = "recentInstallation";
+    static final String LAST_ACCEPTED_HASH_KEY = "lastAcceptedHash";
+    static final String LAST_ACCEPTED_TIMESTAMP_KEY= "lastAcceptedTimestamp";
+    private static final long DEFAULT_DEBOUNCE_INTERVAL = 2000L; // Two seconds
+    private static final long DEFAULT_INSTALLATION_STALE_MILLIS = 1000L * 60L * 60L * 24L; // One day's worth of milliseconds
+
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private InstallationAdapter mInstallationAdapter;
     private long mInterval;
     private ScheduledFuture<?> mSchedFuture;
     private SharedPreferences mPreferences;
+    private long mInstallationStaleMillis;
 
+    /**
+     * Creates a new instance which decorates a given {@link InstallationAdapter} with all default
+     * settings.
+     * @param context The Application context that can be used for caching information about
+     *                previous sessions.
+     * @param installationAdapter The adapter that should be invoked once after the waiting period
+     *                            is complete.
+     */
     public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter) {
-        this(context, installationAdapter, 2000);
+        this(context, installationAdapter, DEFAULT_DEBOUNCE_INTERVAL);
     }
 
+    /**
+     * Creates a new instance which decorates a given {@link InstallationAdapter}, and waits at least
+     * a specified number of milliseconds between calls to the server.
+     *
+     * @param context The Application context that can be used for caching information about
+     *                previous sessions.
+     * @param installationAdapter The adapter that should be invoked once after the waiting period
+     *                            is complete.
+     * @param interval The number of milliseconds to wait for further changes to accumulate before
+     *                 passing the {@link Installation} to the next adapter.
+     */
     public DebounceInstallationAdapter(Context context, InstallationAdapter installationAdapter, long interval) {
         super();
         mInstallationAdapter = installationAdapter;
         mInterval = interval;
         mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
+        mInstallationStaleMillis = DEFAULT_INSTALLATION_STALE_MILLIS;
     }
 
+    /**
+     * Sets the maximum amount of time that this instance will wait before allowing what would have
+     * otherwise been a duplicate {@link Installation} through.
+     * @param millis The number of milliseconds before an {@link Installation} should be considered stale.
+     */
+    public void setInstallationStaleWindow(long millis) {
+        mInstallationStaleMillis = millis;
+    }
 
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
@@ -42,17 +76,25 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             mSchedFuture.cancel(true);
         }
 
-        int recentHash = mPreferences.getInt(PREFERENCE_KEY, 0);
-        if (recentHash != 0 && recentHash == installation.hashCode()) {
+        int recentHash = mPreferences.getInt(LAST_ACCEPTED_HASH_KEY, 0);
+        long lastAcceptedTimestamp = mPreferences.getLong(LAST_ACCEPTED_TIMESTAMP_KEY, Long.MIN_VALUE);
+
+        boolean sameAsLastAccepted = recentHash != 0 && recentHash == installation.hashCode();
+        final long currentTime = new Date().getTime();
+        boolean lastAcceptedIsRecent =  currentTime < lastAcceptedTimestamp + mInstallationStaleMillis;
+
+        if (sameAsLastAccepted && lastAcceptedIsRecent) {
             return;
         }
+
 
         mSchedFuture = mScheduler.schedule(new Runnable() {
             @Override
             public void run() {
                 try {
                     mInstallationAdapter.saveInstallation(installation, onInstallationSaved, onInstallationSaveError);
-                    mPreferences.edit().putInt(PREFERENCE_KEY, installation.hashCode()).apply();
+                    mPreferences.edit().putInt(LAST_ACCEPTED_HASH_KEY, installation.hashCode()).apply();
+                    mPreferences.edit().putLong(LAST_ACCEPTED_TIMESTAMP_KEY, currentTime).apply();
                 } catch (Exception e) {
                     onInstallationSaveError.onInstallationSaveError(e);
                 }
