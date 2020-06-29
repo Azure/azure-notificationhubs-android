@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class NotificationHubInstallationHelper {
-    private static final Pattern ENDPOINT_FORMAT_PATTERN = Pattern.compile("sb://([a-zA-Z.\\-_]+)/?");
+    private static final Pattern ENDPOINT_FORMAT_PATTERN = Pattern.compile("sb://([a-zA-Z.\\-_\\d]+)/?");
 
     static String parseSbEndpoint(String endpoint){
         Matcher matcher = ENDPOINT_FORMAT_PATTERN.matcher(endpoint);
