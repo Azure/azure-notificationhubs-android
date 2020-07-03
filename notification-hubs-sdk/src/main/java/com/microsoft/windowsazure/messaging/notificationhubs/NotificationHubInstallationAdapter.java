@@ -30,6 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class NotificationHubInstallationAdapter implements InstallationAdapter {
     private static final long TOKEN_EXPIRE_SECONDS = 5 * 60;
     private static final long DEFAULT_INSTALLATION_EXPIRATION_MILLIS = 1000L * 60L * 60L * 24L * 90L;
+    static final String API_VERSION = "2020-06";
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
@@ -57,10 +58,9 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        String apiVersion = NotificationHubInstallationHelper.getApiVersion(formatEndpoint);
-        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId(), apiVersion);
+        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        mHttpClient.callAsync(url, "PUT", getHeaders(url, apiVersion), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
+        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
         addExpiration(installation);
     }
 
@@ -103,13 +103,13 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
     }
 
-    private Map<String, String> getHeaders(final String url, final String apiVersion) {
+    private Map<String, String> getHeaders(final String url) {
         try {
             Map<String,String> params = new HashMap<String, String>(){{
                 put("Content-Type", "application/json");
-                put("x-ms-version", apiVersion);
+                put("x-ms-version", API_VERSION);
                 put("Authorization", generateAuthToken(url));
-                put("User-Agent", getUserAgent(apiVersion));
+                put("User-Agent", getUserAgent());
             }};
             return params;
         } catch (InvalidKeyException e) {
@@ -194,9 +194,9 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     /**
      * Generates the User-Agent
      */
-    private String getUserAgent(String apiVersion) {
+    private String getUserAgent() {
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                apiVersion, "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
+                API_VERSION, "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
