@@ -30,6 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class NotificationHubInstallationAdapter implements InstallationAdapter {
     private static final long TOKEN_EXPIRE_SECONDS = 5 * 60;
     private static final long DEFAULT_INSTALLATION_EXPIRATION_MILLIS = 1000L * 60L * 60L * 24L * 90L;
+    static final String API_VERSION = "2020-06";
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
@@ -59,9 +60,8 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
         final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
 
-        addExpiration(installation);
-
         mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
+        addExpiration(installation);
     }
 
     private String generateAuthToken(String url) throws InvalidKeyException {
@@ -107,7 +107,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         try {
             Map<String,String> params = new HashMap<String, String>(){{
                 put("Content-Type", "application/json");
-                put("x-ms-version", "2015-01");
+                put("x-ms-version", API_VERSION);
                 put("Authorization", generateAuthToken(url));
                 put("User-Agent", getUserAgent());
             }};
@@ -196,7 +196,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      */
     private String getUserAgent() {
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                "2015-01", "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
+                API_VERSION, "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
