@@ -1,6 +1,7 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class Installation implements Taggable {
     private Set<String> mTags;
     private Map<String, InstallationTemplate> mTemplates;
     private String mInstallationId;
+    private Date mExpiration;
 
     public Installation() {
         mTags = new HashSet<String>();
@@ -110,12 +112,28 @@ public class Installation implements Taggable {
     }
 
     /**
-     * Adds several tamplates to this Installation.
-     * @param templates The templates to include with this Installation.
+     * Adds or updates several templates in this Installation.
+     * @param templates The templates to include or update in this Installation.
      */
-    public void addTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
+    public void setTemplates(Map<String, InstallationTemplate> templates) { mTemplates.putAll(templates); }
 
     public Map<String, InstallationTemplate> getTemplates() { return mTemplates; }
+
+    /**
+     * Fetches the moment in time when this {@link Installation} will no longer be deemed valid.
+     * @return The point in time where this {@link Installation} should no longer be considered valid.
+     */
+    public Date getExpiration() {
+        return mExpiration;
+    }
+
+    /**
+     * Sets the moment in time when this {@link Installation} will no longer be deemed valid.
+     * @param expiration The point in time where this {@link Installation} should no longer be considered valid.
+     */
+    public void setExpiration(Date expiration) {
+        mExpiration = expiration;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -125,11 +143,12 @@ public class Installation implements Taggable {
         return mPushChannel.equals(that.mPushChannel) &&
                 mTags.equals(that.mTags) &&
                 mTemplates.equals(that.mTemplates) &&
-                mInstallationId.equals(that.mInstallationId);
+                mInstallationId.equals(that.mInstallationId) &&
+                mExpiration.equals(that.mExpiration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId);
+        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId, mExpiration);
     }
 }

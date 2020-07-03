@@ -78,10 +78,13 @@ public final class NotificationHub {
      *                         receive notifications.
      */
     public static void initialize(Application application, String hubName, String connectionString) {
-        initialize(application, new DebounceInstallationAdapter(application, new NotificationHubInstallationAdapter(
+        InstallationAdapter client = new NotificationHubInstallationAdapter(
                 application,
                 hubName,
-                connectionString)));
+                connectionString);
+        InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
+
+        initialize(application, debouncer);
     }
 
     /**
@@ -466,17 +469,17 @@ public final class NotificationHub {
     }
 
     /**
-     * Add template to the collection
+     * Add or update template in the collection
      *
      * @param templateName Name of template
      * @param template Template instance
      */
-    public static void addTemplate(String templateName, InstallationTemplate template) {
-        getInstance().addInstanceTemplate(templateName, template);
+    public static void setTemplate(String templateName, InstallationTemplate template) {
+        getInstance().setInstanceTemplate(templateName, template);
     }
 
-    public void addInstanceTemplate(String templateName, InstallationTemplate template) {
-        mTemplateVisitor.addTemplate(templateName, template);
+    public void setInstanceTemplate(String templateName, InstallationTemplate template) {
+        mTemplateVisitor.setTemplate(templateName, template);
         beginInstanceInstallationUpdate();
     }
 
