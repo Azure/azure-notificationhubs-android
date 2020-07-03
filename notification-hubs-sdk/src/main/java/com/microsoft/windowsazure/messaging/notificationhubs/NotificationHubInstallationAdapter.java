@@ -196,7 +196,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
      */
     private String getUserAgent() {
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                "2015-01", "AndroidSdkV1FcmV1.0.0-preview2", "Android", Build.VERSION.RELEASE);
+                "2015-01", "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
