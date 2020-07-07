@@ -11,6 +11,8 @@ public interface InstallationAdapter {
     /**
      * Updates a backend with the updated Installation information for this device.
      * @param installation The record to update.
+     * @param onInstallationSaved Installation saved listener.
+     * @param onInstallationSaveError Installation save error listener.
      */
     void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError);
 

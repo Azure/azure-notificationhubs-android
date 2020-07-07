@@ -43,7 +43,7 @@ public class InstallationTemplate {
     /**
      * Add tag to template.
      *
-     * @param tag
+     * @param tag Name of tag
      */
     public void addTag(String tag) {
         mTags.add(tag);
@@ -61,7 +61,7 @@ public class InstallationTemplate {
     /**
      * Remove tag from template.
      *
-     * @param tag
+     * @param tag Name of tag
      */
     public void removeTag(String tag) {
         mTags.remove(tag);
@@ -94,6 +94,9 @@ public class InstallationTemplate {
 
     /**
      * Set header to template.
+     *
+     * @param name Name of header
+     * @param value Value of header
      */
     public void setHeader(String name, String value) {
         mHeaders.put(name, value);
@@ -101,6 +104,8 @@ public class InstallationTemplate {
 
     /**
      * Remove header from template.
+     *
+     * @param name Name of header
      */
     public void removeHeader(String name) {
         mHeaders.remove(name);
