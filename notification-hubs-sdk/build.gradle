@@ -120,9 +120,29 @@ task androidJavadocs(type: Javadoc) {
     classpath += configurations.javadocDeps
 
     android.libraryVariants.all { variant ->
-        owner.classpath += variant.javaCompile.classpath
+      owner.classpath += variant.javaCompile.classpath
     }
 
+    def capturedOutput = []
+    def listener = { capturedOutput << it } as StandardOutputListener
+    doFirst {
+        logging.addStandardErrorListener(listener)
+        logging.addStandardOutputListener(listener)
+    }
+    doLast {
+        logging.removeStandardOutputListener(listener)
+        logging.removeStandardErrorListener(listener)
+        def errorMessage = ""
+        capturedOutput.each { e ->
+            if(e.toString() =~ " warning: " || e.toString() =~ " error: ") {
+                errorMessage += "\n" + e.toString()
+            }
+        }
+
+        if (errorMessage != "") {
+            throw new GradleException(errorMessage);
+        }
+    }
 }
 
 task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
