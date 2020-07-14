@@ -86,7 +86,7 @@ steps:
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
   displayName: 'ESRP CodeSigning'
   inputs:
-    ConnectedServiceName: 'App Center - Code Signing'
+    ConnectedServiceName: 'ESRP CodeSigning'
     FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
     Pattern: '*.jar, *.aar'
     signConfigType: inlineSignParams
