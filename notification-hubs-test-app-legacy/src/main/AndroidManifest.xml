@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.microsoft.notification_hubs_test_app">
+    package="com.microsoft.notification_hubs_test_app_legacy">
 
     <application
         android:allowBackup="true"

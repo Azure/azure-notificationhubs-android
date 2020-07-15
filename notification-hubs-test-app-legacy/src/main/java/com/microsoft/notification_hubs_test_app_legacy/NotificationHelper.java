@@ -1,10 +1,8 @@
-package com.microsoft.notification_hubs_test_app;
+package com.microsoft.notification_hubs_test_app_legacy;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.media.AudioAttributes;
-import android.media.RingtoneManager;
 import android.os.Build;
 
 import com.microsoft.windowsazure.notifications.NotificationsManager;

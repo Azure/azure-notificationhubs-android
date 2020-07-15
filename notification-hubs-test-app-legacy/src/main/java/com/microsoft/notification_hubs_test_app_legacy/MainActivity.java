@@ -1,4 +1,4 @@
-package com.microsoft.notification_hubs_test_app;
+package com.microsoft.notification_hubs_test_app_legacy;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
