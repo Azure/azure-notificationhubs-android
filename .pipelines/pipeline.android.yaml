@@ -65,14 +65,14 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      cp $(googleServices.secureFilePath) ./notification-hubs-test-app
-      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-refresh
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-legacy
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-java
 
 - task: Gradle@2
   displayName: 'Build and test sample app'
   inputs:
     options: '-PisCI="true"'
-    tasks: 'notification-hubs-test-app-refresh:test notification-hubs-test-app-refresh:connectedAndroidTest'
+    tasks: 'notification-hubs-test-app-java:test notification-hubs-test-app-java:connectedAndroidTest'
     publishJUnitResults: false
 
 - task: Gradle@2
