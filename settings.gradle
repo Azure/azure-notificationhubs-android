@@ -1,2 +1,2 @@
 include ':notification-hubs-sdk', ':notification-hubs-sdk-e2etestapp',':notification-hubs-test-app-legacy', 'FCMTutorialApp'
-include ':notification-hubs-test-app-refresh'
+include ':notification-hubs-test-app-java'
