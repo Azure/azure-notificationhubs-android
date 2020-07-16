@@ -119,8 +119,7 @@ public class InstallationTemplate {
             templateObject.put("name", name);
             templateObject.put("body", installationTemplate.getBody());
             JSONObject headers = new JSONObject();
-            Iterable<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders();
-            for(Map.Entry<String, String> header: headersIterators){
+            for(Map.Entry<String, String> header: installationTemplate.getHeaders().entrySet()){
                 headers.put(header.getKey(), header.getValue());
             }
             templateObject.put("headers", headers);
@@ -172,8 +171,10 @@ public class InstallationTemplate {
     /**
      * Get all headers applied to this template.
      */
-    public Iterable<Map.Entry<String,String>> getHeaders() {
-        return mHeaders.entrySet();
+    public Map<String, String> getHeaders() {
+        Map<String, String> retVal = new HashMap<String, String>();
+        retVal.putAll(mHeaders);
+        return retVal;
     }
 
     @Override
