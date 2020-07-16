@@ -170,9 +170,9 @@ public class InstallationTemplate {
     }
 
     /**
-     * Get all headers from template.
+     * Get all headers applied to this template.
      */
-    Iterable<Map.Entry<String,String>> getHeaders() {
+    public Iterable<Map.Entry<String,String>> getHeaders() {
         return mHeaders.entrySet();
     }
 
