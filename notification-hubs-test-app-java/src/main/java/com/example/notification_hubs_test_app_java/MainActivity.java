@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        NotificationHub.initialize(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
+        NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_test_app_java:0.1.0");
         InstallationTemplate testTemplate = new InstallationTemplate();
         testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");
