@@ -75,9 +75,8 @@ public final class NotificationHub {
      * @param hubName The name of the Notification Hub that will broadcast notifications to this
      *                device.
      * @param connectionString The Listen-only AccessPolicy that grants this device the ability to
-     *                         receive notifications.
      */
-    public static void initialize(Application application, String hubName, String connectionString) {
+    public static void start(Application application, String hubName, String connectionString) {
         InstallationAdapter client = new NotificationHubInstallationAdapter(
                 application,
                 hubName,
