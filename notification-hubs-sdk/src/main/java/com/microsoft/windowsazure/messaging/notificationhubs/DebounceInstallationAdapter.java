@@ -76,12 +76,12 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             mSchedFuture.cancel(true);
         }
 
-        int recentHash = mPreferences.getInt(LAST_ACCEPTED_HASH_KEY, 0);
-        long lastAcceptedTimestamp = mPreferences.getLong(LAST_ACCEPTED_TIMESTAMP_KEY, Long.MIN_VALUE);
+        final int currentHash = installation.hashCode();
+        int recentHash = getLastAcceptedHash();
 
-        boolean sameAsLastAccepted = recentHash != 0 && recentHash == installation.hashCode();
+        boolean sameAsLastAccepted = recentHash != 0 && recentHash == currentHash;
         final long currentTime = new Date().getTime();
-        boolean lastAcceptedIsRecent =  currentTime < lastAcceptedTimestamp + mInstallationStaleMillis;
+        boolean lastAcceptedIsRecent =  currentTime < getLastAcceptedTimestamp() + mInstallationStaleMillis;
 
         if (sameAsLastAccepted && lastAcceptedIsRecent) {
             return;
@@ -93,7 +93,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             public void run() {
                 try {
                     mInstallationAdapter.saveInstallation(installation, onInstallationSaved, onInstallationSaveError);
-                    mPreferences.edit().putInt(LAST_ACCEPTED_HASH_KEY, installation.hashCode()).apply();
+                    mPreferences.edit().putInt(LAST_ACCEPTED_HASH_KEY, currentHash).apply();
                     mPreferences.edit().putLong(LAST_ACCEPTED_TIMESTAMP_KEY, currentTime).apply();
                 } catch (Exception e) {
                     onInstallationSaveError.onInstallationSaveError(e);
