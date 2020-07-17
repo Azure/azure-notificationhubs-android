@@ -14,18 +14,12 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.verify;
 
 @SmallTest
 public class DebouncerTest {
@@ -129,7 +123,7 @@ public class DebouncerTest {
 
     @Test
     public void DebouncerDoesNotInvokeSaveForSameInstallation() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class, withSettings());
+        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
         DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
         Thread.sleep(debouncerDelayPlusSecond);
