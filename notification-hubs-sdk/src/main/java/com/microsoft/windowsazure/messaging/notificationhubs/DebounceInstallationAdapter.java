@@ -101,4 +101,12 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
             }
         }, mInterval, TimeUnit.MILLISECONDS);
     }
+
+    long getLastAcceptedTimestamp() {
+        return mPreferences.getLong(LAST_ACCEPTED_TIMESTAMP_KEY, Long.MIN_VALUE);
+    }
+
+    int getLastAcceptedHash() {
+        return mPreferences.getInt(LAST_ACCEPTED_HASH_KEY, 0);
+    }
 }
