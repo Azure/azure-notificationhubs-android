@@ -7,18 +7,19 @@ import androidx.test.filters.SmallTest;
 
 import com.microsoft.windowsazure.messaging.R;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SmallTest
 public class DebouncerTest {
@@ -142,5 +143,36 @@ public class DebouncerTest {
         int recentHash = mPreferences.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY,0);
 
         assertTrue(recentHash == installation.hashCode());
+    }
+
+    @Test
+    public void DebounceResilientToInstallationAdapterModifications() throws InterruptedException {
+        Random r = new Random();
+        final Installation modifiableInstallation = new Installation();
+        modifiableInstallation.setPushChannel("faux_push_channel");
+        modifiableInstallation.setInstallationId("id_" + r.nextLong());
+        int hashBeforeAdapter = modifiableInstallation.hashCode();
+        final Semaphore adapterStatus = new Semaphore(0);
+
+        InstallationAdapter saboteur = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                Assert.assertSame(modifiableInstallation, installation); // If this is failing, the test is malformed. Consider fixing the test, not the Debouncer.
+                installation.setExpiration(new Date());
+                onInstallationSaved.onInstallationSaved(installation);
+                adapterStatus.release();
+            }
+        };
+
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, saboteur);
+        debouncer.saveInstallation(modifiableInstallation, logSuccessListener, logFailureListener);
+        adapterStatus.acquire();
+
+        int hashAfterAdapter = modifiableInstallation.hashCode();
+
+        int savedHash = debouncer.getLastAcceptedHash();
+
+        Assert.assertNotEquals("Test is built to assume hash is modified", hashBeforeAdapter, hashAfterAdapter);
+        Assert.assertEquals("The hash which is saved by the DebouncerAdapter should not be influenced by Adapters that come after it.", hashBeforeAdapter, savedHash);
     }
 }
