@@ -12,14 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SmallTest
 public class DebouncerTest {
@@ -27,8 +26,6 @@ public class DebouncerTest {
     private Installation installation;
     private Installation installation_second;
     private Installation installation_third;
-    private final int debouncerDelayInMillisec = 2000;
-    private final int debouncerDelayPlusSecond = debouncerDelayInMillisec + 1000;
 
     private final InstallationAdapter.Listener logSuccessListener = new InstallationAdapter.Listener() {
         @Override
@@ -63,81 +60,116 @@ public class DebouncerTest {
     }
 
     @Test
-    public void DebouncerDoesNotInvokeSaveImmediately() {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
-        debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(0)).saveInstallation(installation, logSuccessListener, logFailureListener);
-    }
-
-    @Test
     public void DebouncerInvokesSaveAfterDelayHappyPath() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
+        final long test_interval_ms = 500;
+        final Semaphore safeToAdvance = new Semaphore(0);
+        InstallationAdapter nhInstallationManager = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                safeToAdvance.release();
+                onInstallationSaved.onInstallationSaved(installation);
+            }
+        };
+
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager, test_interval_ms);
+        long startTime = System.currentTimeMillis();
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation, logSuccessListener, logFailureListener);
+        safeToAdvance.acquire();
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+        Assert.assertTrue("Debouncer must wait the requested amount of time after receiving an installation.", duration >= test_interval_ms);
     }
 
     @Test
     public void DebouncerInvokesSaveForMostRecent() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
+        final Set<Installation> received = new HashSet<Installation>();
+        final Semaphore safeToProceed = new Semaphore(0);
+        InstallationAdapter downstream = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                synchronized (received) {
+                    received.add(installation);
+                }
+                safeToProceed.release();
+            }
+        };
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, 250);
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
         debouncer.saveInstallation(installation_second, logSuccessListener, logFailureListener);
         debouncer.saveInstallation(installation_third, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
-        verify(nhInstallationManager, times(0)).saveInstallation(installation, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(0)).saveInstallation(installation_second, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation_third, logSuccessListener, logFailureListener);
+        safeToProceed.acquire();
+
+        Assert.assertEquals("There must be precisely one accepted installation.",1, received.size());
+        Assert.assertTrue("The single accepted installation must be the last one sent.", received.contains(installation_third));
     }
 
     @Test
     public void DebouncerInvokesSaveTwice() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
+        final Set<Installation> received = new HashSet<Installation>();
+        final Semaphore safeToProceed = new Semaphore(0);
+        InstallationAdapter downstream = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                synchronized (received) {
+                    received.add(installation);
+                }
+                safeToProceed.release();
+                onInstallationSaved.onInstallationSaved(installation);
+            }
+        };
+
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, 250);
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
+        safeToProceed.acquire();
         debouncer.saveInstallation(installation_second, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation_second, logSuccessListener, logFailureListener);
+        safeToProceed.acquire();
+
+        Assert.assertEquals(2, received.size());
+        Assert.assertTrue(received.contains(installation));
+        Assert.assertTrue(received.contains(installation_second));
     }
 
     @Test
     public void DebouncerRestartsDelay() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
+        final long test_interval_ms = 500;
+        final long partial_test_interval_ms = test_interval_ms / 2;
+
+        final Semaphore safeToProceed = new Semaphore(0);
+        InstallationAdapter downstream = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                safeToProceed.release();
+                onInstallationSaved.onInstallationSaved(installation);
+            }
+        };
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, test_interval_ms);
+
+        long startTime = System.currentTimeMillis();
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayInMillisec - 1000);
+        Thread.sleep(partial_test_interval_ms);
         // Invoke second call during delay, scheduler should be restarted, delay 2seconds
         debouncer.saveInstallation(installation_second, logSuccessListener, logFailureListener);
-        Thread.sleep(1000);
-        verify(nhInstallationManager, times(0)).saveInstallation(installation, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(0)).saveInstallation(installation_second, logSuccessListener, logFailureListener);
-        Thread.sleep(1000);
-        // After 2 seconds recent installation should be saved
-        verify(nhInstallationManager, times(0)).saveInstallation(installation, logSuccessListener, logFailureListener);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation_second, logSuccessListener, logFailureListener);
-    }
+        long endTime = System.currentTimeMillis();
+        long duration = endTime = startTime;
 
-    @Test
-    public void DebouncerDoesNotInvokeSaveForSameInstallation() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
-        debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
-        debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
-        verify(nhInstallationManager, times(1)).saveInstallation(installation, logSuccessListener, logFailureListener);
+        Assert.assertTrue("Debouncer should have waited at least (test_interval + partial_test_interval) milliseconds.", duration >= (test_interval_ms + partial_test_interval_ms));
     }
 
     @Test
     public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
-        NotificationHubInstallationAdapter nhInstallationManager = mock(NotificationHubInstallationAdapter.class);
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager);
+        final long test_interval_ms = 100;
+        final Semaphore safeToProceed = new Semaphore(0);
+        InstallationAdapter downstream = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                onInstallationSaved.onInstallationSaved(installation);
+                safeToProceed.release();
+            }
+        };
+
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, test_interval_ms);
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        Thread.sleep(debouncerDelayPlusSecond);
+        safeToProceed.acquire();
 
         SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
         int recentHash = mPreferences.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY,0);
