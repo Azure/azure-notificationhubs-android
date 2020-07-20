@@ -71,7 +71,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
     }
 
     @Override
-    public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
+    public synchronized void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
@@ -86,7 +86,6 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
         if (sameAsLastAccepted && lastAcceptedIsRecent) {
             return;
         }
-
 
         mSchedFuture = mScheduler.schedule(new Runnable() {
             @Override
