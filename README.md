@@ -8,9 +8,23 @@ Azure Notification Hubs provides a multi-platform, scaled-out push infrastructur
 
 ## Getting Started with ANH Android SDK
 
+To use ANH in your Android application, you'll need to accomplish a few things:
+
+1. Ensure your application is registered with Firebase.
+1. Add a reference to this library in your `build.gradle`.
+1. Add your hub's credentials to your application.
+
+Below is a quick overview of these steps, for a more complete tutorial see our [FCM tutorials](https://docs.microsoft.com/en-us/azure/notification-hubs/android-sdk).
+
+### Register with Firebase
+
+One of the primary goals of ANH is to provide an abstraction over platform specific notification delivery services, it is not an alternative. In order to make sure your application is setup to receive push notifications from Firebase, follow steps 1 through 3 in [this Firebase setup tutorial](https://firebase.google.com/docs/android/setup#console).
+
+Once you have a Firebase project, and your application registered, make sure to configure the API Key in your Notification Hub. Instructions can be found [here](https://docs.microsoft.com/en-us/azure/notification-hubs/configure-notification-hub-portal-pns-settings?tabs=azure-portal#google-firebase-cloud-messaging-fcm).
+
 ### Reference with Gradle
 
-This library is published on [JFrog Bintray](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK#files/com/microsoft/azure/notification-hubs-android-sdk). [Once you've completed steps 1 through 3 here to setup your app with Firebase](https://firebase.google.com/docs/android/setup#console), adding a reference to this project is as simple as editting two files in your project:
+This library is published on [JFrog Bintray](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK#files/com/microsoft/azure/notification-hubs-android-sdk). Adding a reference to this project is as simple as editting two files in your project:
 
 _{project-root}/build.gradle:_
 
@@ -35,6 +49,33 @@ dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
     implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.0.0-preview3'
 }
+```
+
+### Embedding Hub Credentials
+
+In order to connect to your Notification Hub, you'll need to embed the key from an access signature into your application. Remember, **client applications should always use the Listen only access signature**. Step six in [this section](https://docs.microsoft.com/en-us/azure/notification-hubs/android-sdk#configure-a-notification-hub) shows you how to fetch the access signature from the Azure portal.
+
+The easiest way to embed your ANH credentials without commiting them to source control is to use BuildConfig to convert environment variables into a runtime field:
+
+_{project-root}/{your-module}/build.gradle:_
+``` groovy
+// This is not a complete build.gradle file, it only highlights the portions you'll need to use ANH.
+
+android {
+    defaultConfig {
+        // Populates BuildConfig.hubName with the value that was stored APP_HUB_NAME at build time.
+        buildConfigField("String", "hubName", "\"${System.getenv('APP_HUB_NAME') ?: secretsProperties['APP_HUB_NAME']}\"")
+        //Populates BuildConfig.hubListenConnectionString with the value that was stored in APP_NH_CONNECTION_STRING at build time.
+        buildConfigField("String", "hubListenConnectionString", "\"${System.getenv('APP_NH_CONNECTION_STRING') ?: secretsProperties['APP_NH_CONNECTION_STRING']}\"")
+    }
+}
+```
+
+This will enable you to use the following line to initialize the library:
+
+_MainActivity.java:_
+``` java
+NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
 ```
 
 ## Repository Contents
