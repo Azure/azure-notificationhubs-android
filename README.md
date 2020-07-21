@@ -18,7 +18,7 @@ Below is a quick overview of these steps, for a more complete tutorial see our [
 
 ### Register with Firebase
 
-One of the primary goals of ANH is to provide an abstraction over platform specific notification delivery services, it is not an alternative. In order to make sure your application is setup to receive push notifications from Firebase, follow steps 1 through 3 in [this Firebase setup tutorial](https://firebase.google.com/docs/android/setup#console).
+One of the primary goals of ANH is to provide an abstraction over platform specific notification delivery services, it is not an alternative. In order to make sure your application is set up to receive push notifications from Firebase, follow steps 1 through 3 in [this Firebase set up tutorial](https://firebase.google.com/docs/android/setup#console).
 
 Once you have a Firebase project, and your application registered, make sure to configure the API Key in your Notification Hub. Instructions can be found [here](https://docs.microsoft.com/en-us/azure/notification-hubs/configure-notification-hub-portal-pns-settings?tabs=azure-portal#google-firebase-cloud-messaging-fcm).
 
