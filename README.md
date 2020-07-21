@@ -1,37 +1,25 @@
 
 <center><img src="./nh-logo.svg?sanitize=true" /></center>
 
-# Microsoft Azure Notification Hubs - Android SDK
+# Azure Notification Hubs - Android SDK
 
-Microsoft Azure Notification Hubs provide a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
+Azure Notification Hubs provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
 
-## Getting Started with Android SDK
+## Getting Started with ANH Android SDK
 
 ### Reference with Gradle
 
-This library is published on [JFrog Bintray](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK#files/com/microsoft/azure/notification-hubs-android-sdk). Adding a reference to this project is as simple as downloading your 'google-services.json' file from the [Firebase Console](https://console.firebase.google.com) and editting two files in your project:
+This library is published on [JFrog Bintray](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK#files/com/microsoft/azure/notification-hubs-android-sdk). [Once you've completed steps 1 through 3 here to setup your app with Firebase](https://firebase.google.com/docs/android/setup#console), adding a reference to this project is as simple as editting two files in your project:
 
 _{project-root}/build.gradle:_
 
 ``` groovy
 // This is not a complete build.gradle file, it only highlights the portions you'll need to use ANH.
 
-buildscript {
-    repositories {
-        // Make sure Google's repository is available for build-time dependency resolution.
-        google()
-    }
-    dependencies {
-        // Make sure the google-services plugin is available for your project.
-        classpath 'com.google.gms:google-services:4.3.3'
-    }
-}
-
 allprojects {
     repositories {
-        // Ensure you have the following two repsoitories in your "allprojects", "repositories" section.
-        google()
+        // Ensure you have the following repsoitory in your "allprojects", "repositories" section.
         maven {
             url 'https://dl.bintray.com/microsoftazuremobile/SDK'
         }
@@ -47,9 +35,6 @@ dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
     implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.0.0-preview3'
 }
-
-// Ensure your google-services.json is loaded at build time with the following line.
-apply plugin: 'com.google.gms.google-services'
 ```
 
 ## Repository Contents
