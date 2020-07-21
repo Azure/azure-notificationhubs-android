@@ -3,7 +3,7 @@
 
 # Azure Notification Hubs - Android SDK
 
-Azure Notification Hubs provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
+Azure Notification Hubs (ANH) provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
 
 ## Getting Started with ANH Android SDK
@@ -81,7 +81,7 @@ NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hu
 ## Repository Contents
 
 ### [`com.microsoft.windowsazure.messaging.notificationhubs`](./notification-hubs-sdk/src/main/java/com/microsoft/windowsazure/messaging/notificationhubs)
-The code found in this namespace uses Azure Notification Hub's [Installation flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#installations). It is heavily influenced by App Center Push's SDK. It was designed to do more than just act as a REST client, instead abstracting away your interactions with ANH. New projects that are looking to use Azure Notification Hub should use the constructs found in this namespace.
+The code found in this namespace uses ANH's [Installation flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#installations). It is heavily influenced by App Center Push's SDK. It was designed to do more than just act as a REST client, instead abstracting away your interactions with ANH. New projects that are looking to use ANH should use the constructs found in this namespace.
 
 Some highlights of the functionality provided in this namespace:
 - With one line of initialization code, this library will automatically and asynchronously call the Notification Hub backend anytime device details change.
@@ -91,7 +91,7 @@ you find most useful.
 
 ### [`com.microsoft.windowsazure.messaging`](./notification-hubs-sdk/src/main/java/com/microsoft/windowsazure/messaging)
 
-This is our SDK's legacy codebase. It facilitates interactions with our [Registration flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#registrations). This namespace contains code that does little more than act as a REST client. Customers newly using Azure Notification Hub should NOT use the code found in this namespace. Expect it to be deprecated.
+This is our SDK's legacy codebase. It facilitates interactions with our [Registration flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#registrations). This namespace contains code that does little more than act as a REST client. Customers newly using ANH should NOT use the code found in this namespace. Expect it to be deprecated.
 
 ### [`notification-hubs-test-app-java`](./notification-hubs-test-app-java)
 
