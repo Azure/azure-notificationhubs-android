@@ -132,14 +132,14 @@ public class HttpClientRetryerTest {
     @Test
     public void retryOnceThenFail() {
         final HttpException expectedException = new HttpException(new HttpResponse(500));
-        final HttpException fuckingUpException = new HttpException(new HttpResponse(503));
+        final HttpException unexpectedException = new HttpException(new HttpResponse(503));
         final ServiceCallback callback = mock(ServiceCallback.class);
         HttpClient httpClient = mock(HttpClient.class);
         doAnswer(new Answer<ServiceCall>() {
 
             @Override
             public ServiceCall answer(InvocationOnMock invocationOnMock) {
-                ((ServiceCallback) invocationOnMock.getArguments()[4]).onCallFailed(fuckingUpException);
+                ((ServiceCallback) invocationOnMock.getArguments()[4]).onCallFailed(unexpectedException);
                 return mock(ServiceCall.class);
             }
         }).doAnswer(new Answer<ServiceCall>() {
