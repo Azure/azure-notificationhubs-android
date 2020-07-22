@@ -156,28 +156,6 @@ public class DebouncerTest {
     }
 
     @Test
-    public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
-        final long test_interval_ms = 100;
-        final Semaphore safeToProceed = new Semaphore(0);
-        InstallationAdapter downstream = new InstallationAdapter() {
-            @Override
-            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
-                onInstallationSaved.onInstallationSaved(installation);
-                safeToProceed.release();
-            }
-        };
-
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, test_interval_ms);
-        debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        safeToProceed.acquire();
-
-        SharedPreferences mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
-        int recentHash = mPreferences.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY,0);
-
-        assertTrue(recentHash == installation.hashCode());
-    }
-
-    @Test
     public void DebounceResilientToInstallationAdapterModifications() throws InterruptedException {
         Random r = new Random();
         final Installation modifiableInstallation = new Installation();
