@@ -1,11 +1,8 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
-
-import com.microsoft.windowsazure.messaging.R;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +15,6 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 public class DebouncerTest {
