@@ -159,6 +159,35 @@ public class DebouncerTest {
     }
 
     @Test
+    public void DebouncerSavesRecentToSharedPreferences() throws InterruptedException {
+        final SharedPreferences storage = new MockSharedPreferences();
+        final long test_interval_ms = 100;
+        final Semaphore safeToProceed = new Semaphore(0);
+
+        InstallationAdapter.Listener success = new InstallationAdapter.Listener() {
+            @Override
+            public void onInstallationSaved(Installation i) {
+                safeToProceed.release();
+            }
+        };
+
+        InstallationAdapter downstream = new InstallationAdapter() {
+            @Override
+            public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
+                onInstallationSaved.onInstallationSaved(installation);
+            }
+        };
+
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(downstream, test_interval_ms, storage);
+        debouncer.saveInstallation(installation, success, logFailureListener);
+        safeToProceed.acquire();
+
+        int recentHash = storage.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY,0);
+
+        Assert.assertEquals(recentHash, installation.hashCode());
+    }
+
+    @Test
     public void DebounceResilientToInstallationAdapterModifications() throws InterruptedException {
         final long test_interval = 100;
         SharedPreferences storage = new MockSharedPreferences();
