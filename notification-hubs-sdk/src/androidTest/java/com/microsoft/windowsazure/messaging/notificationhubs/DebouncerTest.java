@@ -1,12 +1,14 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -18,7 +20,6 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 @SmallTest
 public class DebouncerTest {
-    private Context context = getInstrumentation().getTargetContext();
     private Installation installation;
     private Installation installation_second;
     private Installation installation_third;
@@ -66,8 +67,7 @@ public class DebouncerTest {
                 onInstallationSaved.onInstallationSaved(installation);
             }
         };
-
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, nhInstallationManager, test_interval_ms);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(nhInstallationManager, test_interval_ms, new MockSharedPreferences());
         long startTime = System.currentTimeMillis();
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
         safeToAdvance.acquire();
@@ -80,19 +80,26 @@ public class DebouncerTest {
     public void DebouncerInvokesSaveForMostRecent() throws InterruptedException {
         final Set<Installation> received = new HashSet<Installation>();
         final Semaphore safeToProceed = new Semaphore(0);
+        final InstallationAdapter.Listener success = new InstallationAdapter.Listener() {
+            @Override
+            public void onInstallationSaved(Installation i) {
+                safeToProceed.release();
+            }
+        };
+
         InstallationAdapter downstream = new InstallationAdapter() {
             @Override
             public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
                 synchronized (received) {
                     received.add(installation);
                 }
-                safeToProceed.release();
+                onInstallationSaved.onInstallationSaved(installation);
             }
         };
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, 250);
-        debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
-        debouncer.saveInstallation(installation_second, logSuccessListener, logFailureListener);
-        debouncer.saveInstallation(installation_third, logSuccessListener, logFailureListener);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(downstream, 250, new MockSharedPreferences());
+        debouncer.saveInstallation(installation, success, logFailureListener);
+        debouncer.saveInstallation(installation_second, success, logFailureListener);
+        debouncer.saveInstallation(installation_third, success, logFailureListener);
         safeToProceed.acquire();
 
         Assert.assertEquals("There must be precisely one accepted installation.",1, received.size());
@@ -114,7 +121,7 @@ public class DebouncerTest {
             }
         };
 
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, 250);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(downstream, 250, new MockSharedPreferences());
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
         safeToProceed.acquire();
         debouncer.saveInstallation(installation_second, logSuccessListener, logFailureListener);
@@ -138,7 +145,7 @@ public class DebouncerTest {
                 onInstallationSaved.onInstallationSaved(installation);
             }
         };
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, downstream, test_interval_ms);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(downstream, test_interval_ms, new MockSharedPreferences());
 
         long startTime = System.currentTimeMillis();
         debouncer.saveInstallation(installation, logSuccessListener, logFailureListener);
@@ -153,6 +160,8 @@ public class DebouncerTest {
 
     @Test
     public void DebounceResilientToInstallationAdapterModifications() throws InterruptedException {
+        final long test_interval = 100;
+        SharedPreferences storage = new MockSharedPreferences();
         Random r = new Random();
         final Installation modifiableInstallation = new Installation();
         modifiableInstallation.setPushChannel("faux_push_channel");
@@ -160,23 +169,28 @@ public class DebouncerTest {
         int hashBeforeAdapter = modifiableInstallation.hashCode();
         final Semaphore adapterStatus = new Semaphore(0);
 
+        InstallationAdapter.Listener success = new InstallationAdapter.Listener() {
+            @Override
+            public void onInstallationSaved(Installation i) {
+                adapterStatus.release();
+            }
+        };
+
         InstallationAdapter saboteur = new InstallationAdapter() {
             @Override
             public void saveInstallation(Installation installation, Listener onInstallationSaved, ErrorListener onInstallationSaveError) {
                 Assert.assertSame(modifiableInstallation, installation); // If this is failing, the test is malformed. Consider fixing the test, not the Debouncer.
                 installation.setExpiration(new Date());
                 onInstallationSaved.onInstallationSaved(installation);
-                adapterStatus.release();
             }
         };
 
-        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(context, saboteur);
-        debouncer.saveInstallation(modifiableInstallation, logSuccessListener, logFailureListener);
+        DebounceInstallationAdapter debouncer = new DebounceInstallationAdapter(saboteur, test_interval, storage);
+        debouncer.saveInstallation(modifiableInstallation, success, logFailureListener);
         adapterStatus.acquire();
 
         int hashAfterAdapter = modifiableInstallation.hashCode();
-
-        int savedHash = debouncer.getLastAcceptedHash();
+        int savedHash = storage.getInt(DebounceInstallationAdapter.LAST_ACCEPTED_HASH_KEY, 0);
 
         Assert.assertNotEquals("Test is built to assume hash is modified", hashBeforeAdapter, hashAfterAdapter);
         Assert.assertEquals("The hash which is saved by the DebouncerAdapter should not be influenced by Adapters that come after it.", hashBeforeAdapter, savedHash);
