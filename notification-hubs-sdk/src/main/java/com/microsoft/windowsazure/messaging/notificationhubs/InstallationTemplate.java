@@ -175,11 +175,11 @@ public class InstallationTemplate {
 
     /**
      * Get all headers applied to this template.
+     *
+     * @return A copied collection of header names to their values.
      */
     public Map<String, String> getHeaders() {
-        Map<String, String> retVal = new HashMap<String, String>();
-        retVal.putAll(mHeaders);
-        return retVal;
+        return new HashMap<String, String>(mHeaders);
     }
 
     @Override
