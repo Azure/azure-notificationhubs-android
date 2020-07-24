@@ -1,5 +1,5 @@
 
-<p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo.svg?sanitize=true"/></a></p>
+<p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo_300x300.png"/></a></p>
 
 # Azure Notification Hubs - Android SDK
 
