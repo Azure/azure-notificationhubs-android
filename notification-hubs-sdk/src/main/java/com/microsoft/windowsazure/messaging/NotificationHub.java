@@ -112,15 +112,19 @@ public class NotificationHub {
 	 * @param context	Android context used to access SharedPreferences
 	 */
 	public NotificationHub(String notificationHubPath, String connectionString, Context context) {
+		this(notificationHubPath, connectionString, PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext()));
+	}
+
+	NotificationHub(String notificationHubPath, String connectionString, SharedPreferences sharedPreferences) {
 		setConnectionString(connectionString);
 		setNotificationHubPath(notificationHubPath);
 
-		if (context == null) {
-			throw new IllegalArgumentException("context");
+		if (sharedPreferences == null) {
+			throw new IllegalArgumentException("sharedPreferences cannot be null");
 		}
 
-		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-		
+		mSharedPreferences = sharedPreferences;
+
 		verifyStorageVersion();
 	}
 

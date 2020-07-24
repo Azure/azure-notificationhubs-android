@@ -24,7 +24,11 @@ class TagVisitor implements InstallationVisitor, Taggable {
      * @param context Application context
      */
     public TagVisitor(Context context) {
-        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
+        this(context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE));
+    }
+
+    TagVisitor(SharedPreferences sharedPreferences) {
+        mPreferences = sharedPreferences;
     }
 
     private Set<String> getTagsSet() {

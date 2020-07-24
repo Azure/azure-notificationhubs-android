@@ -1,6 +1,5 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import android.content.Context;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -8,14 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TemplateVisitorTests {
-    private Context context = getInstrumentation().getTargetContext();
+
     String templateName;
     InstallationTemplate template = new InstallationTemplate();
     private Map<String, InstallationTemplate> templateMap;
@@ -31,7 +29,7 @@ public class TemplateVisitorTests {
 
     @Test
     public void templateVisitorSetTemplateAdd() {
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplate(templateName, template);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
@@ -41,7 +39,7 @@ public class TemplateVisitorTests {
 
     @Test
     public void templateVisitorSetTemplateUpdate() {
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplate(templateName, template);
         InstallationTemplate updatedTemplate =  templateVisitor.getTemplate(templateName);
@@ -64,7 +62,7 @@ public class TemplateVisitorTests {
         template2.setBody("body2");
         templateMap.put(templateName2, template2);
 
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
@@ -75,7 +73,7 @@ public class TemplateVisitorTests {
 
     @Test
     public void templateVisitorRemoveTemplate () {
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
@@ -102,7 +100,7 @@ public class TemplateVisitorTests {
         template3.setBody("body3");
         templateMap.put(templateName3, template3);
 
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();
@@ -117,7 +115,7 @@ public class TemplateVisitorTests {
 
     @Test
     public void templateVisitorClearTemplates () {
-        TemplateVisitor templateVisitor = new TemplateVisitor(context);
+        TemplateVisitor templateVisitor = new TemplateVisitor(new MockSharedPreferences());
 
         templateVisitor.setTemplates(templateMap);
         Iterable<Map.Entry<String, InstallationTemplate>> expectedTemplateSet = templateMap.entrySet();

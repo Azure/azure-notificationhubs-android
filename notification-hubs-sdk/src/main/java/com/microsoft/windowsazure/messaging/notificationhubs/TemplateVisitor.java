@@ -22,13 +22,17 @@ import java.util.Set;
 class TemplateVisitor implements InstallationVisitor {
 
     private static final String PREFERENCE_KEY = "templates";
-    private SharedPreferences mPreferences;
+    private final SharedPreferences mPreferences;
 
     /**
      * Creates an empty TemplateVisitor.
      */
     public TemplateVisitor(Context context) {
-        mPreferences = context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
+        this(context.getSharedPreferences(String.valueOf(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE));
+    }
+
+    TemplateVisitor(SharedPreferences sharedPreferences) {
+        mPreferences = sharedPreferences;
     }
 
     /**
