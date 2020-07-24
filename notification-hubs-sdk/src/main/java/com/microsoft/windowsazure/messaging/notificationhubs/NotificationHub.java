@@ -243,6 +243,9 @@ public final class NotificationHub {
     }
 
     void setInstancePushChannel(String token) {
+        if (token.equals(mPushChannelVisitor.getPushChannel())) {
+            return;
+        }
         mPushChannelVisitor.setPushChannel(token);
         beginInstanceInstallationUpdate();
     }
@@ -285,6 +288,10 @@ public final class NotificationHub {
      * @param id The value to treat as the unique identifier of the record of this device.
      */
     public void setInstanceInstallationId(String id) {
+        if (id.equals(mIdAssignmentVisitor.getInstallationId())) {
+            return;
+        }
+
         mIdAssignmentVisitor.setInstallationId(id);
         beginInstanceInstallationUpdate();
     }
