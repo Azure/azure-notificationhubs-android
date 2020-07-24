@@ -14,7 +14,7 @@ pool:
 
 steps:
 - task: Gradle@2
-  displayName: 'Clean previous test results'
+  displayName: '(Non-Emulator) SDK Tests'
   inputs:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest test '
@@ -48,12 +48,6 @@ steps:
    echo "Emulator started"
   displayName: 'Install and Run Android Emulator'
 
-- task: Gradle@2
-  displayName: 'Test SDK'
-  inputs:
-    options: '-p notification-hubs-sdk'
-    tasks: 'cleanTest connectedAndroidTest'
-
 - task: DownloadSecureFile@1
   displayName: 'Download Google Services profile'
   name: googleServices
@@ -69,7 +63,7 @@ steps:
       cp $(googleServices.secureFilePath) ./notification-hubs-test-app-java
 
 - task: Gradle@2
-  displayName: 'Build and test sample app'
+  displayName: 'Build and Test Sample App'
   inputs:
     options: '-PisCI="true"'
     tasks: 'notification-hubs-test-app-java:test notification-hubs-test-app-java:connectedAndroidTest'

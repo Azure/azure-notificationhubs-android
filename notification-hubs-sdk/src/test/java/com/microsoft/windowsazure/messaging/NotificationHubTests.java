@@ -1,8 +1,11 @@
 package com.microsoft.windowsazure.messaging;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
+
+import com.microsoft.windowsazure.messaging.notificationhubs.MockSharedPreferences;
 
 import java.net.URI;
 import java.util.UUID;
@@ -17,8 +20,7 @@ public class NotificationHubTests {
 	public void testCreateNotificationHub() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
-		NotificationHub nh = new NotificationHub(nhName, cs, context);
+		NotificationHub nh = new NotificationHub(nhName, cs, new MockSharedPreferences());
 
 		assertEquals(nh.getNotificationHubPath(), nhName);
 		assertEquals(nh.getConnectionString(), cs);
@@ -28,31 +30,30 @@ public class NotificationHubTests {
 	public void testCreateNotificationHubWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
 
 		try {
-			new NotificationHub(null, cs, context);
+			new NotificationHub(null, cs, new MockSharedPreferences());
 
 			fail("invalid parameters");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			new NotificationHub(nhName, null, context);
+			new NotificationHub(nhName, null, new MockSharedPreferences());
 
 			fail("invalid parameters");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			new NotificationHub(nhName, UUID.randomUUID().toString(), context);
+			new NotificationHub(nhName, UUID.randomUUID().toString(), new MockSharedPreferences());
 
 			fail("invalid parameters");
 		} catch (IllegalArgumentException e) {
 		}
 
 		try {
-			new NotificationHub(nhName, cs, null);
+			new NotificationHub(nhName, cs, (SharedPreferences) null);
 
 			fail("invalid parameters");
 		} catch (IllegalArgumentException e) {
@@ -63,8 +64,7 @@ public class NotificationHubTests {
 	public void testRegisterWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
-		NotificationHub nh = new NotificationHub(nhName, cs, context);
+		NotificationHub nh = new NotificationHub(nhName, cs, new MockSharedPreferences());
 
 		String[] tags = { "myTag_1", "myTag_2" };
 
@@ -81,8 +81,7 @@ public class NotificationHubTests {
 	public void testRegisterTemplateWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
-		NotificationHub nh = new NotificationHub(nhName, cs, context);
+		NotificationHub nh = new NotificationHub(nhName, cs, new MockSharedPreferences());
 
 		String fcmId = "123456";
 		String templateName = "myTemplate";
@@ -118,8 +117,7 @@ public class NotificationHubTests {
 	public void testUnregisterTemplateWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
-		NotificationHub nh = new NotificationHub(nhName, cs, context);
+		NotificationHub nh = new NotificationHub(nhName, cs, new MockSharedPreferences());
 
 		try {
 			nh.unregisterTemplate(null);
@@ -134,8 +132,7 @@ public class NotificationHubTests {
 	public void testUnregisterAllWithInvalidValues() {
 		String nhName = "myHub";
 		String cs = ConnectionString.createUsingSharedAccessKeyWithListenAccess(URI.create("http://myUrl.com"), "secret123");
-		Context context = getInstrumentation().getTargetContext();
-		NotificationHub nh = new NotificationHub(nhName, cs, context);
+		NotificationHub nh = new NotificationHub(nhName, cs, new MockSharedPreferences());
 
 		try {
 			nh.unregisterAll(null);
