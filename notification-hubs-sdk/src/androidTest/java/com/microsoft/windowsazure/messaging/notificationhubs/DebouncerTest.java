@@ -1,6 +1,5 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.test.filters.SmallTest;
@@ -8,15 +7,12 @@ import androidx.test.filters.SmallTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 @SmallTest
 public class DebouncerTest {
