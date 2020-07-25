@@ -2,17 +2,12 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.os.Build;
 import android.util.Base64;
-import android.widget.Adapter;
-
-import androidx.annotation.Nullable;
 
 import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
