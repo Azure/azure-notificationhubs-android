@@ -28,6 +28,7 @@ public final class NotificationHub {
     private TagVisitor mTagVisitor;
     private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
+    private UserIdVisitor mUserIdVisitor;
 
     private InstallationAdapter mAdapter;
     private Application mApplication;
@@ -115,7 +116,10 @@ public final class NotificationHub {
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
-        Intent i =  new Intent(application, FirebaseReceiver.class);
+        instance.mUserIdVisitor = new UserIdVisitor(instance.mApplication);
+        instance.useInstanceVisitor(instance.mUserIdVisitor);
+
+        Intent i = new Intent(application, FirebaseReceiver.class);
         application.startService(i);
 
         // Why is this done here instead of being in the manifest like everything else?
@@ -518,5 +522,29 @@ public final class NotificationHub {
 
     public InstallationTemplate getInstanceTemplate(String templateName) {
         return mTemplateVisitor.getTemplate(templateName);
+    }
+
+    /**
+     *
+     * @param userId User Id
+     */
+    public static void setUserId(String userId) {
+        getInstance().setInstanceUserId(userId);
+    }
+
+    public void setInstanceUserId(String userId) {
+        mUserIdVisitor.setUserId(userId);
+    }
+
+    /**
+     *
+     * @return User Id
+     */
+    public static String getUserId() {
+        return getInstance().getInstanceUserId();
+    }
+
+    public String getInstanceUserId() {
+        return mUserIdVisitor.getUserId();
     }
 }

@@ -140,6 +140,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
                         put("pushChannel", installation.getPushChannel());
                         put("tags", tagList);
                         put("templates", serializedTemplates);
+                        put("userId", installation.getUserId());
                     }};
 
                     Date expiration = installation.getExpiration();

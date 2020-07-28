@@ -26,5 +26,6 @@ public class MainActivity extends AppCompatActivity {
         InstallationTemplate testTemplate = new InstallationTemplate();
         testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");
         NotificationHub.setTemplate("testTemplate", testTemplate);
+        NotificationHub.setUserId("com.example.notification_hubs_test_app_java");
     }
 }
