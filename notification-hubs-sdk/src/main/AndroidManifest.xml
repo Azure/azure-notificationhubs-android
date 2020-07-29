@@ -12,5 +12,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 </manifest>

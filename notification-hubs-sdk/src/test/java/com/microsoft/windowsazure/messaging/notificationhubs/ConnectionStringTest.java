@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 
 public class ConnectionStringTest {
+    public static final String WELL_FORMED_CONNECTION_STRING = "Endpoint=sb://marstr-fcm-tutorials.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=9maoDX5iLZqhfK7hhqK5qSIzoY4TecAyAgL0R+w48Gc=";
     private static final String SHARED_ACCESS_KEY_NAME_KEY = "SharedAccessKeyName";
     private static final String ENDPOINT_KEY = "Endpoint";
     private static final String SHARED_ACCESS_KEY = "SharedAccessKey";
@@ -16,13 +17,12 @@ public class ConnectionStringTest {
 
     @Test
     public void parseConnectionStringHappyPath() {
-        String rawConnectionString = "Endpoint=sb://marstr-fcm-tutorials.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=9maoDX5iLZqhfK7hhqK5qSIzoY4TecAyAgL0R+w48Gc=";
         ConnectionString connectionString = new ConnectionString(
                         "sb://marstr-fcm-tutorials.servicebus.windows.net/",
                         "DefaultListenSharedAccessSignature",
                         "9maoDX5iLZqhfK7hhqK5qSIzoY4TecAyAgL0R+w48Gc=");
 
-        assertEquals(connectionString, ConnectionString.parse(rawConnectionString));
+        assertEquals(connectionString, ConnectionString.parse(WELL_FORMED_CONNECTION_STRING));
     }
 
     @Test
