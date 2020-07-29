@@ -122,6 +122,8 @@ task androidJavadocs(type: Javadoc) {
       owner.classpath += variant.javaCompile.classpath
     }
 
+    exclude '**/*.md'
+
     def capturedOutput = []
     def listener = { capturedOutput << it } as StandardOutputListener
     doFirst {
