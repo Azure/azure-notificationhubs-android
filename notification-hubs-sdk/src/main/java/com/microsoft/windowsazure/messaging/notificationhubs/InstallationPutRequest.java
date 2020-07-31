@@ -39,13 +39,13 @@ class InstallationPutRequest extends JsonObjectRequest {
 
     private final ConnectionString mConnectionString;
 
-    public InstallationPutRequest(ConnectionString connectionString, String hubName, Installation installation, InstallationAdapter.Listener onSuccess, InstallationAdapter.ErrorListener onFailure) throws JSONException {
+    public InstallationPutRequest(ConnectionString connectionString, String hubName, Installation installation, Response.Listener<JSONObject> onSuccess, Response.ErrorListener onFailure){
         super(
                 Method.PUT,
                 getInstallationUrl(connectionString.getEndpoint(), hubName, installation.getInstallationId()),
                 getBody(installation),
-                InstallationPutRequest.<JSONObject>wrapListener(onSuccess, installation),
-                InstallationPutRequest.wrapErrorListener(onFailure));
+                onSuccess,
+                onFailure);
         mConnectionString = connectionString;
     }
 
@@ -73,33 +73,37 @@ class InstallationPutRequest extends JsonObjectRequest {
         return Response.success(new JSONObject(), HttpHeaderParser.parseCacheHeaders(response));
     }
 
-    public static JSONObject getBody(final Installation installation) throws JSONException {
+    public static JSONObject getBody(final Installation installation) {
         final JSONArray tagList = new JSONArray();
         for (String tag: installation.getTags()) {
             tagList.put(tag);
         }
 
-        final JSONObject serializedTemplates = new JSONObject();
-        for (Map.Entry<String, InstallationTemplate> template: installation.getTemplates().entrySet()) {
-            String templateName = template.getKey();
-            serializedTemplates.put(templateName, InstallationTemplate.serialize(templateName, template.getValue()));
+        try {
+            final JSONObject serializedTemplates = new JSONObject();
+            for (Map.Entry<String, InstallationTemplate> template : installation.getTemplates().entrySet()) {
+                String templateName = template.getKey();
+                serializedTemplates.put(templateName, InstallationTemplate.serialize(templateName, template.getValue()));
+            }
+
+            JSONObject jsonBody = new JSONObject() {{
+                put("installationId", installation.getInstallationId());
+                put("platform", "GCM");
+                put("pushChannel", installation.getPushChannel());
+                put("tags", tagList);
+                put("templates", serializedTemplates);
+            }};
+
+            Date expiration = installation.getExpiration();
+            if (expiration != null) {
+                String formattedExpiration = sIso8601Format.format(expiration);
+                jsonBody.put("expirationTime", formattedExpiration);
+            }
+            return jsonBody;
+        } catch (JSONException e) {
+            // Converting to a RuntimeException, avoiding specific checking which would break
+            throw new UnsupportedOperationException("", e);
         }
-
-        JSONObject jsonBody = new JSONObject(){{
-            put("installationId", installation.getInstallationId());
-            put("platform", "GCM");
-            put("pushChannel", installation.getPushChannel());
-            put("tags", tagList);
-            put("templates", serializedTemplates);
-        }};
-
-        Date expiration = installation.getExpiration();
-        if(expiration != null) {
-            String formattedExpiration = sIso8601Format.format(expiration);
-            jsonBody.put("expirationTime", formattedExpiration);
-        }
-
-        return jsonBody;
     }
 
     public static <T> Response.Listener<T> wrapListener(final InstallationAdapter.Listener subject, final Installation installation) {
