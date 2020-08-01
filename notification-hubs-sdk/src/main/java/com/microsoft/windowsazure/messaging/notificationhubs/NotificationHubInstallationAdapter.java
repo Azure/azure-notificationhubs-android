@@ -2,16 +2,23 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -80,7 +87,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     }
 
     static boolean isRetriable(VolleyError error) {
-        if (error instanceof NetworkError) {
+        if (error instanceof NetworkError || error instanceof TimeoutError) {
             return true;
         }
 
@@ -144,13 +151,37 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         public void onErrorResponse(VolleyError error) {
             mRetry++;
             if(!isRetriable(error) || mRetry > mMaxRetries) {
-                // TODO: wrap this error with ours to isolate ourselves from Volley as a dependency.
-                mOnFailure.onInstallationSaveError(error);
+                mOnFailure.onInstallationSaveError(convertVolleyException(error));
                 return;
             }
 
             submit();
         }
+    }
+
+    /**
+     * In order to shield customers from potential breaking changes if we were to move away from
+     * Volley, or if Volley were to introduce a breaking change, we wrap exceptions in our own
+     * types.
+     *
+     * @param error The problem encountered by Volley.
+     * @return An exception safe to hand to application code.
+     */
+    static Exception convertVolleyException(VolleyError error) {
+        if (error instanceof AuthFailureError) {
+            return new AuthorizationException((AuthFailureError)error);
+        } else if (error instanceof ClientError) {
+            return new ClientException((ClientError) error);
+        } else if (error instanceof ServerError) {
+            return new ServerException((ServerError) error);
+        } else if (error instanceof NetworkError) {
+                return new IOException(error.getMessage(), error.getCause());
+        } else if(error instanceof ParseError) {
+            return new IOException(error.getMessage(), error.getCause());
+        } else if (error instanceof TimeoutError) {
+            return new IOException(error.getMessage(), error.getCause());
+        }
+        return new Exception(error);
     }
 }
 
