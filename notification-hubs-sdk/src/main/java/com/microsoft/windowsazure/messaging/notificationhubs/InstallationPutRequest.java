@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -70,7 +71,12 @@ class InstallationPutRequest extends JsonObjectRequest {
 
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-        return Response.success(new JSONObject(), HttpHeaderParser.parseCacheHeaders(response));
+
+        if(response.statusCode == HttpURLConnection.HTTP_OK) {
+            return Response.success(new JSONObject(), HttpHeaderParser.parseCacheHeaders(response));
+        }
+
+        return super.parseNetworkResponse(response);
     }
 
     public static JSONObject getBody(final Installation installation) {
