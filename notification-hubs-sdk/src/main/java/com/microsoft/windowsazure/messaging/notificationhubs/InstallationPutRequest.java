@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.microsoft.windowsazure.messaging.BuildConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +36,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 class InstallationPutRequest extends JsonObjectRequest {
     private final static String API_VERSION = "2020-06";
+    private final static String USER_AGENT = String.format("NOTIFICATIONHUBS/%s (api-origin=AndroidSdkV1FcmV%s; os=%s; os_version=%s;)",
+            API_VERSION, BuildConfig.VERSION_NAME, "Android", Build.VERSION.RELEASE);
     private final static long TOKEN_EXPIRE_SECONDS = 5 * 60;
     private final static DateFormat sIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.ENGLISH);
 
@@ -60,7 +63,7 @@ class InstallationPutRequest extends JsonObjectRequest {
                         InstallationPutRequest.super.getUrl(),
                         mConnectionString.getSharedAccessKeyName(),
                         mConnectionString.getSharedAccessKey()));
-                put("User-Agent", getUserAgent());
+                put("User-Agent", USER_AGENT);
             }};
             return params;
         } catch (InvalidKeyException e) {
@@ -128,16 +131,6 @@ class InstallationPutRequest extends JsonObjectRequest {
                 errorListener.onInstallationSaveError(error);
             }
         };
-    }
-
-    /**
-     * Generates the User-Agent
-     */
-    private static String getUserAgent() {
-        String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                API_VERSION, "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
-
-        return userAgent;
     }
 
     static String getInstallationUrl(String endpoint, String hubName, String installationId) {
