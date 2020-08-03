@@ -5,8 +5,9 @@ import android.content.Context;
 import com.android.volley.AuthFailureError;
 import com.android.volley.ClientError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Header;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,6 +23,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Responsible for informing Azure Notification Hubs of changes to when this device should receive
@@ -31,11 +36,14 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     private static final long DEFAULT_INSTALLATION_EXPIRATION_MILLIS = 1000L * 60L * 60L * 24L * 90L;
     private static final RetryPolicy sDoNotRetry;
     private static final Set<Integer> sRetriableStatusCodes;
+    private static final String INSTALLATION_PUT_TAG = "installationPutRequest";
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
     private final RequestQueue mRequestQueue;
     private final long mInstallationExpirationWindow;
+    private final ScheduledExecutorService mScheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> mOutstandingRetry;
 
 
     public NotificationHubInstallationAdapter(Context context, String hubName, String connectionString) {
@@ -68,7 +76,8 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         addExpiration(installation);
-        new RequestUsher(installation, 3, onInstallationSaved, onInstallationSaveError).submit();
+        cancelOutstandingUpdates();
+        new RetrySession(installation, 3, onInstallationSaved, onInstallationSaveError).submit();
     }
 
     /**
@@ -86,6 +95,15 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         target.setExpiration(expiration);
     }
 
+    void cancelOutstandingUpdates() {
+        synchronized (NotificationHubInstallationAdapter.this) {
+            if (mOutstandingRetry != null) {
+                mOutstandingRetry.cancel(true);
+            }
+            mRequestQueue.cancelAll(INSTALLATION_PUT_TAG);
+        }
+    }
+
     static boolean isRetriable(VolleyError error) {
         if (error instanceof NetworkError || error instanceof TimeoutError) {
             return true;
@@ -101,23 +119,30 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     }
 
     /**
-     * Responsible for creating
+     * Generates InstallationPutRequests, and continually submits them serially to the Volley
+     * RequestQueue until either a successful response is received, or a set number of retries has
+     * elapsed.
      */
-    private class RequestUsher implements Response.ErrorListener, Response.Listener<JSONObject> {
+    private class RetrySession implements Response.ErrorListener, Response.Listener<JSONObject> {
         private final int mMaxRetries;
         private int mRetry;
         private final Installation mInstallation;
         private final InstallationAdapter.Listener mOnSuccess;
         private final InstallationAdapter.ErrorListener mOnFailure;
+        private final long mDefaultWaitTime;
 
-        public RequestUsher(Installation installation, int maxRetries, InstallationAdapter.Listener onSuccess, InstallationAdapter.ErrorListener onFailure) {
+        public RetrySession(Installation installation, int maxRetries, InstallationAdapter.Listener onSuccess, InstallationAdapter.ErrorListener onFailure) {
             mMaxRetries = maxRetries;
             mInstallation = installation;
             mOnSuccess = onSuccess;
             mOnFailure = onFailure;
             mRetry = 0;
+            mDefaultWaitTime = 1000;
         }
 
+        /**
+         * Creates a new InstallationPutRequest, adds it the the RequestQueue.
+         */
         private void submit() {
             InstallationPutRequest request = new InstallationPutRequest(
                     NotificationHubInstallationAdapter.this.mConnectionString,
@@ -125,14 +150,16 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
                     mInstallation,
                     this,
                     this);
-
+            request.addMarker(INSTALLATION_PUT_TAG);
             request.setRetryPolicy(sDoNotRetry);
-
-            mRequestQueue.add(request);
+            synchronized (NotificationHubInstallationAdapter.this) {
+                mOutstandingRetry = null;
+                mRequestQueue.add(request);
+            }
         }
 
         /**
-         * Called when a response is received.
+         * Called when a successful response is received.
          *
          * @param response The JSON Object returned by the server (if any).
          */
@@ -155,7 +182,31 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
                 return;
             }
 
-            submit();
+            long waitTimeMillis;
+            NetworkResponse response = error.networkResponse;
+            String rawRetryAfter = null;
+
+            if (response != null) {
+                rawRetryAfter = getRetryAfter(response);
+            }
+
+            if (response == null) {
+                waitTimeMillis = mDefaultWaitTime;
+            } else if(rawRetryAfter != null) {
+                waitTimeMillis = parseRetryAfterValue(rawRetryAfter);
+            } else if (response.statusCode == 429 || response.statusCode == 403) {
+                waitTimeMillis = 10 * 1000;
+            } else {
+                waitTimeMillis = mDefaultWaitTime;
+            }
+            synchronized (NotificationHubInstallationAdapter.this) {
+                mOutstandingRetry = mScheduler.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        submit();
+                    }
+                }, waitTimeMillis, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -182,6 +233,38 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
             return new IOException(error.getMessage(), error.getCause());
         }
         return new Exception(error);
+    }
+
+    /**
+     * Fetches the value sent as the "Retry-After" value.
+     * @param response The response the server sent, which may or may not include a Retry-After header.
+     * @return The raw value returned as a Retry-After header. If the header is not present, null is returned.
+     */
+    static String getRetryAfter(NetworkResponse response){
+        for(Header header : response.allHeaders) {
+            String name = header.getName();
+            if (name.equalsIgnoreCase("Retry-After")) {
+                return header.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Fetches the number of milliseconds, if any, that we were told to wait by the server.
+     * @param retryAfter The value of a Retry-After header.
+     * @return The number of milliseconds to wait. If there is no Retry-After header, a negative
+     * value is returned.
+     * @throws UnsupportedOperationException If Retry-After is provided in an unrecognized format.
+     */
+    static long parseRetryAfterValue(String retryAfter) {
+        // TODO: support parsing DateTime passed in Retry-After header.
+
+        try {
+            return 1000 * Long.parseLong(retryAfter);
+        } catch (NumberFormatException e) {
+            throw new UnsupportedOperationException("Retry-After must be communicated as a number of seconds", e);
+        }
     }
 }
 
