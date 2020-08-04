@@ -98,7 +98,7 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     void cancelOutstandingUpdates() {
         synchronized (NotificationHubInstallationAdapter.this) {
             if (mOutstandingRetry != null) {
-                mOutstandingRetry.cancel(true);
+                mOutstandingRetry.cancel(false);
             }
             mRequestQueue.cancelAll(INSTALLATION_PUT_TAG);
         }
