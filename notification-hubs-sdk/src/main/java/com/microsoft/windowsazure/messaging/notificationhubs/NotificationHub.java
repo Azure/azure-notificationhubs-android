@@ -525,18 +525,25 @@ public final class NotificationHub {
     }
 
     /**
+     * Updates User Id
      *
      * @param userId User Id
+     * @return True if user id was updated, False if current value is equal to the new value
      */
-    public static void setUserId(String userId) {
-        getInstance().setInstanceUserId(userId);
+    public static boolean setUserId(String userId) {
+        return getInstance().setInstanceUserId(userId);
     }
 
-    public void setInstanceUserId(String userId) {
-        mUserIdVisitor.setUserId(userId);
+    public boolean setInstanceUserId(String userId) {
+        if(mUserIdVisitor.setUserId(userId)) {
+            beginInstanceInstallationUpdate();
+            return true;
+        }
+        return false;
     }
 
     /**
+     * Fetches the current User Id
      *
      * @return User Id
      */

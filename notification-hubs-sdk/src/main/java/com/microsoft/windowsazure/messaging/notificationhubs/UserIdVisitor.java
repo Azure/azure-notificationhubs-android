@@ -34,9 +34,16 @@ class UserIdVisitor implements InstallationVisitor {
 
     /**
      * Updates the unique identifier that will be associated with future calls to `visitInstallation`.
+     *
      * @param userId The unique identifier to apply.
+     * @return True if user id was updated, False if current value is equal to the new value
      */
-    public void setUserId(String userId) {
-        mPreferences.edit().putString(PREFERENCE_KEY, userId).apply();
+    public boolean setUserId(String userId) {
+        if((userId != null && !userId.equals(getUserId()))
+        || (userId == null && getUserId() != null)) {
+            mPreferences.edit().putString(PREFERENCE_KEY, userId).apply();
+            return true;
+        }
+        return false;
     }
 }
