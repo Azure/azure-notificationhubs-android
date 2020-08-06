@@ -14,8 +14,8 @@ A clear and concise ask/query.
 A clear explanation of why is this not a bug or a feature request?
 
 **Setup (please complete the following information if applicable):**
- - OS: [e.g. iOS 13.x]
- - IDE : [e.g. Xcode 11.x]
+ - OS: [e.g. Android 10]
+ - IDE : [e.g. Android Studio 4.0 ]
  - Version of the Library used
  
  **Information Checklist**
