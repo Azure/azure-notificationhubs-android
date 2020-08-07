@@ -47,7 +47,7 @@ _{project-root}/{your-module}/build.gradle:_
 
 dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
-    implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.0.0'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.0.1'
 }
 ```
 
