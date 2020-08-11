@@ -83,7 +83,7 @@ public final class NotificationHub {
                 connectionString);
         InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
 
-        initialize(application, debouncer);
+        start(application, debouncer);
     }
 
     /**
@@ -96,7 +96,7 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Application application, InstallationAdapter adapter) {
+    public static void start(Application application, InstallationAdapter adapter) {
         final NotificationHub instance = getInstance();
         instance.mAdapter = adapter;
         instance.mApplication = application;

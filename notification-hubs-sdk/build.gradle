@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
-def VERSION = '1.0.0-preview3'
+def VERSION = '1.0.1'
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
 def GROUP_ID = 'com.microsoft.azure'
 
@@ -50,8 +50,9 @@ configurations {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    api 'com.google.firebase:firebase-messaging:20.1.5'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.android.volley:volley:1.1.1'
+    api 'com.google.firebase:firebase-messaging:20.2.3'
 
     javadocDeps 'com.android.support:support-annotations:22.2.0'
 
