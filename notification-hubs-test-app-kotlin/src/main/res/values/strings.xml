@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ANH Java</string>
+    <string name="app_name">ANH Kotlin</string>
     <string name="tab_text_1">Setup</string>
     <string name="tab_text_2">Notifications</string>
     <string name="device_token_label">Device Token:</string>
