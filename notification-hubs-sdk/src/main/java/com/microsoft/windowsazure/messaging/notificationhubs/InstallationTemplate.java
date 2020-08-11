@@ -43,7 +43,7 @@ public class InstallationTemplate {
     /**
      * Add tag to template.
      *
-     * @param tag
+     * @param tag Name of tag
      */
     public void addTag(String tag) {
         mTags.add(tag);
@@ -61,7 +61,7 @@ public class InstallationTemplate {
     /**
      * Remove tag from template.
      *
-     * @param tag
+     * @param tag Name of tag
      */
     public void removeTag(String tag) {
         mTags.remove(tag);
@@ -94,6 +94,9 @@ public class InstallationTemplate {
 
     /**
      * Set header to template.
+     *
+     * @param name Name of header
+     * @param value Value of header
      */
     public void setHeader(String name, String value) {
         mHeaders.put(name, value);
@@ -101,6 +104,8 @@ public class InstallationTemplate {
 
     /**
      * Remove header from template.
+     *
+     * @param name Name of header
      */
     public void removeHeader(String name) {
         mHeaders.remove(name);
@@ -119,8 +124,7 @@ public class InstallationTemplate {
             templateObject.put("name", name);
             templateObject.put("body", installationTemplate.getBody());
             JSONObject headers = new JSONObject();
-            Iterable<Map.Entry<String, String>> headersIterators = installationTemplate.getHeaders();
-            for(Map.Entry<String, String> header: headersIterators){
+            for(Map.Entry<String, String> header: installationTemplate.getHeaders().entrySet()){
                 headers.put(header.getKey(), header.getValue());
             }
             templateObject.put("headers", headers);
@@ -170,10 +174,12 @@ public class InstallationTemplate {
     }
 
     /**
-     * Get all headers from template.
+     * Get all headers applied to this template.
+     *
+     * @return A copied collection of header names to their values.
      */
-    Iterable<Map.Entry<String,String>> getHeaders() {
-        return mHeaders.entrySet();
+    public Map<String, String> getHeaders() {
+        return new HashMap<String, String>(mHeaders);
     }
 
     @Override

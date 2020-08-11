@@ -14,7 +14,7 @@ pool:
 
 steps:
 - task: Gradle@2
-  displayName: 'Clean previous test results'
+  displayName: '(Non-Emulator) SDK Tests'
   inputs:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest test '
@@ -48,12 +48,6 @@ steps:
    echo "Emulator started"
   displayName: 'Install and Run Android Emulator'
 
-- task: Gradle@2
-  displayName: 'Test SDK'
-  inputs:
-    options: '-p notification-hubs-sdk'
-    tasks: 'cleanTest connectedAndroidTest'
-
 - task: DownloadSecureFile@1
   displayName: 'Download Google Services profile'
   name: googleServices
@@ -65,14 +59,14 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      cp $(googleServices.secureFilePath) ./notification-hubs-test-app
-      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-refresh
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-legacy
+      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-java
 
 - task: Gradle@2
-  displayName: 'Build and test sample app'
+  displayName: 'Build and Test Sample App'
   inputs:
     options: '-PisCI="true"'
-    tasks: 'notification-hubs-test-app-refresh:test notification-hubs-test-app-refresh:connectedAndroidTest'
+    tasks: 'notification-hubs-test-app-java:test notification-hubs-test-app-java:connectedAndroidTest'
     publishJUnitResults: false
 
 - task: Gradle@2
@@ -86,7 +80,7 @@ steps:
 - task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
   displayName: 'ESRP CodeSigning'
   inputs:
-    ConnectedServiceName: 'App Center - Code Signing'
+    ConnectedServiceName: 'ESRP CodeSigning'
     FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
     Pattern: '*.jar, *.aar'
     signConfigType: inlineSignParams
