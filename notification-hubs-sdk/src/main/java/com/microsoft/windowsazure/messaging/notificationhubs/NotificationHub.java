@@ -75,16 +75,15 @@ public final class NotificationHub {
      * @param hubName The name of the Notification Hub that will broadcast notifications to this
      *                device.
      * @param connectionString The Listen-only AccessPolicy that grants this device the ability to
-     *                         receive notifications.
      */
-    public static void initialize(Application application, String hubName, String connectionString) {
+    public static void start(Application application, String hubName, String connectionString) {
         InstallationAdapter client = new NotificationHubInstallationAdapter(
                 application,
                 hubName,
                 connectionString);
         InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
 
-        initialize(application, debouncer);
+        start(application, debouncer);
     }
 
     /**
@@ -97,7 +96,7 @@ public final class NotificationHub {
      *                needs access to.
      * @param adapter A client that can create/overwrite a reference to this device with a backend.
      */
-    public static void initialize(Application application, InstallationAdapter adapter) {
+    public static void start(Application application, InstallationAdapter adapter) {
         final NotificationHub instance = getInstance();
         instance.mAdapter = adapter;
         instance.mApplication = application;
@@ -244,6 +243,9 @@ public final class NotificationHub {
     }
 
     void setInstancePushChannel(String token) {
+        if (token.equals(mPushChannelVisitor.getPushChannel())) {
+            return;
+        }
         mPushChannelVisitor.setPushChannel(token);
         beginInstanceInstallationUpdate();
     }
@@ -286,6 +288,10 @@ public final class NotificationHub {
      * @param id The value to treat as the unique identifier of the record of this device.
      */
     public void setInstanceInstallationId(String id) {
+        if (id.equals(mIdAssignmentVisitor.getInstallationId())) {
+            return;
+        }
+
         mIdAssignmentVisitor.setInstallationId(id);
         beginInstanceInstallationUpdate();
     }

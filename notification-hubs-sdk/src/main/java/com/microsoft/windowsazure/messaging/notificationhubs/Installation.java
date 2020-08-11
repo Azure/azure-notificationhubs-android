@@ -54,7 +54,7 @@ public class Installation implements Taggable {
      * Device.
      * @param id The unique identifer to associate with the record of this device.
      */
-    void setInstallationId(String id) {
+    public void setInstallationId(String id) {
         mInstallationId = id;
     }
 
