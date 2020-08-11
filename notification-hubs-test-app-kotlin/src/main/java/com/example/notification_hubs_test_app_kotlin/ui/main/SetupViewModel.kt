@@ -86,9 +86,13 @@ class SetupViewModel : ViewModel() {
     init {
         mTags.value = iterableToList<String>(NotificationHub.getTags())
         mIsEnabled.value = NotificationHub.isEnabled()
-        val pushChannel: String = NotificationHub.getPushChannel()
-        mDeviceToken.value = pushChannel
-        val installationId: String = NotificationHub.getInstallationId()
-        mInstallationId.value = installationId
+        val pushChannel: String? = NotificationHub.getPushChannel()
+        if (pushChannel != null) {
+            mDeviceToken.value = pushChannel
+        }
+        val installationId: String? = NotificationHub.getInstallationId()
+        if (installationId != null) {
+            mInstallationId.value = installationId
+        }
     }
 }
