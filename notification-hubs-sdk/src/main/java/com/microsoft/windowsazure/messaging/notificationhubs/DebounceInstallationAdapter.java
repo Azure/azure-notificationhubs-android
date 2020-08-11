@@ -73,7 +73,7 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
      * otherwise been a duplicate {@link Installation} through.
      * @param millis The number of milliseconds before an {@link Installation} should be considered stale.
      */
-    public void setInstallationStaleWindow(long millis) {
+    void setInstallationStaleWindow(long millis) {
         mInstallationStaleMillis = millis;
     }
 

@@ -1,43 +1,50 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
-import android.os.Build;
-import android.util.Base64;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Header;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Responsible for informing Azure Notification Hubs of changes to when this device should receive
  * notifications.
  */
 public class NotificationHubInstallationAdapter implements InstallationAdapter {
-    private static final long TOKEN_EXPIRE_SECONDS = 5 * 60;
     private static final long DEFAULT_INSTALLATION_EXPIRATION_MILLIS = 1000L * 60L * 60L * 24L * 90L;
-    static final String API_VERSION = "2020-06";
+    private static final RetryPolicy sDoNotRetry;
+    private static final Set<Integer> sRetriableStatusCodes;
+    private static final String INSTALLATION_PUT_TAG = "installationPutRequest";
 
     private final String mHubName;
     private final ConnectionString mConnectionString;
-    private final HttpClient mHttpClient;
+    private final RequestQueue mRequestQueue;
     private final long mInstallationExpirationWindow;
+    private final ScheduledExecutorService mScheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> mOutstandingRetry;
 
-    private final static DateFormat sIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.ENGLISH);
 
     public NotificationHubInstallationAdapter(Context context, String hubName, String connectionString) {
         this(context, hubName, connectionString, DEFAULT_INSTALLATION_EXPIRATION_MILLIS);
@@ -46,120 +53,31 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
     NotificationHubInstallationAdapter(Context context, String hubName, String connectionString, long installationExpirationWindow) {
         mHubName = hubName;
         mConnectionString = ConnectionString.parse(connectionString);
-        mHttpClient = HttpUtils.createHttpClient(context.getApplicationContext());
+        mRequestQueue = Volley.newRequestQueue(context.getApplicationContext());
         mInstallationExpirationWindow = installationExpirationWindow;
+    }
+
+    static {
+        sDoNotRetry = new DefaultRetryPolicy(1000, 0, 1);
+        sRetriableStatusCodes = new HashSet<Integer>();
+        sRetriableStatusCodes.add(500); // Internal Server Error
+        sRetriableStatusCodes.add(503); // Service Unavailable
+        sRetriableStatusCodes.add(504); // Gateway Timeout
+        sRetriableStatusCodes.add(403); // Forbidden (legacy throttling code)
+        sRetriableStatusCodes.add(408); // Client Timeout
+        sRetriableStatusCodes.add(429); // Too Many Requests
     }
 
     /**
      * Updates a backend with the updated Installation information for this device.
      *
-     * @param installation The record to update.\
+     * @param installation The record to update.
      */
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
-        String formatEndpoint = NotificationHubInstallationHelper.parseSbEndpoint(mConnectionString.getEndpoint());
-        final String url = NotificationHubInstallationHelper.getInstallationUrl(formatEndpoint, mHubName, installation.getInstallationId());
-
-        mHttpClient.callAsync(url, "PUT", getHeaders(url), buildCallTemplate(installation), buildServiceCallback(installation, onInstallationSaved, onInstallationSaveError));
         addExpiration(installation);
-    }
-
-    private String generateAuthToken(String url) throws InvalidKeyException {
-        String keyName = mConnectionString.getSharedAccessKeyName();
-        String key = mConnectionString.getSharedAccessKey();
-
-        try {
-            url = URLEncoder.encode(url, "UTF-8").toLowerCase(Locale.ENGLISH);
-        } catch (UnsupportedEncodingException e) {
-            // this shouldn't happen because of the fixed encoding
-        }
-
-        // Set expiration in seconds
-        long expires = (System.currentTimeMillis() / 1000) + TOKEN_EXPIRE_SECONDS;
-
-        String toSign = url + '\n' + expires;
-
-        // sign
-        byte[] bytesToSign = toSign.getBytes();
-        Mac mac = null;
-        try {
-            mac = Mac.getInstance("HmacSHA256");
-        } catch (NoSuchAlgorithmException e) {
-            // This shouldn't happen because of the fixed algorithm
-        }
-
-        SecretKeySpec secret = new SecretKeySpec(key.getBytes(), mac.getAlgorithm());
-        mac.init(secret);
-        byte[] signedHash = mac.doFinal(bytesToSign);
-        String base64Signature = Base64.encodeToString(signedHash, Base64.DEFAULT);
-        base64Signature = base64Signature.trim();
-        try {
-            base64Signature = URLEncoder.encode(base64Signature, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // this shouldn't happen because of the fixed encoding
-        }
-
-        // construct authorization string
-        return "SharedAccessSignature sr=" + url + "&sig=" + base64Signature + "&se=" + expires + "&skn=" + keyName;
-    }
-
-    private Map<String, String> getHeaders(final String url) {
-        try {
-            Map<String,String> params = new HashMap<String, String>(){{
-                put("Content-Type", "application/json");
-                put("x-ms-version", API_VERSION);
-                put("Authorization", generateAuthToken(url));
-                put("User-Agent", getUserAgent());
-            }};
-            return params;
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private HttpClient.CallTemplate buildCallTemplate(final Installation installation) {
-        return new HttpClient.CallTemplate() {
-            @Override
-            public String buildRequestBody() throws JSONException {
-                try {
-                    final JSONArray tagList = new JSONArray();
-                    for (String tag: installation.getTags()) {
-                        tagList.put(tag);
-                    }
-
-                    final JSONObject serializedTemplates = new JSONObject();
-                    for (Map.Entry<String, InstallationTemplate> template: installation.getTemplates().entrySet()) {
-                        String templateName = template.getKey();
-                        serializedTemplates.put(templateName, InstallationTemplate.serialize(templateName, template.getValue()));
-                    }
-
-                    JSONObject jsonBody = new JSONObject(){{
-                        put("installationId", installation.getInstallationId());
-                        put("platform", "GCM");
-                        put("pushChannel", installation.getPushChannel());
-                        put("tags", tagList);
-                        put("templates", serializedTemplates);
-                        put("userId", installation.getUserId());
-                    }};
-
-                    Date expiration = installation.getExpiration();
-                    if(expiration != null) {
-                        String formattedExpiration = sIso8601Format.format(expiration);
-                        jsonBody.put("expirationTime", formattedExpiration);
-                    }
-
-                    return jsonBody.toString();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            public void onBeforeCalling(URL url, Map<String, String> headers) {
-            }
-        };
+        cancelOutstandingUpdates();
+        new RetrySession(installation, 3, onInstallationSaved, onInstallationSaveError).submit();
     }
 
     /**
@@ -177,28 +95,177 @@ public class NotificationHubInstallationAdapter implements InstallationAdapter {
         target.setExpiration(expiration);
     }
 
-    private ServiceCallback buildServiceCallback(final Installation installation, final Listener onSuccess, final ErrorListener onFailure) {
-        return new ServiceCallback() {
-            @Override
-            public void onCallSucceeded(HttpResponse httpResponse) {
-                onSuccess.onInstallationSaved(installation);
+    void cancelOutstandingUpdates() {
+        synchronized (NotificationHubInstallationAdapter.this) {
+            if (mOutstandingRetry != null) {
+                mOutstandingRetry.cancel(false);
             }
-
-            @Override
-            public void onCallFailed(Exception e) {
-                onFailure.onInstallationSaveError(e);
-            }
-        };
+            mRequestQueue.cancelAll(INSTALLATION_PUT_TAG);
+        }
     }
 
+    static boolean isRetriable(VolleyError error) {
+        if (error instanceof NetworkError || error instanceof TimeoutError) {
+            return true;
+        }
+
+        if (error.networkResponse != null ){
+            if(sRetriableStatusCodes.contains(error.networkResponse.statusCode)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
-     * Generates the User-Agent
+     * Generates InstallationPutRequests, and continually submits them serially to the Volley
+     * RequestQueue until either a successful response is received, or a set number of retries has
+     * elapsed.
      */
-    private String getUserAgent() {
-        String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                API_VERSION, "AndroidSdkV1FcmV1.0.0-preview3", "Android", Build.VERSION.RELEASE);
+    private class RetrySession implements Response.ErrorListener, Response.Listener<JSONObject> {
+        private final int mMaxRetries;
+        private int mRetry;
+        private final Installation mInstallation;
+        private final InstallationAdapter.Listener mOnSuccess;
+        private final InstallationAdapter.ErrorListener mOnFailure;
+        private final long mDefaultWaitTime;
 
-        return userAgent;
+        public RetrySession(Installation installation, int maxRetries, InstallationAdapter.Listener onSuccess, InstallationAdapter.ErrorListener onFailure) {
+            mMaxRetries = maxRetries;
+            mInstallation = installation;
+            mOnSuccess = onSuccess;
+            mOnFailure = onFailure;
+            mRetry = 0;
+            mDefaultWaitTime = 1000;
+        }
+
+        /**
+         * Creates a new InstallationPutRequest, adds it the the RequestQueue.
+         */
+        private void submit() {
+            InstallationPutRequest request = new InstallationPutRequest(
+                    NotificationHubInstallationAdapter.this.mConnectionString,
+                    NotificationHubInstallationAdapter.this.mHubName,
+                    mInstallation,
+                    this,
+                    this);
+            request.addMarker(INSTALLATION_PUT_TAG);
+            request.setRetryPolicy(sDoNotRetry);
+            synchronized (NotificationHubInstallationAdapter.this) {
+                mOutstandingRetry = null;
+                mRequestQueue.add(request);
+            }
+        }
+
+        /**
+         * Called when a successful response is received.
+         *
+         * @param response The JSON Object returned by the server (if any).
+         */
+        @Override
+        public void onResponse(JSONObject response) {
+            mOnSuccess.onInstallationSaved(mInstallation);
+        }
+
+        /**
+         * Callback method that an error has been occurred with the provided error code and optional
+         * user-readable message.
+         *
+         * @param error The reason the Installation was not saved with the backend.
+         */
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mRetry++;
+            if(!isRetriable(error) || mRetry > mMaxRetries) {
+                mOnFailure.onInstallationSaveError(convertVolleyException(error));
+                return;
+            }
+
+            long waitTimeMillis;
+            NetworkResponse response = error.networkResponse;
+            String rawRetryAfter = null;
+
+            if (response != null) {
+                rawRetryAfter = getRetryAfter(response);
+            }
+
+            if (response == null) {
+                waitTimeMillis = mDefaultWaitTime;
+            } else if(rawRetryAfter != null) {
+                waitTimeMillis = parseRetryAfterValue(rawRetryAfter);
+            } else if (response.statusCode == 429 || response.statusCode == 403) {
+                waitTimeMillis = 10 * 1000;
+            } else {
+                waitTimeMillis = mDefaultWaitTime;
+            }
+            synchronized (NotificationHubInstallationAdapter.this) {
+                mOutstandingRetry = mScheduler.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        submit();
+                    }
+                }, waitTimeMillis, TimeUnit.MILLISECONDS);
+            }
+        }
+    }
+
+    /**
+     * In order to shield customers from potential breaking changes if we were to move away from
+     * Volley, or if Volley were to introduce a breaking change, we wrap exceptions in our own
+     * types.
+     *
+     * @param error The problem encountered by Volley.
+     * @return An exception safe to hand to application code.
+     */
+    static Exception convertVolleyException(VolleyError error) {
+        if (error instanceof AuthFailureError) {
+            return new AuthorizationException((AuthFailureError)error);
+        } else if (error instanceof ClientError) {
+            return new ClientException((ClientError) error);
+        } else if (error instanceof ServerError) {
+            return new ServerException((ServerError) error);
+        } else if (error instanceof NetworkError) {
+                return new IOException(error.getMessage(), error.getCause());
+        } else if(error instanceof ParseError) {
+            return new IOException(error.getMessage(), error.getCause());
+        } else if (error instanceof TimeoutError) {
+            return new IOException(error.getMessage(), error.getCause());
+        }
+        return new Exception(error);
+    }
+
+    /**
+     * Fetches the value sent as the "Retry-After" value.
+     * @param response The response the server sent, which may or may not include a Retry-After header.
+     * @return The raw value returned as a Retry-After header. If the header is not present, null is returned.
+     */
+    static String getRetryAfter(NetworkResponse response){
+        for(Header header : response.allHeaders) {
+            String name = header.getName();
+            if (name.equalsIgnoreCase("Retry-After")) {
+                return header.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Fetches the number of milliseconds, if any, that we were told to wait by the server.
+     * @param retryAfter The value of a Retry-After header.
+     * @return The number of milliseconds to wait. If there is no Retry-After header, a negative
+     * value is returned.
+     * @throws UnsupportedOperationException If Retry-After is provided in an unrecognized format.
+     */
+    static long parseRetryAfterValue(String retryAfter) {
+        // TODO: support parsing DateTime passed in Retry-After header.
+
+        try {
+            return 1000 * Long.parseLong(retryAfter);
+        } catch (NumberFormatException e) {
+            throw new UnsupportedOperationException("Retry-After must be communicated as a number of seconds", e);
+        }
     }
 }
+
+
