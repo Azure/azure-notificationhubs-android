@@ -25,7 +25,7 @@ android {
 
     signingConfigs {
         releaseSigningConfig {
-            storeFile rootProject.file("notification-hubs-test-app-refresh/nhubs-test-app-refresh.jks")
+            storeFile rootProject.file("notification-hubs-sample-app-java/notification-hubs-sample-app.jks")
             storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
             keyAlias System.getProperty("APPCENTER_KEY_ALIAS")
             keyPassword System.getProperty("APPCENTER_KEY_PASSWORD")
