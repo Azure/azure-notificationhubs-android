@@ -93,7 +93,7 @@ you find most useful.
 
 This is our SDK's legacy codebase. It facilitates interactions with our [Registration flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#registrations). This namespace contains code that does little more than act as a REST client. Customers newly using ANH should NOT use the code found in this namespace. Expect it to be deprecated.
 
-### [`notification-hubs-test-app-java`](./notification-hubs-test-app-java)
+### [`notification-hubs-sample-app-java`](./notification-hubs-sample-app-java)
 
 This is a sample application built on `com.microsoft.windowsazure.messaging.notificationhubs`. It was built to represent current best practices, and
 demonstrate how to get off the ground with ANH. If you're looking to experiment
