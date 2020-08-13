@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin
+package com.example.notification_hubs_sample_app_kotlin
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class NotificationDetailActivity : AppCompatActivity() {
     companion object {
-        private const val INTENT_KEY_PREFIX = "com.example.notification_hubs_test_app_kotlin.detail:"
+        private const val INTENT_KEY_PREFIX = "com.example.notification_hubs_sample_app_kotlin.detail:"
         const val INTENT_TITLE_KEY = INTENT_KEY_PREFIX + "title"
         const val INTENT_BODY_KEY = INTENT_KEY_PREFIX + "body"
 

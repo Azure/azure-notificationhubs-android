@@ -1,10 +1,10 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.notification_hubs_test_app_kotlin.R
+import com.example.notification_hubs_sample_app_kotlin.R
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to

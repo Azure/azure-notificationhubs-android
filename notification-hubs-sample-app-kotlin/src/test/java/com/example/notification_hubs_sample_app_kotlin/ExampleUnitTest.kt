@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin
+package com.example.notification_hubs_sample_app_kotlin
 
 import org.junit.Test
 

@@ -1,7 +1,7 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.view.LayoutInflater
-import com.example.notification_hubs_test_app_kotlin.R
+import com.example.notification_hubs_sample_app_kotlin.R
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton

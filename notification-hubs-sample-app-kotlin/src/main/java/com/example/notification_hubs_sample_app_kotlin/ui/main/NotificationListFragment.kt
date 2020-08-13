@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notification_hubs_test_app_kotlin.NotificationDetailActivity
-import com.example.notification_hubs_test_app_kotlin.R
+import com.example.notification_hubs_sample_app_kotlin.NotificationDetailActivity
+import com.example.notification_hubs_sample_app_kotlin.R
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage
 
 class NotificationListFragment : Fragment() {

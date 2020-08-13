@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData

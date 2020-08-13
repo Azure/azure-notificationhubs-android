@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.notification_hubs_test_app_kotlin.R
+import com.example.notification_hubs_sample_app_kotlin.R
 
 /**
  * A placeholder fragment containing a simple view.

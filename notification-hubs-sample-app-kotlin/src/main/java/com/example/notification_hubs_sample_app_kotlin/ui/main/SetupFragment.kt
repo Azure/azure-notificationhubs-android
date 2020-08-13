@@ -1,4 +1,4 @@
-package com.example.notification_hubs_test_app_kotlin.ui.main
+package com.example.notification_hubs_sample_app_kotlin.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notification_hubs_test_app_kotlin.R
+import com.example.notification_hubs_sample_app_kotlin.R
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub
 
 class SetupFragment : androidx.fragment.app.Fragment() {
