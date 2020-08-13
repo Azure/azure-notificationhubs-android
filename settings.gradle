@@ -1,3 +1,3 @@
 include ':notification-hubs-sdk', ':notification-hubs-sdk-e2etestapp',':notification-hubs-test-app-legacy', 'FCMTutorialApp'
-include ':notification-hubs-test-app-java'
-include ':notification-hubs-test-app-kotlin'
+include ':notification-hubs-sample-app-java'
+include ':notification-hubs-sample-app-kotlin'
