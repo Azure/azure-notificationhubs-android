@@ -20,10 +20,17 @@ android {
     lintOptions {
         abortOnError false
     }
+    flavorDimensions 'push-provider'
+    productFlavors {
+        fcm {
+            dimension 'push-provider'
+            applicationIdSuffix 'fcm'
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation project(':notification-hubs-sdk')
+    implementation project(path: ':notification-hubs-sdk', configuration: 'default')
 }
