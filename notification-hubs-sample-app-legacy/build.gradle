@@ -9,7 +9,7 @@ if (secretsPropertiesFile.exists()) {
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.microsoft.notification_hubs_test_app_legacy"
+        applicationId "com.microsoft.notification_hubs_sample_app_legacy"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

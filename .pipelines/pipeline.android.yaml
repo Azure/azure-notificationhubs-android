@@ -59,7 +59,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      cp $(googleServices.secureFilePath) ./notification-hubs-test-app-legacy
+      cp $(googleServices.secureFilePath) ./notification-hubs-sample-app-legacy
       cp $(googleServices.secureFilePath) ./notification-hubs-sample-app-java
 
 - task: Gradle@2

@@ -1,4 +1,4 @@
-package com.microsoft.notification_hubs_test_app_legacy;
+package com.microsoft.notification_hubs_sample_app_legacy;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

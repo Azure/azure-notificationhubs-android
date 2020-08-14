@@ -99,7 +99,7 @@ This is a sample application built on `com.microsoft.windowsazure.messaging.noti
 demonstrate how to get off the ground with ANH. If you're looking to experiment
 with ANH, this is a good app to get started with, to see what it can do.
 
-### [`notification-hubs-test-app-legacy`](./notification-hubs-test-app-legacy)
+### [`notification-hubs-sample-app-legacy`](./notification-hubs-sample-app-legacy)
 
 This application demonstrates how to use the Registration flow using `com.microsoft.windowsazure.messaging`. If older tutorials or blogs (published before August, 2020) don't otherwise specify, this is likely the sample application they are referring to.
 
