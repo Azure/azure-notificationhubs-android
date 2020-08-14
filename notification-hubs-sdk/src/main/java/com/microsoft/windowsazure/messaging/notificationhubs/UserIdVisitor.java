@@ -16,8 +16,7 @@ class UserIdVisitor implements InstallationVisitor {
     }
 
     /**
-     *
-     * @param subject The {@link Installation} to be updated to include an UserId.
+     * {@inheritDoc}
      */
     @Override
     public void visitInstallation(Installation subject) {
