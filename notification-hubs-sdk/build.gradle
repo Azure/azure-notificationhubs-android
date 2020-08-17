@@ -53,6 +53,12 @@ android {
 
     useLibrary 'android.test.runner'
     useLibrary 'android.test.base'
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['jniLibs']
+        }
+    }
 }
 
 repositories {
@@ -68,6 +74,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.android.volley:volley:1.1.1'
+    implementation files('libs\\pushservice-7.0.0.27.jar')
     fcmApi 'com.google.firebase:firebase-messaging:20.2.4'
 
     javadocDeps 'com.android.support:support-annotations:28.0.0'
