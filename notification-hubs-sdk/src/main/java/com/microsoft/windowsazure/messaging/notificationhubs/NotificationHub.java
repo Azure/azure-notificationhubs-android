@@ -28,6 +28,7 @@ public final class NotificationHub {
     private TagVisitor mTagVisitor;
     private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
+    private UserIdVisitor mUserIdVisitor;
 
     private InstallationAdapter mAdapter;
     private Application mApplication;
@@ -515,5 +516,47 @@ public final class NotificationHub {
 
     public InstallationTemplate getInstanceTemplate(String templateName) {
         return mTemplateVisitor.getTemplate(templateName);
+    }
+
+    /**
+     * Updates the UserID that will be associated with this device.
+     *
+     * @param userId The UserID to associate with the device.
+     * @return True if user id was updated, False if current value is equal to the new value
+     */
+    public static boolean setUserId(String userId) {
+        return getInstance().setInstanceUserId(userId);
+    }
+
+    /**
+     * Updates the UserID that will be associated with this device.
+     *
+     * @param userId The UserID to associate with the device.
+     * @return True if user id was updated, False if current value is equal to the new value
+     */
+    public boolean setInstanceUserId(String userId) {
+        if(mUserIdVisitor.setUserId(userId)) {
+            beginInstanceInstallationUpdate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Fetches the current User Id.
+     *
+     * @return The user Id currently associated with this device. Null if none is currently set.
+     */
+    public static String getUserId() {
+        return getInstance().getInstanceUserId();
+    }
+
+    /**
+     * Fetches the current User Id.
+     *
+     * @return The user Id currently associated with this device. Null if none is currently set.
+     */
+    public String getInstanceUserId() {
+        return mUserIdVisitor.getUserId();
     }
 }
