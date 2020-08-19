@@ -116,6 +116,9 @@ public final class NotificationHub {
         instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
         instance.useInstanceVisitor(instance.mPushChannelVisitor);
 
+        instance.mUserIdVisitor = new UserIdVisitor(instance.mApplication);
+        instance.useInstanceVisitor(instance.mUserIdVisitor);
+
         // Why is this done here instead of being in the manifest like everything else?
         // BroadcastReceivers are special, and starting in Android 8.0 the ability to start them
         // from the manifest was removed. See documentation from Google here:
