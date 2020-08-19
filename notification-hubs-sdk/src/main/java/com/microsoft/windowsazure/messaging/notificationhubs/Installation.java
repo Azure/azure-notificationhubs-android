@@ -71,7 +71,7 @@ public class Installation implements Taggable {
      * Sets the unique identifier that should be used by the backend to track the record by User
      * @param id The unique identifier to associate with the user.
      */
-    void setUserId(String id) {
+    public void setUserId(String id) {
         mUserId = id;
     }
 
