@@ -68,6 +68,31 @@ public final class NotificationHub {
         return sInstance;
     }
 
+     synchronized void registerApplication(Application application) {
+        if (mApplication == application) {
+            return;
+        }
+
+        mApplication = application;
+
+        mPreferences = mApplication.getSharedPreferences(mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
+
+        mIdAssignmentVisitor = new IdAssignmentVisitor(mApplication);
+        useInstanceVisitor(mIdAssignmentVisitor);
+
+        mTagVisitor = new TagVisitor(mApplication);
+        useInstanceVisitor(mTagVisitor);
+
+        mTemplateVisitor = new TemplateVisitor(mApplication);
+        useInstanceVisitor(mTemplateVisitor);
+
+        mPushChannelVisitor = new PushChannelVisitor(mApplication);
+        useInstanceVisitor(mPushChannelVisitor);
+
+        mUserIdVisitor = new UserIdVisitor(mApplication);
+        useInstanceVisitor(mUserIdVisitor);
+    }
+
     /**
      * Initialize the single global instance of {@link NotificationHub} and configure to associate
      * this device with an Azure Notification Hub.
@@ -100,24 +125,8 @@ public final class NotificationHub {
     public static void start(Application application, InstallationAdapter adapter) {
         final NotificationHub instance = getInstance();
         instance.mAdapter = adapter;
-        instance.mApplication = application;
 
-        instance.mPreferences = instance.mApplication.getSharedPreferences(instance.mApplication.getString(R.string.installation_enrichment_file_key), Context.MODE_PRIVATE);
-
-        instance.mIdAssignmentVisitor = new IdAssignmentVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mIdAssignmentVisitor);
-
-        instance.mTagVisitor = new TagVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mTagVisitor);
-
-        instance.mTemplateVisitor = new TemplateVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mTemplateVisitor);
-
-        instance.mPushChannelVisitor = new PushChannelVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mPushChannelVisitor);
-
-        instance.mUserIdVisitor = new UserIdVisitor(instance.mApplication);
-        instance.useInstanceVisitor(instance.mUserIdVisitor);
+        instance.registerApplication(application);
 
         // Why is this done here instead of being in the manifest like everything else?
         // BroadcastReceivers are special, and starting in Android 8.0 the ability to start them
