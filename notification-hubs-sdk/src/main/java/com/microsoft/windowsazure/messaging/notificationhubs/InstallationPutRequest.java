@@ -136,7 +136,7 @@ class InstallationPutRequest extends JsonObjectRequest {
      */
     private static String getUserAgent() {
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                API_VERSION, "AndroidSdkV1FcmV1.1.0", "Android", Build.VERSION.RELEASE);
+                API_VERSION, "AndroidSdkV1FcmV1.1.1", "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
