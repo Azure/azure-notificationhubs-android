@@ -46,6 +46,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
     public void onCreate() {
         super.onCreate();
 
+        mHub.registerApplication(this.getApplication());
 
         if (mHub.getPushChannel() == null) {
             FirebaseInstanceId.getInstance()
