@@ -47,7 +47,7 @@ _{project-root}/{your-module}/build.gradle:_
 
 dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
-    implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.0.0'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:v1.1.1'
 }
 ```
 
@@ -93,13 +93,13 @@ you find most useful.
 
 This is our SDK's legacy codebase. It facilitates interactions with our [Registration flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#registrations). This namespace contains code that does little more than act as a REST client. Customers newly using ANH should NOT use the code found in this namespace. Expect it to be deprecated.
 
-### [`notification-hubs-test-app-java`](./notification-hubs-test-app-java)
+### [`notification-hubs-sample-app-java`](./notification-hubs-sample-app-java)
 
 This is a sample application built on `com.microsoft.windowsazure.messaging.notificationhubs`. It was built to represent current best practices, and
 demonstrate how to get off the ground with ANH. If you're looking to experiment
 with ANH, this is a good app to get started with, to see what it can do.
 
-### [`notification-hubs-test-app-legacy`](./notification-hubs-test-app-legacy)
+### [`notification-hubs-sample-app-legacy`](./notification-hubs-sample-app-legacy)
 
 This application demonstrates how to use the Registration flow using `com.microsoft.windowsazure.messaging`. If older tutorials or blogs (published before August, 2020) don't otherwise specify, this is likely the sample application they are referring to.
 
