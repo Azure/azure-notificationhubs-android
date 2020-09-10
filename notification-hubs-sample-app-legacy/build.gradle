@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
     implementation project(":notification-hubs-sdk")

@@ -60,7 +60,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestUtil 'androidx.test:orchestrator:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'androidx.test:runner:1.2.0'
