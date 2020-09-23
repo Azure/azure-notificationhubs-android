@@ -1,10 +1,10 @@
 trigger:
-- master
+- main
 - push-refresh
 - v1-preview
 
 pr:
-- master
+- main
 - push-refresh
 - v1-preview
 
