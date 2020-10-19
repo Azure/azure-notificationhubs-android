@@ -29,7 +29,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.google.firebase:firebase-core:17.5.1'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.6@aar'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:1.1.2@aar'
     implementation 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
 }
 
