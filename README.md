@@ -1,10 +1,8 @@
-
-<p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo_300x300.png"/></a></p>
+[![Build Status](https://msazure.visualstudio.com/NotificationHubs/_apis/build/status/unknown-compliance/azure-notificationhubs-android?branchName=main)](https://msazure.visualstudio.com/NotificationHubs/_build/latest?definitionId=152884&branchName=main)[ ![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg) ](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
 
 # Azure Notification Hubs - Android SDK
 
 Azure Notification Hubs (ANH) provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
-
 
 ## Getting Started with ANH Android SDK
 
@@ -42,6 +40,7 @@ allprojects {
 ```
 
 _{project-root}/{your-module}/build.gradle:_
+
 ``` groovy
 // This is not a complete build.gradle file, it only highlights the portions you'll need to use ANH.
 
@@ -58,6 +57,7 @@ In order to connect to your Notification Hub, you'll need to embed the key from 
 The easiest way to embed your ANH credentials without commiting them to source control is to use BuildConfig to convert environment variables into a runtime field:
 
 _{project-root}/{your-module}/build.gradle:_
+
 ``` groovy
 // This is not a complete build.gradle file, it only highlights the portions you'll need to use ANH.
 
@@ -74,6 +74,7 @@ android {
 This will enable you to use the following line to initialize the library:
 
 _MainActivity.java:_
+
 ``` java
 NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
 ```
@@ -81,9 +82,11 @@ NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hu
 ## Repository Contents
 
 ### [`com.microsoft.windowsazure.messaging.notificationhubs`](./notification-hubs-sdk/src/main/java/com/microsoft/windowsazure/messaging/notificationhubs)
+
 The code found in this namespace uses ANH's [Installation flow](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-registration-management#installations). It is heavily influenced by App Center Push's SDK. It was designed to do more than just act as a REST client, instead abstracting away your interactions with ANH. New projects that are looking to use ANH should use the constructs found in this namespace.
 
 Some highlights of the functionality provided in this namespace:
+
 - With one line of initialization code, this library will automatically and asynchronously call the Notification Hub backend anytime device details change.
 - Easily register a callback to receive Firebase Cloud Messaging notifications.
 - Highly customizable pipeline to ensure your device always has the properties
