@@ -1,5 +1,4 @@
-![Build Status](https://msazure.visualstudio.com/NotificationHubs/_apis/build/status/unknown-compliance/azure-notificationhubs-android?branchName=main)
-[ ![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg) ](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
+[![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg) ](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
 
 # Azure Notification Hubs - Android SDK
 
