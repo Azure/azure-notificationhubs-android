@@ -6,11 +6,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.notification_hubs_sample_app_java.R;
+import com.microsoft.windowsazure.messaging.notificationhubs.FirebaseMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationListener;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 
@@ -27,8 +29,8 @@ public class NotificationDisplayer implements NotificationListener {
     public synchronized void onPushNotificationReceived(Context context, NotificationMessage message) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "MY_CHANNEL")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setContentTitle("My Notification Title")
-                .setContentText("My Notification Text")
+                .setContentTitle(message.getTitle())
+                .setContentText(message.getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         createNotificationChannel(context);
