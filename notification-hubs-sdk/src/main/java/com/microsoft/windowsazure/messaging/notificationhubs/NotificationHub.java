@@ -307,24 +307,6 @@ public final class NotificationHub {
     }
 
     /**
-     * Informs this {@link NotificationHub} that a new message has been delivered.
-     * @param message The newly received message.
-     */
-    static void relayMessage(NotificationMessage message) {
-        getInstance().relayInstanceMessage(message);
-    }
-
-    /**
-     * Informs this {@link NotificationHub} that a new message has been delivered.
-     * @param message The newly received message.
-     */
-    void relayInstanceMessage(NotificationMessage message) {
-        if (mListener != null) {
-            mListener.onPushNotificationReceived(mApplication, message);
-        }
-    }
-
-    /**
      * Adds a single tag to this collection.
      *
      * @param tag The tag to include with this collection.
