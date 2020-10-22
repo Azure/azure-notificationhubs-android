@@ -1,9 +1,12 @@
 package com.example.notification_hubs_sample_app_java.ui.main;
 
+import android.app.Notification;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.notification_hubs_sample_app_java.cookbook.NotificationDisplayer;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationListener;
@@ -21,7 +24,8 @@ public class NotificationListViewModel extends ViewModel {
             addNotification(message);
         };
 
-        NotificationHub.setListener(mListener);
+//        NotificationHub.setListener(mListener);
+        NotificationHub.setListener(new NotificationDisplayer());
     }
 
     public void addNotification(NotificationMessage notification) {
