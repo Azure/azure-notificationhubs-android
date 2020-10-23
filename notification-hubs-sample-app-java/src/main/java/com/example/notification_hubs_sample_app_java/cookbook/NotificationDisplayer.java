@@ -27,8 +27,7 @@ public class NotificationDisplayer implements NotificationListener {
 
     static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            DEFAULT_NOTIFICATION_CHANNEL = new NotificationChannel("general", "General", NotificationManager.IMPORTANCE_DEFAULT);
-            DEFAULT_NOTIFICATION_CHANNEL.setDescription("Notifications that don't apply to a more specific category.");
+            DEFAULT_NOTIFICATION_CHANNEL = new NotificationChannel("fcm_fallback_notification_channel", "Miscellaneous", NotificationManager.IMPORTANCE_DEFAULT);
         } else {
             DEFAULT_NOTIFICATION_CHANNEL = null;
         }
@@ -66,7 +65,7 @@ public class NotificationDisplayer implements NotificationListener {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             channelId = ""; // The concept of channels weren't introduced until O, so this value will be ignored.
-        } else if (channelId == null) {
+        } else if (channelId == null || !getExistingChannelIds(context).contains(channelId)) {
             channelId = mDefaultChannelId;
         }
 
