@@ -13,16 +13,38 @@ import com.example.notification_hubs_sample_app_java.R;
 import com.google.firebase.messaging.RemoteMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationListener;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class NotificationDisplayer implements NotificationListener {
-    private int mNotificationId = 0;
+    private static final NotificationChannel DEFAULT_NOTIFICATION_CHANNEL;
 
+    private int mNotificationId = 0;
     private Set<String> mExistingChannelIds;
+    private final String mDefaultChannelId;
+
+    static {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DEFAULT_NOTIFICATION_CHANNEL = new NotificationChannel("general", "General", NotificationManager.IMPORTANCE_DEFAULT);
+            DEFAULT_NOTIFICATION_CHANNEL.setDescription("Notifications that don't apply to a more specific category.");
+        } else {
+            DEFAULT_NOTIFICATION_CHANNEL = null;
+        }
+    }
+
+    public NotificationDisplayer() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mDefaultChannelId = DEFAULT_NOTIFICATION_CHANNEL.getId();
+        } else {
+            mDefaultChannelId = "";
+        }
+    }
+
+    public NotificationDisplayer(String channelId) {
+        mDefaultChannelId = channelId;
+    }
 
     /**
      * Called from UI thread whenever a push notification is either clicked from the System Tray or
@@ -41,10 +63,15 @@ public class NotificationDisplayer implements NotificationListener {
         }
 
         String channelId = rawNotification.getChannelId();
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            channelId = "other"; // The concept of channels weren't introduced until O, so this value will be ignored.
-        } else if (channelId == null || !getExistingChannelIds(context).contains(channelId)) {
-            channelId = NotificationChannel.DEFAULT_CHANNEL_ID;
+            channelId = ""; // The concept of channels weren't introduced until O, so this value will be ignored.
+        } else if (channelId == null) {
+            channelId = mDefaultChannelId;
+        }
+
+        if (channelId.equals(mDefaultChannelId)) {
+            assertDefaultChannelCreated(context);
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
@@ -53,29 +80,10 @@ public class NotificationDisplayer implements NotificationListener {
                 .setContentText(rawNotification.getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        createNotificationChannel(context);
-
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(mNotificationId++, builder.build());
-    }
-
-
-    private void createNotificationChannel(Context context) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Channel Name";// getString(R.string.channel_name);
-            String description = "Channel Description";// getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("MY_CHANNEL", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
     private Set<String> getExistingChannelIds(Context context) {
@@ -99,5 +107,21 @@ public class NotificationDisplayer implements NotificationListener {
         }
 
         return mExistingChannelIds;
+    }
+
+    private void assertDefaultChannelCreated(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Set<String> existingChannelIds = getExistingChannelIds(context);
+
+            if (existingChannelIds.contains(DEFAULT_NOTIFICATION_CHANNEL.getId())){
+                return;
+            }
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager == null) {
+                return;
+            }
+            notificationManager.createNotificationChannel(DEFAULT_NOTIFICATION_CHANNEL);
+        }
     }
 }
