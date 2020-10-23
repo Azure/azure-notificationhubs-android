@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.NotificationListFragment">
+    tools:context=".NotificationListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notificationList"

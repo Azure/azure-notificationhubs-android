@@ -162,6 +162,10 @@ public final class NotificationHub {
         mListener = listener;
     }
 
+    NotificationListener getInstanceListener() {
+        return mListener;
+    }
+
     public static void setInstallationSavedListener(InstallationAdapter.Listener listener) {
         getInstance().setInstanceInstallationSavedListener(listener);
     }
