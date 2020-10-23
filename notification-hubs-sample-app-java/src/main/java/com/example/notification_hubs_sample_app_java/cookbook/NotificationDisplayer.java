@@ -18,6 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A default implementation of a NotificationListener, which renders notifications that are received
+ * in the foreground the way Firebase renders them when your application is in the background.
+ */
 public class NotificationDisplayer implements NotificationListener {
     private static final NotificationChannel DEFAULT_NOTIFICATION_CHANNEL;
 
@@ -27,22 +31,27 @@ public class NotificationDisplayer implements NotificationListener {
 
     static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            DEFAULT_NOTIFICATION_CHANNEL = new NotificationChannel("fcm_fallback_notification_channel", "Miscellaneous", NotificationManager.IMPORTANCE_DEFAULT);
+            // Match the default channel that Firebase would create, if it was handed a notification
+            // that didn't have a channel assignment.
+            DEFAULT_NOTIFICATION_CHANNEL = new NotificationChannel(
+                    "fcm_fallback_notification_channel",
+                    "Miscellaneous",
+                    NotificationManager.IMPORTANCE_DEFAULT);
         } else {
             DEFAULT_NOTIFICATION_CHANNEL = null;
         }
     }
 
+    /**
+     * Creates an instance of a {@link NotificationListener} that displays notification messages
+     * when they are received.
+     */
     public NotificationDisplayer() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mDefaultChannelId = DEFAULT_NOTIFICATION_CHANNEL.getId();
         } else {
             mDefaultChannelId = "";
         }
-    }
-
-    public NotificationDisplayer(String channelId) {
-        mDefaultChannelId = channelId;
     }
 
     /**
@@ -85,6 +94,11 @@ public class NotificationDisplayer implements NotificationListener {
         notificationManager.notify(mNotificationId++, builder.build());
     }
 
+    /**
+     * Fetch the IDs of the notification categories currently associated with this app.
+     * @param context The application context for the currently running application.
+     * @return A distinct set of channel IDs.
+     */
     private Set<String> getExistingChannelIds(Context context) {
         if (mExistingChannelIds != null) {
             return mExistingChannelIds;
@@ -108,6 +122,10 @@ public class NotificationDisplayer implements NotificationListener {
         return mExistingChannelIds;
     }
 
+    /**
+     * Creates the Miscellaneous channel, if it does not already exist.
+     * @param context The application context for the currently running application.
+     */
     private void assertDefaultChannelCreated(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Set<String> existingChannelIds = getExistingChannelIds(context);
