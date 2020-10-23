@@ -24,8 +24,7 @@ public class NotificationListViewModel extends ViewModel {
             addNotification(message);
         };
 
-//        NotificationHub.setListener(mListener);
-        NotificationHub.setListener(new NotificationDisplayer());
+        NotificationHub.setListener(mListener);
     }
 
     public void addNotification(RemoteMessage notification) {
