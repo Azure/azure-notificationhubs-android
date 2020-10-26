@@ -16,6 +16,7 @@ public class Installation implements Taggable {
     private Set<String> mTags;
     private Map<String, InstallationTemplate> mTemplates;
     private String mInstallationId;
+    private String mUserId;
     private Date mExpiration;
 
     public Installation() {
@@ -52,10 +53,26 @@ public class Installation implements Taggable {
     /**
      * Sets the unique identifier that should be used by the backend to track the record of this
      * Device.
-     * @param id The unique identifer to associate with the record of this device.
+     * @param id The unique identifier to associate with the record of this device.
      */
     public void setInstallationId(String id) {
         mInstallationId = id;
+    }
+
+    /**
+     * Fetches the unique identifier used by the backend tracking a User.
+     * @return A unique identifier for the user.
+     */
+    public String getUserId() {
+        return mUserId;
+    }
+
+    /**
+     * Sets the unique identifier that should be used by the backend to track the record by User
+     * @param id The unique identifier to associate with the user.
+     */
+    public void setUserId(String id) {
+        mUserId = id;
     }
 
     /**
@@ -144,11 +161,12 @@ public class Installation implements Taggable {
                 mTags.equals(that.mTags) &&
                 mTemplates.equals(that.mTemplates) &&
                 mInstallationId.equals(that.mInstallationId) &&
+                mUserId.equals(that.mUserId) &&
                 mExpiration.equals(that.mExpiration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId, mExpiration);
+        return Objects.hash(mPushChannel, mTags, mTemplates, mInstallationId, mUserId, mExpiration);
     }
 }

@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class ConnectionString {
-    private static final Pattern PORTAL_FORMAT_PATTERN = Pattern.compile("(?<key>[^=]+)=(?<value>[^;]+);?");
+    private static final Pattern PORTAL_FORMAT_PATTERN = Pattern.compile("([^=]+)=([^;]+);?");
     private static final String SHARED_ACCESS_KEY_NAME_KEY = "SharedAccessKeyName";
     private static final String ENDPOINT_KEY = "Endpoint";
     private static final String SHARED_ACCESS_KEY = "SharedAccessKey";

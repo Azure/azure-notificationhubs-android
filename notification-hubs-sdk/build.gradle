@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
-def VERSION = '1.0.1'
+def VERSION = '1.1.2'
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
 def GROUP_ID = 'com.microsoft.azure'
 
@@ -68,24 +68,24 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.android.volley:volley:1.1.1'
-    fcmApi 'com.google.firebase:firebase-messaging:20.2.4'
+    fcmApi 'com.google.firebase:firebase-messaging:20.3.0'
 
     javadocDeps 'com.android.support:support-annotations:28.0.0'
 
-    androidTestImplementation 'androidx.test:core:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestUtil 'androidx.test:orchestrator:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:core:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestUtil 'androidx.test:orchestrator:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
-    testImplementation 'androidx.test:core:1.2.0'
-    testImplementation 'androidx.test:runner:1.2.0'
-    testImplementation 'androidx.test:rules:1.2.0'
-    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'androidx.test:core:1.3.0'
+    testImplementation 'androidx.test:runner:1.3.0'
+    testImplementation 'androidx.test:rules:1.3.0'
+    testImplementation 'androidx.test.ext:junit:1.1.2'
     testImplementation 'org.json:json:20200518'
-    testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
-    testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
-    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.6.5'
+    testImplementation 'org.powermock:powermock-api-mockito:1.7.4'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
+    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:2.0.7'
 }
 
 
@@ -136,7 +136,7 @@ task androidJavadocs(type: Javadoc) {
     classpath += configurations.javadocDeps
 
     android.libraryVariants.all { variant ->
-      owner.classpath += variant.javaCompile.classpath
+      owner.classpath += variant.javaCompileProvider.get().classpath
     }
 
     exclude '**/*.md'
