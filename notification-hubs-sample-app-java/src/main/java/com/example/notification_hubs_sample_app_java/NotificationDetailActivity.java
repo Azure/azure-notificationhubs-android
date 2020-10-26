@@ -45,7 +45,7 @@ public class NotificationDetailActivity extends AppCompatActivity {
         if(info.hasExtra(INTENT_BODY_KEY)) {
             bodyValue.setText(info.getStringExtra(INTENT_BODY_KEY));
         } else {
-            bodyValue.setText(info.getStringExtra(INTENT_BODY_KEY));
+            bodyValue.setText(this.getString(R.string.notification_no_body));
         }
 
         final LinearLayout detailContent = findViewById(R.id.detail_content);
