@@ -88,7 +88,7 @@ applications.
 | Recipe | Platform | Languages |
 | :----: | :------: | :-------: |
 | Device Properties | N/A | [Java](./notification-hubs-sample-app-java/src/main/java/com/example/notification_hubs_sample_app_java/cookbook/DevicePropertyProvider.java), [Kotlin](./notification-hubs-sample-app-kotlin/src/main/java/com/example/notification_hubs_sample_app_kotlin/cookbook/DevicePropertyProvider.kt) |
-| NotificationDisplayer | Firebase | [Java](./notifcation-hubs-sample-app-java/src/fcm/java/com/example/notification_hubs_sample_app_java/cookbook/NotificationDisplayer.java) |
+| NotificationDisplayer | Firebase | [Java](./notification-hubs-sample-app-java/src/fcm/java/com/example/notification_hubs_sample_app_java/cookbook/NotificationDisplayer.java) |
 
 ## Repository Contents
 
