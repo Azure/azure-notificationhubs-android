@@ -1,7 +1,7 @@
 <p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo_300x300.png"/></a></p>
 
 # Azure Notification Hubs - Android SDK
-[![Build Status](https://dev.azure.com/msazure/NotificationHubs/_apis/build/status/unknown-compliance/azure-notificationhubs-android?branchName=main)](https://dev.azure.com/msazure/NotificationHubs/_build/latest?definitionId=152884&branchName=main) [![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg) ](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
+[![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg) ](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
 
 Azure Notification Hubs (ANH) provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
