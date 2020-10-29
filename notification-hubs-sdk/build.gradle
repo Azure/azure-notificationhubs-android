@@ -33,10 +33,6 @@ android {
             dimension "push-provider"
             versionNameSuffix "-fcm"
         }
-        adm {
-            dimension "push-provider"
-            versionNameSuffix "-adm"
-        }
         baidu {
             dimension "push-provider"
             versionNameSuffix "-baidu"
