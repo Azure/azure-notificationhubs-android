@@ -1,4 +1,4 @@
-package com.example.notification_hubs_sample_app_java.ui.main;
+package com.example.notification_hubs_sample_app_java;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,9 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.notification_hubs_sample_app_java.NotificationDetailActivity;
-import com.example.notification_hubs_sample_app_java.R;
-import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
+
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,10 @@ public class NotificationListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.notification_list_fragment, container, false);
 
-        final NotificationDisplayAdapter notificationDisplayAdapter = new NotificationDisplayAdapter();
-        final Observer<List<NotificationMessage>> notificationsObserver = notificationMessages -> {
+        final NotificationDisplayAdapter notificationDisplayAdapter = new NotificationDisplayAdapter(
+                this.getString(R.string.notification_untitled),
+                this.getString(R.string.notification_no_body));
+        final Observer<List<RemoteMessage>> notificationsObserver = notificationMessages -> {
             notificationDisplayAdapter.setNotifications(notificationMessages);
             Toast.makeText(this.getContext(), R.string.notification_received_message, Toast.LENGTH_SHORT).show();
         };
@@ -55,8 +56,11 @@ public class NotificationListFragment extends Fragment {
 
         notificationDisplayAdapter.setClickListener(message -> {
             Intent i  = new Intent(this.getActivity(), NotificationDetailActivity.class);
-            i.putExtra(NotificationDetailActivity.INTENT_TITLE_KEY, message.getTitle());
-            i.putExtra(NotificationDetailActivity.INTENT_BODY_KEY, message.getBody());
+            RemoteMessage.Notification notification = message.getNotification();
+            if(notification != null){
+                i.putExtra(NotificationDetailActivity.INTENT_TITLE_KEY, notification.getTitle());
+                i.putExtra(NotificationDetailActivity.INTENT_BODY_KEY, notification.getBody());
+            }
             for (Map.Entry<String, String> row : message.getData().entrySet()) {
                 i.putExtra(row.getKey(), row.getValue());
             }

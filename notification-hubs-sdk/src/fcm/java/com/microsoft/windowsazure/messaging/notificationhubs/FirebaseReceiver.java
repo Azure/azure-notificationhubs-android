@@ -70,7 +70,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        mHub.relayMessage(getNotificationMessage(remoteMessage));
+        mHub.getInstanceListener().onPushNotificationReceived(this.getApplicationContext(), remoteMessage);
     }
 
     /**
@@ -81,24 +81,5 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         mHub.setPushChannel(s);
-    }
-
-    /**
-     * Converts from a RemoteMessage to a {@link BasicNotificationMessage}.
-     * @param remoteMessage The message intended for this device, as delivered by Firebase.
-     * @return A fully instantiated {@link BasicNotificationMessage}.
-     */
-    static BasicNotificationMessage getNotificationMessage(RemoteMessage remoteMessage) {
-        RemoteMessage.Notification notification = remoteMessage.getNotification();
-        String title = null;
-        String body = null;
-        if (notification != null) {
-            title = notification.getTitle();
-            body = notification.getBody();
-        }
-        return new BasicNotificationMessage(
-                title,
-                body,
-                remoteMessage.getData());
     }
 }

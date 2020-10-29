@@ -24,6 +24,14 @@ android {
         buildConfigField("String", "hubListenConnectionString", "\"${System.getenv('APP_NH_CONNECTION_STRING') ?: secretsProperties['APP_NH_CONNECTION_STRING']}\"")
     }
 
+    flavorDimensions "push-provider"
+    productFlavors {
+        fcm {
+            dimension "push-provider"
+            applicationIdSuffix ".fcm"
+        }
+    }
+
     signingConfigs {
         releaseSigningConfig {
             storeFile rootProject.file("notification-hubs-sample-app-java/notification-hubs-sample-app.jks")
@@ -43,14 +51,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    flavorDimensions "push-provider"
-    productFlavors {
-        fcm {
-            dimension "push-provider"
-            applicationIdSuffix ".fcm"
-        }
     }
 }
 

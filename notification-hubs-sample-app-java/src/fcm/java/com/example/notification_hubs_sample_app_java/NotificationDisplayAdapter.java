@@ -1,4 +1,4 @@
-package com.example.notification_hubs_sample_app_java.ui.main;
+package com.example.notification_hubs_sample_app_java;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,26 +9,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.notification_hubs_sample_app_java.R;
-import com.microsoft.windowsazure.messaging.notificationhubs.NotificationMessage;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationDisplayAdapter extends RecyclerView.Adapter<NotificationDisplayAdapter.ViewHolder> {
 
-    private List<NotificationMessage> mNotifications;
+    private List<RemoteMessage> mNotifications;
     private NotificationClickListener mClickListener;
+    private final String mDefaultTitle;
+    private final String mDefaultMessage;
 
-    public NotificationDisplayAdapter() {
-        this(new ArrayList<NotificationMessage>(0));
+    public NotificationDisplayAdapter(String defaultTitle, String defaultMessage) {
+        this(defaultTitle, defaultMessage, new ArrayList<RemoteMessage>(0));
     }
 
-    public NotificationDisplayAdapter(List<NotificationMessage> initialList) {
+    public NotificationDisplayAdapter(String defaultTitle, String defaultMessage, List<RemoteMessage> initialList) {
         mNotifications = initialList;
         mClickListener = message -> {
             // Intentionally Left Blank
         };
+        mDefaultTitle = defaultTitle;
+        mDefaultMessage = defaultMessage;
     }
 
     /**
@@ -58,7 +61,7 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
         return new ViewHolder(v);
     }
 
-    public void setNotifications(List<NotificationMessage> notifications) {
+    public void setNotifications(List<RemoteMessage> notifications) {
         mNotifications = notifications;
         notifyDataSetChanged();
     }
@@ -89,9 +92,15 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        NotificationMessage entry = mNotifications.get(position);
-        holder.mTitle.setText(entry.getTitle());
-        holder.mBody.setText(entry.getBody());
+        RemoteMessage entry = mNotifications.get(position);
+
+        RemoteMessage.Notification notification = entry.getNotification();
+
+        if (notification != null) {
+            holder.mTitle.setText(notification.getTitle());
+            holder.mBody.setText(notification.getBody());
+        }
+
         holder.mDataCardinality.setText(String.valueOf(entry.getData().size()));
     }
 
@@ -116,13 +125,13 @@ public class NotificationDisplayAdapter extends RecyclerView.Adapter<Notificatio
             mBody = (TextView) itemView.findViewById(R.id.bodyValue);
             mDataCardinality = (TextView) itemView.findViewById(R.id.dataCardinalityValue);
             itemView.setOnClickListener(v -> {
-                NotificationMessage clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
+                RemoteMessage clicked = NotificationDisplayAdapter.this.mNotifications.get(getAdapterPosition());
                 NotificationDisplayAdapter.this.mClickListener.onNotificationClicked(clicked);
             });
         }
     }
 
     public interface NotificationClickListener {
-        void onNotificationClicked(NotificationMessage message);
+        void onNotificationClicked(RemoteMessage message);
     }
 }
