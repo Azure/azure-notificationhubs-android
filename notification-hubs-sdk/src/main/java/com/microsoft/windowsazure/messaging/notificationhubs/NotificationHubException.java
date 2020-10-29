@@ -13,7 +13,7 @@ public class NotificationHubException extends Exception {
     private final Map<String, String> mResponseHeaders;
 
     NotificationHubException(NetworkResponse networkResponse) {
-        super("Azure Notification Hub rejected the request.");
+        super("Azure Notification Hub request failed with status " + networkResponse.statusCode + ": " + new String(networkResponse.data));
         mResponseBody = networkResponse.data;
         mResponseStatusCode = networkResponse.statusCode;
         mResponseHeaders = networkResponse.headers;
