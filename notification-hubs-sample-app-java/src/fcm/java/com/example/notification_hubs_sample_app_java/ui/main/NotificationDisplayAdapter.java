@@ -1,4 +1,4 @@
-package com.example.notification_hubs_sample_app_java;
+package com.example.notification_hubs_sample_app_java.ui.main;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notification_hubs_sample_app_java.R;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;

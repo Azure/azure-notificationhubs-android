@@ -30,6 +30,10 @@ android {
             dimension "push-provider"
             applicationIdSuffix ".fcm"
         }
+
+        general {
+            dimension "push-provider"
+        }
     }
 
     signingConfigs {

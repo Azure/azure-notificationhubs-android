@@ -1,4 +1,4 @@
-package com.example.notification_hubs_sample_app_java;
+package com.example.notification_hubs_sample_app_java.ui.main;
 
 import android.app.Notification;
 

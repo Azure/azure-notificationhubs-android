@@ -1,4 +1,4 @@
-package com.example.notification_hubs_sample_app_java;
+package com.example.notification_hubs_sample_app_java.ui.main;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.example.notification_hubs_sample_app_java.NotificationDetailActivity;
+import com.example.notification_hubs_sample_app_java.R;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.List;
