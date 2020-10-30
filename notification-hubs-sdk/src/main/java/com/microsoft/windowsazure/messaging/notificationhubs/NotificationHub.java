@@ -108,8 +108,9 @@ public final class NotificationHub {
                 hubName,
                 connectionString);
         InstallationAdapter debouncer = new DebounceInstallationAdapter(application, client);
+        InstallationAdapter pushChannelAdapter = new PushChannelValidationAdapter(debouncer);
 
-        start(application, debouncer);
+        start(application, pushChannelAdapter);
     }
 
     /**
