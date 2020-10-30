@@ -8,7 +8,7 @@ public class PushChannelValidationAdapter implements InstallationAdapter {
     /**
      * The number of save attempts to ignore, if no value is specified to the constructor.
      */
-    public static final int DEFAULT_MAX_RETRIES = 100;
+    public static final int DEFAULT_MAX_RETRIES = 20;
 
     private final InstallationAdapter mDecoratedAdapter;
     private final int mMaxRetries;
