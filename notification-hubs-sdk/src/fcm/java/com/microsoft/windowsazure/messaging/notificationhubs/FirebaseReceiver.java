@@ -48,7 +48,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
 
         mHub.registerApplication(this.getApplication());
 
-        if (mHub.getPushChannel() == null) {
+        if (mHub.getInstancePushChannel() == null) {
             FirebaseInstanceId.getInstance()
                     .getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -58,7 +58,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
                                 Log.e("ANH", "unable to fetch FirebaseInstanceId");
                                 return;
                             }
-                            mHub.setPushChannel(task.getResult().getToken());
+                            mHub.setInstancePushChannel(task.getResult().getToken());
                         }
                     });
         }
@@ -80,6 +80,6 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(@NonNull String s) {
-        mHub.setPushChannel(s);
+        mHub.setInstancePushChannel(s);
     }
 }
