@@ -68,7 +68,7 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.2'
     testImplementation 'org.json:json:20200518'
     testImplementation 'org.powermock:powermock-api-mockito:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4-rule-agent:2.0.7'
 }
 
