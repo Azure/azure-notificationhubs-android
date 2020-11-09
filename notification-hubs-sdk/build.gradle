@@ -129,6 +129,7 @@ afterEvaluate {
 
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
+    source += android.sourceSets.fcm.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.javadocDeps
 
