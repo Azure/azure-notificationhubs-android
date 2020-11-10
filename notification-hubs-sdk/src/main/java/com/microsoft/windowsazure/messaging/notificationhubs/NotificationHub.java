@@ -163,6 +163,10 @@ public final class NotificationHub {
         mListener = listener;
     }
 
+    NotificationListener getInstanceListener() {
+        return mListener;
+    }
+
     public static void setInstallationSavedListener(InstallationAdapter.Listener listener) {
         getInstance().setInstanceInstallationSavedListener(listener);
     }
@@ -305,24 +309,6 @@ public final class NotificationHub {
 
         mIdAssignmentVisitor.setInstallationId(id);
         beginInstanceInstallationUpdate();
-    }
-
-    /**
-     * Informs this {@link NotificationHub} that a new message has been delivered.
-     * @param message The newly received message.
-     */
-    static void relayMessage(NotificationMessage message) {
-        getInstance().relayInstanceMessage(message);
-    }
-
-    /**
-     * Informs this {@link NotificationHub} that a new message has been delivered.
-     * @param message The newly received message.
-     */
-    void relayInstanceMessage(NotificationMessage message) {
-        if (mListener != null) {
-            mListener.onPushNotificationReceived(mApplication, message);
-        }
     }
 
     /**

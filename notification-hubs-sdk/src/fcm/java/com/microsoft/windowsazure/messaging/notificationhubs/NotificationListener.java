@@ -1,6 +1,7 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.content.Context;
+import com.google.firebase.messaging.RemoteMessage;
 
 public interface NotificationListener {
     /**
@@ -10,5 +11,5 @@ public interface NotificationListener {
      * @param context A reference to the {@link android.app.Application} context that
      * @param message Notification message
      */
-    void onPushNotificationReceived(Context context, NotificationMessage message);
+    void onPushNotificationReceived(Context context, RemoteMessage message);
 }

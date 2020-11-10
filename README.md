@@ -80,6 +80,17 @@ _MainActivity.java:_
 NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
 ```
 
+## Cookbook
+
+There's some functionality that we believe a lot of our users will want, but everybody will need tweak
+or customize for their own needs. Our solution? Canned classes that you can copy/paste into your
+applications.
+
+| Recipe | Platform | Languages |
+| :----: | :------: | :-------: |
+| Device Properties | N/A | [Java](./notification-hubs-sample-app-java/src/main/java/com/example/notification_hubs_sample_app_java/cookbook/DevicePropertyProvider.java), [Kotlin](./notification-hubs-sample-app-kotlin/src/main/java/com/example/notification_hubs_sample_app_kotlin/cookbook/DevicePropertyProvider.kt) |
+| NotificationDisplayer | Firebase | [Java](./notification-hubs-sample-app-java/src/fcm/java/com/example/notification_hubs_sample_app_java/cookbook/NotificationDisplayer.java) |
+
 ## Repository Contents
 
 ### [`com.microsoft.windowsazure.messaging.notificationhubs`](./notification-hubs-sdk/src/main/java/com/microsoft/windowsazure/messaging/notificationhubs)
@@ -128,3 +139,4 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+

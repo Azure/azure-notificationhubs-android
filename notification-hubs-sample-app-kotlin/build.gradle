@@ -36,6 +36,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    flavorDimensions 'push-provider'
+    productFlavors {
+        fcm {
+            dimension 'push-provider'
+            applicationIdSuffix '.fcm'
+        }
+    }
 }
 
 dependencies {

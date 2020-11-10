@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 
 def secretsProperties = new Properties()
@@ -23,6 +24,18 @@ android {
         buildConfigField("String", "hubListenConnectionString", "\"${System.getenv('APP_NH_CONNECTION_STRING') ?: secretsProperties['APP_NH_CONNECTION_STRING']}\"")
     }
 
+    flavorDimensions "push-provider"
+    productFlavors {
+        fcm {
+            dimension "push-provider"
+            applicationIdSuffix ".fcm"
+        }
+
+        general {
+            dimension "push-provider"
+        }
+    }
+
     signingConfigs {
         releaseSigningConfig {
             storeFile rootProject.file("notification-hubs-sample-app-java/notification-hubs-sample-app.jks")
@@ -36,7 +49,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseSigningConfig
         }
     }
 

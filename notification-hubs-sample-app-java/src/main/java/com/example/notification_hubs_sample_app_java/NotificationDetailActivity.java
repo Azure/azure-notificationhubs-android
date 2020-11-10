@@ -35,10 +35,18 @@ public class NotificationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification_detail);
 
         final TextView titleValue = findViewById(R.id.detailTitleValue);
-        titleValue.setText(info.getStringExtra(INTENT_TITLE_KEY));
+        if(info.hasExtra(INTENT_TITLE_KEY)) {
+            titleValue.setText(info.getStringExtra(INTENT_TITLE_KEY));
+        } else {
+            titleValue.setText(this.getString(R.string.notification_untitled));
+        }
 
         final TextView bodyValue = findViewById(R.id.detail_body_view);
-        bodyValue.setText(info.getStringExtra(INTENT_BODY_KEY));
+        if(info.hasExtra(INTENT_BODY_KEY)) {
+            bodyValue.setText(info.getStringExtra(INTENT_BODY_KEY));
+        } else {
+            bodyValue.setText(this.getString(R.string.notification_no_body));
+        }
 
         final LinearLayout detailContent = findViewById(R.id.detail_content);
         for (String key : getDataKeys(info)) {

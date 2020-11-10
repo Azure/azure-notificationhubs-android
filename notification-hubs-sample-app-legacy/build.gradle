@@ -26,6 +26,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions 'push-provider'
+    productFlavors {
+        fcm {
+            dimension 'push-provider'
+        }
+    }
 }
 
 dependencies {
