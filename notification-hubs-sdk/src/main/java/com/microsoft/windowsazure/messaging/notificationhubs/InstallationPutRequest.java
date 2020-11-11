@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.microsoft.windowsazure.messaging.BuildConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -135,8 +136,9 @@ class InstallationPutRequest extends JsonObjectRequest {
      * Generates the User-Agent
      */
     private static String getUserAgent() {
+        String apiOrigin = "AndroidSdkV1FcmV" + BuildConfig.VERSION_NAME;
         String userAgent = String.format("NOTIFICATIONHUBS/%s (api-origin=%s; os=%s; os_version=%s;)",
-                API_VERSION, "AndroidSdkV1FcmV1.1.2", "Android", Build.VERSION.RELEASE);
+                API_VERSION, apiOrigin, "Android", Build.VERSION.RELEASE);
 
         return userAgent;
     }
