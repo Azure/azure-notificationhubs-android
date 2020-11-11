@@ -138,6 +138,7 @@ task androidJavadocs(type: Javadoc) {
     }
 
     exclude '**/*.md'
+    exclude '**/InstallationPutRequest.java'
 
     def capturedOutput = []
     def listener = { capturedOutput << it } as StandardOutputListener
