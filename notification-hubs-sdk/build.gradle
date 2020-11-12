@@ -117,6 +117,13 @@ afterEvaluate {
 
                 from components.generalRelease
             }
+            fcm(MavenPublication) {
+                groupId = GROUP_ID
+                artifactId = PUBLISH_ARTIFACT_ID + '-fcm'
+                version = VERSION
+
+                from components.fcmRelease
+            }
         }
         repositories {
             maven {

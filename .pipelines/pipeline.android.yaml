@@ -73,7 +73,7 @@ steps:
   displayName: 'Create assets for publication'
   inputs:
     options: '-PisCI="true"'
-    tasks: 'makeJar notification-hubs-sdk:publishGeneralPublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
+    tasks: 'makeJar notification-hubs-sdk:publishGeneralPublicationToBuildDirRepository notification-hubs-sdk:publishFcmPublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
     publishJUnitResults: false
 
 
