@@ -110,12 +110,12 @@ makeJar.dependsOn(clearJar, build)
 afterEvaluate {
     publishing {
         publications {
-            release(MavenPublication) {
+            general(MavenPublication) {
                 groupId = GROUP_ID
                 artifactId = PUBLISH_ARTIFACT_ID
                 version = VERSION
 
-                from components.fcmRelease
+                from components.generalRelease
             }
         }
         repositories {
