@@ -23,7 +23,12 @@ Once you have a Firebase project, and your application registered, make sure to 
 
 ### Reference with Gradle
 
-This library is published on [JFrog Bintray](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK#files/com/microsoft/azure/notification-hubs-android-sdk). Adding a reference to this project is as simple as editting two files in your project:
+There are two SKUs of this library published on [Bintray](https://bintray.com/microsoftazuremobile/SDK/):
+
+- _General:_ [notification-hubs-android-sdk](https://bintray.com/beta/#/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK?tab=overview)
+- _FCM Optimized:_ [notification-hubs-android-sdk-fcm](https://bintray.com/beta/#/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK-fcm?tab=overview).
+
+Adding a reference to either project is as simple as editting two files in your project:
 
 _{project-root}/build.gradle:_
 
@@ -48,6 +53,8 @@ _{project-root}/{your-module}/build.gradle:_
 dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
     implementation 'com.microsoft.azure:notification-hubs-android-sdk:1.1.3'
+    // optionally, use the fcm optimized SKU instead:
+    // implementation 'com.microsoft.azure:notification-hubs-android-sdk-fcm:1.1.3'
 }
 ```
 
