@@ -65,7 +65,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.android.volley:volley:1.1.1'
     fcmApi 'com.google.firebase:firebase-messaging:21.0.0'
-    generalApi 'com.google.firebase:firebase-messaging:20.3.0'
+    generalApi 'com.google.firebase:firebase-messaging:21.0.0'
 
     javadocDeps 'com.android.support:support-annotations:28.0.0'
 
@@ -170,12 +170,12 @@ task androidJavadocs(type: Javadoc) {
 }
 
 task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from androidJavadocs.destinationDir
 }
 
 task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from android.sourceSets.main.java.srcDirs
 }
 
