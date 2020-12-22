@@ -7,6 +7,8 @@ if (secretsPropertiesFile.exists()) {
     secretsProperties.load(new FileInputStream(secretsPropertiesFile))
 }
 
+boolean USE_GOOGLE_SERVICES
+
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
@@ -29,10 +31,18 @@ android {
         fcm {
             dimension "push-provider"
             applicationIdSuffix ".fcm"
+            USE_GOOGLE_SERVICES = true
         }
 
         general {
             dimension "push-provider"
+            USE_GOOGLE_SERVICES = true
+        }
+
+        adm {
+            dimension "push-provider"
+            applicationIdSuffix "adm"
+            USE_GOOGLE_SERVICES = false
         }
     }
 
@@ -73,4 +83,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
-apply plugin: 'com.google.gms.google-services'
+if(USE_GOOGLE_SERVICES) {
+    apply plugin: 'com.google.gms.google-services'
+}
