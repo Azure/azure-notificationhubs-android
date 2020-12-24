@@ -47,7 +47,6 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
-    useLibrary 'android.test.runner'
     useLibrary 'android.test.base'
 }
 
