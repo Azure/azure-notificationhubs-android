@@ -6,9 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.installations.FirebaseInstallations;
-import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -49,18 +48,17 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
 
         mHub.registerApplication(this.getApplication());
 
-        FirebaseInstallations.getInstance().getToken(true)
-            .addOnCompleteListener(new OnCompleteListener<InstallationTokenResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstallationTokenResult> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("ANH", "unable to fetch FirebaseInstanceId");
-                    return;
+        FirebaseInstanceId.getInstance().getInstanceId()
+            .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                @Override
+                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("ANH", "unable to fetch FirebaseInstanceId");
+                        return;
+                     }
+                     mHub.setInstancePushChannel(task.getResult().getToken());
                 }
-
-                mHub.setInstancePushChannel(task.getResult().getToken());
-                }
-                });
+            });
     }
 
     /**
@@ -79,6 +77,7 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(@NonNull String s) {
+        Log.i("ANH", "A new token has been issued by Firebase");
         mHub.setInstancePushChannel(s);
     }
 }

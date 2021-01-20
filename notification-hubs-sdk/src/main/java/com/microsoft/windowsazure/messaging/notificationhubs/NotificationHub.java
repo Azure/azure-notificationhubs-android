@@ -259,11 +259,9 @@ public final class NotificationHub {
 
     void setInstancePushChannel(String token) {
         if (token.equals(mPushChannelVisitor.getPushChannel())) {
-            Log.i("ANH", "requested push channel matches previous record, no operation necessary");
             return;
         }
         mPushChannelVisitor.setPushChannel(token);
-        Log.i("ANH", "updated local record of push channel");
         beginInstanceInstallationUpdate();
     }
 
