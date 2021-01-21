@@ -47,21 +47,6 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
         super.onCreate();
 
         mHub.registerApplication(this.getApplication());
-
-        if (mHub.getInstancePushChannel() == null) {
-            FirebaseInstanceId.getInstance()
-                    .getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            if (!task.isSuccessful()) {
-                                Log.e("ANH", "unable to fetch FirebaseInstanceId");
-                                return;
-                            }
-                            mHub.setInstancePushChannel(task.getResult().getToken());
-                        }
-                    });
-        }
     }
 
     /**
