@@ -91,6 +91,8 @@ public final class NotificationHub {
 
         mUserIdVisitor = new UserIdVisitor(mApplication);
         useInstanceVisitor(mUserIdVisitor);
+
+        NotificationHubExtension.fetchPushChannel(this);
     }
 
     /**
