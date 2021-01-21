@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -49,18 +50,16 @@ public final class FirebaseReceiver extends FirebaseMessagingService {
         mHub.registerApplication(this.getApplication());
 
         if (mHub.getInstancePushChannel() == null) {
-            FirebaseInstanceId.getInstance()
-                    .getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            if (!task.isSuccessful()) {
-                                Log.e("ANH", "unable to fetch FirebaseInstanceId");
-                                return;
-                            }
-                            mHub.setInstancePushChannel(task.getResult().getToken());
-                        }
-                    });
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete(@NonNull Task<String> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("ANH", "unable to fetch FirebaseInstanceId");
+                        return;
+                    }
+                    mHub.setInstancePushChannel(task.getResult());
+                }
+            });
         }
     }
 
