@@ -121,7 +121,8 @@ steps:
 
 - bash: |
     # Get version
-    VERSION = $(<version.txt)
+    VERSION = `cat version.txt`
+    echo "Version: $VERSION"
     
     # Get AZCopy
     wget -O azcopy_v10.zip https://aka.ms/downloadazcopy-v10-mac && unzip azcopy_v10.zip
