@@ -121,7 +121,7 @@ steps:
 
 - bash: |
     # Get version
-    VERSION = `cat version.txt`
+    VERSION = `cat ..\version.txt`
     echo "Version: $VERSION"
     
     # Get AZCopy
