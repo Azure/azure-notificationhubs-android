@@ -120,19 +120,27 @@ steps:
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - bash: |
+    # Get version
     cd ./NotificationHubs
     VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
     cd ..
     
+    # Get AZCopy
     wget -O azcopy_v10.zip https://aka.ms/downloadazcopy-v10-mac && unzip azcopy_v10.zip
     mv azcopy_darwin_*/azcopy azcopy
     
+    # Log in
     export AZCOPY_SPA_CLIENT_SECRET=$(azuresdkpartnerdrops-service-principal-key)
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
+    # Copy to Blob Storage
     SOURCE_PATH="$(Build.ArtifactStagingDirectory)/$(artifactVersion)"
     BLOB_PATH="azure-notificationhubs/java"
     DEST_URL=https://azuresdkpartnerdrops.blob.core.windows.net/drops/$BLOB_PATH
+    
+    echo "Source Path: $SOURCE_PATH"
+    echo "Blob Path: $BLOB_PATH"
+    echo "Destination URL: $DEST_URL"
     
     azcopy copy $SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
