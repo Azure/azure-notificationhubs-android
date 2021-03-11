@@ -133,8 +133,8 @@ steps:
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Copy to Blob Storage
-    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/$(VERSION)"
-    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/$(VERSION)"
+    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/**/*.*"
+    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/**/*.*"
     BLOB_PATH="azure-notificationhubs/java"
     DEST_URL=https://azuresdkpartnerdrops.blob.core.windows.net/drops/$BLOB_PATH
     
