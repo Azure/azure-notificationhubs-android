@@ -121,9 +121,7 @@ steps:
 
 - bash: |
     # Get version
-    cd ./NotificationHubs
-    VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-    cd ..
+    VERSION = $(<version.txt)
     
     # Get AZCopy
     wget -O azcopy_v10.zip https://aka.ms/downloadazcopy-v10-mac && unzip azcopy_v10.zip
@@ -134,13 +132,16 @@ steps:
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Copy to Blob Storage
-    SOURCE_PATH="$(Build.ArtifactStagingDirectory)/$(artifactVersion)"
+    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/$(VERSION)"
+    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/$(VERSION)"
     BLOB_PATH="azure-notificationhubs/java"
     DEST_URL=https://azuresdkpartnerdrops.blob.core.windows.net/drops/$BLOB_PATH
     
-    echo "Source Path: $SOURCE_PATH"
+    echo "Source Path: $ANDROID_SOURCE_PATH"
+    echo "Source Path: $FCM_SOURCE_PATH"
     echo "Blob Path: $BLOB_PATH"
     echo "Destination URL: $DEST_URL"
     
-    azcopy copy $SOURCE_PATH $DEST_URL --recursive
+    azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
+    azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
