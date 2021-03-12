@@ -139,11 +139,6 @@ afterEvaluate {
                             url = 'https://github.com/mpodwysocki'
                             organization = 'Microsoft Corporation'
                             organizationUrl = 'http://www.microsoft.com/'
-                            roles {
-                                role {
-                                    developer
-                                }
-                            }
                         }
                     }
                     scm {
@@ -182,11 +177,6 @@ afterEvaluate {
                             url = 'https://github.com/mpodwysocki'
                             organization = 'Microsoft Corporation'
                             organizationUrl = 'http://www.microsoft.com/'
-                            roles {
-                                role {
-                                    developer
-                                }
-                            }
                         }
                     }
                     scm {
