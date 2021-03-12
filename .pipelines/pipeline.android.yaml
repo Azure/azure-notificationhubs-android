@@ -13,39 +13,39 @@ pool:
   demands: java
 
 steps:
-##- task: Gradle@2
-##  displayName: '(Non-Emulator) SDK Tests'
-##  inputs:
-##    options: '-p notification-hubs-sdk'
-##    tasks: 'cleanTest test '
+- task: Gradle@2
+  displayName: '(Non-Emulator) SDK Tests'
+  inputs:
+    options: '-p notification-hubs-sdk'
+    tasks: 'cleanTest test '
 
 - bash: |
    #!/usr/bin/env bash
    
-   ##set -ev
+   set -ev
    
    # List available system-images images
-   ##$ANDROID_HOME/tools/bin/sdkmanager --list | grep system-images
+   $ANDROID_HOME/tools/bin/sdkmanager --list | grep system-images
    
-   ##SYSTEM_IMAGE='system-images;android-29;google_apis;x86'
+   SYSTEM_IMAGE='system-images;android-29;google_apis;x86'
    
    # Install AVD files
-   ##echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install ${SYSTEM_IMAGE}
+   echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install ${SYSTEM_IMAGE}
    
    # Create emulator
-   ##echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k ${SYSTEM_IMAGE} --force
+   echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k ${SYSTEM_IMAGE} --force
    
-   ##$ANDROID_HOME/emulator/emulator -list-avds
+   $ANDROID_HOME/emulator/emulator -list-avds
    
-   ##echo "Starting emulator"
+   echo "Starting emulator"
    
    # Start emulator in background
-   ##nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -no-snapshot > /dev/null 2>&1 &
-   ##$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+   nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -no-snapshot > /dev/null 2>&1 &
+   $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
    
-   ##$ANDROID_HOME/platform-tools/adb devices
+   $ANDROID_HOME/platform-tools/adb devices
    
-   ##echo "Emulator started"
+   echo "Emulator started"
   displayName: 'Install and Run Android Emulator'
 
 - task: DownloadSecureFile@1
@@ -62,12 +62,12 @@ steps:
       cp $(googleServices.secureFilePath) ./notification-hubs-sample-app-legacy
       cp $(googleServices.secureFilePath) ./notification-hubs-sample-app-java
 
-##- task: Gradle@2
-##  displayName: 'Build and Test Sample App'
-##  inputs:
-##    options: '-PisCI="true"'
-##    tasks: 'notification-hubs-sample-app-java:test notification-hubs-sample-app-java:connectedAndroidTest'
-##    publishJUnitResults: false
+- task: Gradle@2
+  displayName: 'Build and Test Sample App'
+  inputs:
+    options: '-PisCI="true"'
+    tasks: 'notification-hubs-sample-app-java:test notification-hubs-sample-app-java:connectedAndroidTest'
+    publishJUnitResults: false
 
 - task: Gradle@2
   displayName: 'Create assets for publication'
@@ -77,55 +77,47 @@ steps:
     publishJUnitResults: false
 
 
-##- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-##  displayName: 'ESRP CodeSigning'
-##  inputs:
-##    ConnectedServiceName: 'ESRP CodeSigning'
-##    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
-##    Pattern: '*.jar, *.aar'
-##    signConfigType: inlineSignParams
-##    inlineOperation: |
-##     [
-##         {
-##             "keyCode": "CP-447347-Java",
-##             "operationSetCode": "JavaSign",
-##             "parameters": [
-##                 {
-##                     "parameterName": "SigAlg",
-##                     "parameterValue": "SHA256withRSA"
-##                 },
-##                 {
-##                     "parameterName": "TimeStamp",
-##                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
-##                 }
-##             ],
-##             "toolName": "Jarsigner.exe",
-##             "toolVersion": "V1.8.112"
-##         },
-##         {
-##             "keyCode": "CP-447347-Java",
-##             "operationSetCode": "JavaVerify",
-##             "parameters": null,
-##             "toolName": "Jarsigner.exe",
-##             "toolVersion": "V1.8.112"
-##         }
-##     ]
-##  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
+  displayName: 'ESRP CodeSigning'
+  inputs:
+    ConnectedServiceName: 'ESRP CodeSigning'
+    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
+    Pattern: '*.jar, *.aar'
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+         {
+             "keyCode": "CP-447347-Java",
+             "operationSetCode": "JavaSign",
+             "parameters": [
+                 {
+                     "parameterName": "SigAlg",
+                     "parameterValue": "SHA256withRSA"
+                 },
+                 {
+                     "parameterName": "TimeStamp",
+                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
+                 }
+             ],
+             "toolName": "Jarsigner.exe",
+             "toolVersion": "V1.8.112"
+         },
+         {
+             "keyCode": "CP-447347-Java",
+             "operationSetCode": "JavaVerify",
+             "parameters": null,
+             "toolName": "Jarsigner.exe",
+             "toolVersion": "V1.8.112"
+         }
+     ]
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
-##- task: PublishBuildArtifacts@1
-##  displayName: 'Publish Artifact'
-##  inputs:
-##    PathtoPublish: '$(build.artifactstagingdirectory)'
-##    ArtifactName: /
-##  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
-- bash: |
-    echo "sources"
-    find $(Build.SourcesDirectory) -name '*'
-    echo "staging"
-    find $(Build.StagingDirectory) -name '*'
-    echo "artifacts"
-    find $(Build.ArtifactStagingDirectory) -name '*'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: /
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - bash: |
     # Get AZCopy
@@ -137,11 +129,8 @@ steps:
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Get version
-    VERSION=$(cat "$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
-    cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt
+    VERSION=$(cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
     echo "Version: $VERSION"
-    VERSION2=$(cat /Users/runner/work/1/a/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
-    echo "Version2: $VERSION2"
 
     # Copy to Blob Storage
     ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/$VERSION"
@@ -154,17 +143,6 @@ steps:
     echo "Blob Path: $BLOB_PATH"
     echo "Destination URL: $DEST_URL"
     
-    #azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
-    #azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
+    azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
+    azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
-
-- task: Bash@3
-  displayName: 'Test'
-  inputs:
-    targetType: 'inline'
-    script: |
-      VERSION=$(cat "$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
-      cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt
-      echo "Version: $VERSION"
-      VERSION2=$(cat /Users/runner/work/1/a/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
-      echo "Version2: $VERSION2"
