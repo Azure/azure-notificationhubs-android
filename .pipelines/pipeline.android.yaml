@@ -112,12 +112,16 @@ steps:
      ]
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: /
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+##- task: PublishBuildArtifacts@1
+##  displayName: 'Publish Artifact'
+##  inputs:
+##    PathtoPublish: '$(build.artifactstagingdirectory)'
+##    ArtifactName: /
+##  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+- bash: |
+    ls $(Build.SourcesDirectory)/**/*.*
+    ls $(Build.ArtifactStagingDirectory)/**/*.*
 
 - bash: |
     # Get AZCopy
