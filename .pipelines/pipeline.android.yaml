@@ -120,10 +120,6 @@ steps:
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - bash: |
-    # Get version
-    VERSION = `cat ..\version.txt`
-    echo "Version: $VERSION"
-    
     # Get AZCopy
     wget -O azcopy_v10.zip https://aka.ms/downloadazcopy-v10-mac && unzip azcopy_v10.zip
     mv azcopy_darwin_*/azcopy azcopy
@@ -132,9 +128,13 @@ steps:
     export AZCOPY_SPA_CLIENT_SECRET=$(azuresdkpartnerdrops-service-principal-key)
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
+    # Get version
+    VERSION = `cat $(Build.SourcesDirectory)/com/microsoft/azure/notification-hubs-android/version.txt`
+    echo "Version: $VERSION"
+
     # Copy to Blob Storage
-    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/**/*.*"
-    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/**/*.*"
+    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/$(VERSION)"
+    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/$(VERSION)"
     BLOB_PATH="azure-notificationhubs/java"
     DEST_URL=https://azuresdkpartnerdrops.blob.core.windows.net/drops/$BLOB_PATH
     
