@@ -21,11 +21,11 @@ steps:
 
 - bash: |
     echo "sources"
-    ls $(Build.SourcesDirectory)/**/*.*
+    find $(Build.SourcesDirectory) -name '*'
     echo "staging"
-    ls $(Build.StagingDirectory)/**/*.*
+    find $(Build.StagingDirectory) -name '*'
     echo "artifacts"
-    ls $(Build.ArtifactStagingDirectory)/**/*.*
+    find $(Build.ArtifactStagingDirectory) -name '*'
 
 - bash: |
    #!/usr/bin/env bash
