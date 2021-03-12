@@ -130,7 +130,6 @@ steps:
     
     # Get version
     VERSION=$(cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
-    echo "Version: $VERSION"
 
     # Copy to Blob Storage
     ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/$VERSION"
