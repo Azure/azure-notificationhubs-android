@@ -115,12 +115,84 @@ afterEvaluate {
                 artifactId = PUBLISH_ARTIFACT_ID
                 version = VERSION
 
+                pom {
+                    name = 'Azure Notification Hubs Android Client SDK'
+                    description = 'Azure Notification Hubs Android Client SDK'
+                    url = 'https://github.com/Azure/azure-notificationhubs-android'
+                    licenses {
+                        license {
+                            name = 'Apache License, Version 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribtion = 'repo'
+                            comments = 'A business-friendly OSS license'
+                        }
+                    }
+                    organization {
+                        name = 'Microsoft Corporation'
+                        url = 'http://www.microsoft.com/'
+                    }
+                    developers {
+                        developer {
+                            id = 'mpodwysocki'
+                            name = 'Matthew Podwysocki'
+                            email = 'matthewp@microsoft.com'
+                            url = 'https://github.com/mpodwysocki'
+                            organization = 'Microsoft Corporation'
+                            organizationUrl = 'http://www.microsoft.com/'
+                            roles {
+                                role {
+                                    developer
+                                }
+                            }
+                        }
+                    }
+                    scm {
+                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-java-backend'
+                    }
+                }
+
                 from components.generalRelease
             }
             fcm(MavenPublication) {
                 groupId = GROUP_ID
                 artifactId = PUBLISH_ARTIFACT_ID + '-fcm'
                 version = VERSION
+
+                pom {
+                    name = 'Azure Notification Hubs Android Client SDK'
+                    description = 'Azure Notification Hubs Android Client SDK'
+                    url = 'https://github.com/Azure/azure-notificationhubs-android'
+                    licenses {
+                        license {
+                            name = 'Apache License, Version 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribtion = 'repo'
+                            comments = 'A business-friendly OSS license'
+                        }
+                    }
+                    organization {
+                        name = 'Microsoft Corporation'
+                        url = 'http://www.microsoft.com/'
+                    }
+                    developers {
+                        developer {
+                            id = 'mpodwysocki'
+                            name = 'Matthew Podwysocki'
+                            email = 'matthewp@microsoft.com'
+                            url = 'https://github.com/mpodwysocki'
+                            organization = 'Microsoft Corporation'
+                            organizationUrl = 'http://www.microsoft.com/'
+                            roles {
+                                role {
+                                    developer
+                                }
+                            }
+                        }
+                    }
+                    scm {
+                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-java-backend'
+                    }
+                }
 
                 from components.fcmRelease
             }
