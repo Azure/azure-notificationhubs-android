@@ -120,7 +120,11 @@ steps:
 ##  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - bash: |
+    echo "sources"
     ls $(Build.SourcesDirectory)/**/*.*
+    echo "staging"
+    ls $(Build.StagingDirectory)/**/*.*
+    echo "artifacts"
     ls $(Build.ArtifactStagingDirectory)/**/*.*
 
 - bash: |
