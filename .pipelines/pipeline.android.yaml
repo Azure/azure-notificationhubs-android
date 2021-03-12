@@ -131,7 +131,7 @@ steps:
     # Get version
     VERSION = `cat $(Build.SourcesDirectory)/com/microsoft/azure/notification-hubs-android/version.txt`
     echo "Version: $VERSION"
-    ls $(Build.SourcesDirectory)**/*.txt
+    ls $(Build.SourcesDirectory)/**/*.txt
     ls $(Build.ArtifactStagingDirectory)**/*.txt
 
     # Copy to Blob Storage
