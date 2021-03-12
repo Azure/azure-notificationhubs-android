@@ -76,49 +76,6 @@ steps:
     tasks: 'makeJar notification-hubs-sdk:publishGeneralPublicationToBuildDirRepository notification-hubs-sdk:publishFcmPublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
     publishJUnitResults: false
 
-
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-  displayName: 'ESRP CodeSigning'
-  inputs:
-    ConnectedServiceName: 'ESRP CodeSigning'
-    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
-    Pattern: '*.jar, *.aar'
-    signConfigType: inlineSignParams
-    inlineOperation: |
-     [
-         {
-             "keyCode": "CP-447347-Java",
-             "operationSetCode": "JavaSign",
-             "parameters": [
-                 {
-                     "parameterName": "SigAlg",
-                     "parameterValue": "SHA256withRSA"
-                 },
-                 {
-                     "parameterName": "TimeStamp",
-                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
-                 }
-             ],
-             "toolName": "Jarsigner.exe",
-             "toolVersion": "V1.8.112"
-         },
-         {
-             "keyCode": "CP-447347-Java",
-             "operationSetCode": "JavaVerify",
-             "parameters": null,
-             "toolName": "Jarsigner.exe",
-             "toolVersion": "V1.8.112"
-         }
-     ]
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: /
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
 - bash: |
     # Get AZCopy
     wget -O azcopy_v10.zip https://aka.ms/downloadazcopy-v10-mac && unzip azcopy_v10.zip
