@@ -133,8 +133,8 @@ steps:
     echo "Version: $VERSION"
 
     # Copy to Blob Storage
-    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/sdk/$VERSION"
-    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/sdk/$VERSION"
+    ANDROID_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/$VERSION"
+    FCM_SOURCE_PATH="$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk-fcm/$VERSION"
     BLOB_PATH="azure-notificationhubs/java"
     DEST_URL=https://azuresdkpartnerdrops.blob.core.windows.net/drops/$BLOB_PATH
     
