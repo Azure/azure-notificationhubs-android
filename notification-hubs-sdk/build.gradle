@@ -142,7 +142,7 @@ afterEvaluate {
                         }
                     }
                     scm {
-                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-java-backend'
+                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-android'
                     }
                 }
 
@@ -180,7 +180,7 @@ afterEvaluate {
                         }
                     }
                     scm {
-                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-java-backend'
+                        url = 'scm:git:https://github.com/Azure/azure-notificationhubs-android'
                     }
                 }
 
