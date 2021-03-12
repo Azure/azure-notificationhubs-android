@@ -13,11 +13,19 @@ pool:
   demands: java
 
 steps:
-- task: Gradle@2
-  displayName: '(Non-Emulator) SDK Tests'
-  inputs:
-    options: '-p notification-hubs-sdk'
-    tasks: 'cleanTest test '
+##- task: Gradle@2
+##  displayName: '(Non-Emulator) SDK Tests'
+##  inputs:
+##    options: '-p notification-hubs-sdk'
+##    tasks: 'cleanTest test '
+
+- bash: |
+    echo "sources"
+    ls $(Build.SourcesDirectory)/**/*.*
+    echo "staging"
+    ls $(Build.StagingDirectory)/**/*.*
+    echo "artifacts"
+    ls $(Build.ArtifactStagingDirectory)/**/*.*
 
 - bash: |
    #!/usr/bin/env bash
@@ -77,40 +85,40 @@ steps:
     publishJUnitResults: false
 
 
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-  displayName: 'ESRP CodeSigning'
-  inputs:
-    ConnectedServiceName: 'ESRP CodeSigning'
-    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
-    Pattern: '*.jar, *.aar'
-    signConfigType: inlineSignParams
-    inlineOperation: |
-     [
-         {
-             "keyCode": "CP-447347-Java",
-             "operationSetCode": "JavaSign",
-             "parameters": [
-                 {
-                     "parameterName": "SigAlg",
-                     "parameterValue": "SHA256withRSA"
-                 },
-                 {
-                     "parameterName": "TimeStamp",
-                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
-                 }
-             ],
-             "toolName": "Jarsigner.exe",
-             "toolVersion": "V1.8.112"
-         },
-         {
-             "keyCode": "CP-447347-Java",
-             "operationSetCode": "JavaVerify",
-             "parameters": null,
-             "toolName": "Jarsigner.exe",
-             "toolVersion": "V1.8.112"
-         }
-     ]
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+##- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
+##  displayName: 'ESRP CodeSigning'
+##  inputs:
+##    ConnectedServiceName: 'ESRP CodeSigning'
+##    FolderPath: '$(build.artifactstagingdirectory)/com/microsoft/azure'
+##    Pattern: '*.jar, *.aar'
+##    signConfigType: inlineSignParams
+##    inlineOperation: |
+##     [
+##         {
+##             "keyCode": "CP-447347-Java",
+##             "operationSetCode": "JavaSign",
+##             "parameters": [
+##                 {
+##                     "parameterName": "SigAlg",
+##                     "parameterValue": "SHA256withRSA"
+##                 },
+##                 {
+##                     "parameterName": "TimeStamp",
+##                     "parameterValue": "-tsa \"http://sha256timestamp.ws.symantec.com/sha256/timestamp\""
+##                 }
+##             ],
+##             "toolName": "Jarsigner.exe",
+##             "toolVersion": "V1.8.112"
+##         },
+##         {
+##             "keyCode": "CP-447347-Java",
+##             "operationSetCode": "JavaVerify",
+##             "parameters": null,
+##             "toolName": "Jarsigner.exe",
+##             "toolVersion": "V1.8.112"
+##         }
+##     ]
+##  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 ##- task: PublishBuildArtifacts@1
 ##  displayName: 'Publish Artifact'
