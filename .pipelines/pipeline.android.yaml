@@ -20,14 +20,6 @@ steps:
 ##    tasks: 'cleanTest test '
 
 - bash: |
-    echo "sources"
-    find $(Build.SourcesDirectory) -name '*'
-    echo "staging"
-    find $(Build.StagingDirectory) -name '*'
-    echo "artifacts"
-    find $(Build.ArtifactStagingDirectory) -name '*'
-
-- bash: |
    #!/usr/bin/env bash
    
    ##set -ev
@@ -145,7 +137,7 @@ steps:
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Get version
-    VERSION = `cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android/version.txt`
+    VERSION = `cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt`
     echo "Version: $VERSION"
 
     # Copy to Blob Storage
@@ -159,6 +151,6 @@ steps:
     echo "Blob Path: $BLOB_PATH"
     echo "Destination URL: $DEST_URL"
     
-    azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
-    azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
+    #azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
+    #azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
