@@ -137,7 +137,7 @@ steps:
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Get version
-    VERSION = $(cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
+    VERSION = $(cat "$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
     cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt
     echo "Version: $VERSION"
     VERSION2 = $(cat /Users/runner/work/1/a/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
@@ -157,3 +157,14 @@ steps:
     #azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
     #azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
+
+- task: Bash@3
+  displayName: 'Test'
+  inputs:
+    targetType: 'inline'
+    script: |
+      VERSION = $(cat "$(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt")
+      cat $(Build.ArtifactStagingDirectory)/com/microsoft/azure/notification-hubs-android-sdk/version.txt
+      echo "Version: $VERSION"
+      VERSION2 = $(cat /Users/runner/work/1/a/com/microsoft/azure/notification-hubs-android-sdk/version.txt)
+      echo "Version2: $VERSION2"
