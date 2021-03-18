@@ -62,7 +62,7 @@ configurations {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation('com.android.volley:volley') {
-        version{
+        version {
             strictly '[1.0, 2.0['
             prefer '1.2.0'
         }
