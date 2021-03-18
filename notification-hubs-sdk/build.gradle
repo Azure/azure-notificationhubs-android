@@ -61,7 +61,7 @@ configurations {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.0'
 
     def firebaseMessagingVersion = '21.0.1'
     fcmApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
