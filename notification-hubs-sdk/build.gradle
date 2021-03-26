@@ -177,6 +177,30 @@ afterEvaluate {
                     }
                     developers {
                         developer {
+                            id = 'marstr'
+                            name = 'Martin Strobel'
+                            email = 'marstr@microsoft.com'
+                            url = 'https://github.com/marstr'
+                            organization = 'Microsoft Corporation'
+                            organizationUrl = 'http://www.microsoft.com/'
+                        }
+                        developer {
+                            id = 'itoys'
+                            name = 'Artem Egorov'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/itoys'
+                            organization 'Akvelon INC'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
+                        developer {
+                            id = 'olgaakv'
+                            name = 'Olga Chistyakova'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/olgaakv'
+                            organization 'Akvelon INC'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
+                        developer {
                             id = 'mpodwysocki'
                             name = 'Matthew Podwysocki'
                             email = 'matthewp@microsoft.com'
