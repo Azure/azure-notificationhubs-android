@@ -1,7 +1,7 @@
 <p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo_300x300.png"/></a></p>
 
 # Azure Notification Hubs - Android SDK
-[![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg)](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
+[![Download](https://badgen.net/maven/v/maven-central/com.microsoft.azure/notification-hubs-android-sdk)](https://search.maven.org/artifact/com.microsoft.azure/notification-hubs-android-sdk)
 
 > ATTENTION: JFrog is shutting down Bintray, and this library is now published on Maven Central. Read more on our [developer blog](https://devblogs.microsoft.com/azure-notification-hubs/bintray-sunset/).
 
