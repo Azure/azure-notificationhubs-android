@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
-def VERSION = '1.1.5'
+def VERSION = '1.1.6'
+
 def PUBLISH_ARTIFACT_ID = 'notification-hubs-android-sdk'
 def GROUP_ID = 'com.microsoft.azure'
 
@@ -138,6 +139,30 @@ afterEvaluate {
                     }
                     developers {
                         developer {
+                            id = 'marstr'
+                            name = 'Martin Strobel'
+                            email = 'marstr@microsoft.com'
+                            url = 'https://github.com/marstr'
+                            organization = 'Microsoft Corporation'
+                            organizationUrl = 'http://www.microsoft.com/'
+                        }
+                        developer {
+                            id = 'itoys'
+                            name = 'Artem Egorov'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/itoys'
+                            organization = 'Akvelon, Inc.'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
+                        developer {
+                            id = 'olgaakv'
+                            name = 'Olga Chistyakova'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/olgaakv'
+                            organization = 'Akvelon, Inc.'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
+                        developer {
                             id = 'mpodwysocki'
                             name = 'Matthew Podwysocki'
                             email = 'matthewp@microsoft.com'
@@ -175,6 +200,30 @@ afterEvaluate {
                         url = 'http://www.microsoft.com/'
                     }
                     developers {
+                        developer {
+                            id = 'marstr'
+                            name = 'Martin Strobel'
+                            email = 'marstr@microsoft.com'
+                            url = 'https://github.com/marstr'
+                            organization = 'Microsoft Corporation'
+                            organizationUrl = 'http://www.microsoft.com/'
+                        }
+                        developer {
+                            id = 'itoys'
+                            name = 'Artem Egorov'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/itoys'
+                            organization = 'Akvelon, Inc.'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
+                        developer {
+                            id = 'olgaakv'
+                            name = 'Olga Chistyakova'
+                            email = 'v-aegorov@microsoft.com'
+                            url = 'https://github.com/olgaakv'
+                            organization = 'Akvelon, Inc.'
+                            organizationUrl = 'https://akvelon.com/'
+                        }
                         developer {
                             id = 'mpodwysocki'
                             name = 'Matthew Podwysocki'
