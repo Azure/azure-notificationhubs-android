@@ -3,6 +3,8 @@
 # Azure Notification Hubs - Android SDK
 [![Download](https://api.bintray.com/packages/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/images/download.svg)](https://bintray.com/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK/_latestVersion)
 
+> ATTENTION: JFrog is shutting down Bintray, and this library is now published on Maven Central. Read more on our [developer blog](https://devblogs.microsoft.com/azure-notification-hubs/bintray-sunset/).
+
 Azure Notification Hubs (ANH) provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
 ## Getting Started with ANH Android SDK
@@ -38,9 +40,7 @@ _{project-root}/build.gradle:_
 allprojects {
     repositories {
         // Ensure you have the following repsoitory in your "allprojects", "repositories" section.
-        maven {
-            url 'https://dl.bintray.com/microsoftazuremobile/SDK'
-        }
+        mavenCentral()
     }
 }
 ```
