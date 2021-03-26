@@ -151,7 +151,7 @@ afterEvaluate {
                             name = 'Artem Egorov'
                             email = 'v-aegorov@microsoft.com'
                             url = 'https://github.com/itoys'
-                            organization = 'Akvelon INC'
+                            organization = 'Akvelon, Inc.'
                             organizationUrl = 'https://akvelon.com/'
                         }
                         developer {
@@ -159,7 +159,7 @@ afterEvaluate {
                             name = 'Olga Chistyakova'
                             email = 'v-aegorov@microsoft.com'
                             url = 'https://github.com/olgaakv'
-                            organization = 'Akvelon INC'
+                            organization = 'Akvelon, Inc.'
                             organizationUrl = 'https://akvelon.com/'
                         }
                         developer {
@@ -213,7 +213,7 @@ afterEvaluate {
                             name = 'Artem Egorov'
                             email = 'v-aegorov@microsoft.com'
                             url = 'https://github.com/itoys'
-                            organization = 'Akvelon INC'
+                            organization = 'Akvelon, Inc.'
                             organizationUrl = 'https://akvelon.com/'
                         }
                         developer {
@@ -221,7 +221,7 @@ afterEvaluate {
                             name = 'Olga Chistyakova'
                             email = 'v-aegorov@microsoft.com'
                             url = 'https://github.com/olgaakv'
-                            organization = 'Akvelon INC'
+                            organization = 'Akvelon, Inc.'
                             organizationUrl = 'https://akvelon.com/'
                         }
                         developer {
