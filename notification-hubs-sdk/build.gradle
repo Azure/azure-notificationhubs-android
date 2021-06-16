@@ -19,6 +19,9 @@ android {
         versionName VERSION
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        buildConfigField 'int', 'VERSION_CODE', "${versionCode}"
+        buildConfigField 'String', 'VERSION_NAME', "\"${versionName}\""
     }
 
     buildTypes {
@@ -300,3 +303,6 @@ artifacts {
     archives androidJavadocsJar
     archives file : file('build/fcmRelease/' + PUBLISH_ARTIFACT_ID + '-' + version + '.jar')
 }
+
+// https://github.com/gradle/gradle/issues/14889
+tasks.register("prepareKotlinBuildScriptModel") { }
