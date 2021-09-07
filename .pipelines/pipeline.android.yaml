@@ -76,6 +76,7 @@ steps:
     options: '-PisCI="true"'
     tasks: 'makeJar notification-hubs-sdk:publishGeneralPublicationToBuildDirRepository notification-hubs-sdk:publishFcmPublicationToBuildDirRepository notification-hubs-sdk:writeVersionFile'
     publishJUnitResults: false
+    jdkVersionOption: 1.11
 
 - bash: |
     # Get AZCopy
