@@ -22,7 +22,7 @@ public class NotificationDetailActivity extends AppCompatActivity {
     private static final Set<String> RESERVED_KEYS;
 
     static {
-        RESERVED_KEYS = new HashSet<String>();
+        RESERVED_KEYS = new HashSet<>();
         RESERVED_KEYS.add(INTENT_TITLE_KEY);
         RESERVED_KEYS.add(INTENT_BODY_KEY);
     }
@@ -50,7 +50,7 @@ public class NotificationDetailActivity extends AppCompatActivity {
 
         final LinearLayout detailContent = findViewById(R.id.detail_content);
         for (String key : getDataKeys(info)) {
-            final View dataRow = getLayoutInflater().inflate(R.layout.data_item, null);
+            final View dataRow = getLayoutInflater().inflate(R.layout.data_item, findViewById(android.R.id.content), false);
             final TextView dataKey = dataRow.findViewById(R.id.data_key);
             dataKey.setText(key);
 
@@ -62,14 +62,14 @@ public class NotificationDetailActivity extends AppCompatActivity {
     }
 
     private static Iterable<String> getDataKeys(Intent i) {
-        List<String> retval = new ArrayList<String>();
+        List<String> returnValue = new ArrayList<>();
         for (String key: i.getExtras().keySet()) {
             if(!RESERVED_KEYS.contains(key)) {
-                retval.add(key);
+                returnValue.add(key);
             }
         }
 
-        Collections.sort(retval);
-        return retval;
+        Collections.sort(returnValue);
+        return returnValue;
     }
 }

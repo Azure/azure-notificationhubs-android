@@ -55,10 +55,9 @@ public class DevicePropertyProvider {
 
     /**
      * Returns a tag that allows for the targeting to all devices made by a particular company.
-     * @param context The Application context.
      * @return A string that can be used to target devices manufactured by a given company.
      */
-    public static String getOemTag(Context context) {
+    public static String getOemTag() {
         return "Oem_" + Build.MANUFACTURER;
     }
 
@@ -74,11 +73,11 @@ public class DevicePropertyProvider {
      */
     public static String getScreenSizeTag(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display disp = wm.getDefaultDisplay();
+        Display display = wm.getDefaultDisplay();
         Point resolution = new Point();
-        disp.getSize(resolution);
+        display.getSize(resolution);
 
-        switch (disp.getRotation()) {
+        switch (display.getRotation()) {
             case Surface.ROTATION_90:
             case Surface.ROTATION_270:
                 resolution.set(resolution.y, resolution.x);
@@ -91,10 +90,8 @@ public class DevicePropertyProvider {
                 throw new IllegalStateException("Screen-size can only be determined when screen is rotated at a right-angle");
         }
 
-        StringBuilder builder = new StringBuilder("ScreenSize_");
-        builder.append(resolution.x);
-        builder.append('X');
-        builder.append(resolution.y);
-        return builder.toString();
+        return "ScreenSize_" + resolution.x +
+                'X' +
+                resolution.y;
     }
 }
