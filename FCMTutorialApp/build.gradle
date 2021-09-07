@@ -37,7 +37,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.microsoft.azure:notification-hubs-android-sdk:1.1.6@aar'
-    implementation 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
 }
 
 repositories {
