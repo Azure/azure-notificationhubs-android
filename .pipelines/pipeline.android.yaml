@@ -69,6 +69,7 @@ steps:
     options: '-PisCI="true"'
     tasks: 'notification-hubs-sample-app-java:test notification-hubs-sample-app-java:connectedAndroidTest'
     publishJUnitResults: false
+    jdkVersionOption: 1.11
 
 - task: Gradle@2
   displayName: 'Create assets for publication'
