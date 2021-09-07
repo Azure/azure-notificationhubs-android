@@ -1,12 +1,9 @@
 package com.example.notification_hubs_sample_app_java.ui.main;
 
-import android.app.Notification;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.notification_hubs_sample_app_java.cookbook.NotificationDisplayer;
 import com.google.firebase.messaging.RemoteMessage;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationListener;
@@ -19,10 +16,8 @@ public class NotificationListViewModel extends ViewModel {
     private final NotificationListener mListener;
 
     public NotificationListViewModel() {
-        mNotifications = new MutableLiveData<List<RemoteMessage>>();
-        mListener = (context, message) -> {
-            addNotification(message);
-        };
+        mNotifications = new MutableLiveData<>();
+        mListener = (context, message) -> addNotification(message);
 
         NotificationHub.setListener(mListener);
     }
@@ -30,7 +25,7 @@ public class NotificationListViewModel extends ViewModel {
     public void addNotification(RemoteMessage notification) {
         List<RemoteMessage> toUpdate = mNotifications.getValue();
         if(toUpdate == null) {
-            toUpdate = new ArrayList<RemoteMessage>();
+            toUpdate = new ArrayList<>();
         }
         toUpdate.add(0, notification);
         mNotifications.postValue(toUpdate);
@@ -39,7 +34,7 @@ public class NotificationListViewModel extends ViewModel {
     public void clearNotifications() {
         List<RemoteMessage> toUpdate = mNotifications.getValue();
         if (toUpdate == null) {
-            toUpdate = new ArrayList<RemoteMessage>();
+            toUpdate = new ArrayList<>();
         } else {
             toUpdate.clear();
         }

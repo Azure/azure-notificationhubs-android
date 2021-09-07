@@ -119,3 +119,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Eclipse
+.settings/
+.project
+.classpath

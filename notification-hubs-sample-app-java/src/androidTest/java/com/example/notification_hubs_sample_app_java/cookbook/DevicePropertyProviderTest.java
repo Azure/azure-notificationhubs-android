@@ -5,8 +5,6 @@ import android.content.Context;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.notification_hubs_sample_app_java.cookbook.DevicePropertyProvider;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -80,7 +78,7 @@ public class DevicePropertyProviderTest {
     public void getOemTag() {
         final String expectedPrefix = "Oem_";
 
-        String oemTag = DevicePropertyProvider.getOemTag(mContext);
+        String oemTag = DevicePropertyProvider.getOemTag();
         Matcher acceptableTagMatcher = VALID_TAG_PATTERN.matcher(oemTag);
 
         Assert.assertTrue("OEM tag must be a valid tag.", acceptableTagMatcher.matches());
