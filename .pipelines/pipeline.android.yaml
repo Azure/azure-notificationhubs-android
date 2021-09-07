@@ -18,6 +18,7 @@ steps:
   inputs:
     options: '-p notification-hubs-sdk'
     tasks: 'cleanTest test '
+    jdkVersionOption: 1.11
 
 - bash: |
    #!/usr/bin/env bash
