@@ -7,8 +7,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.notification_hubs_sample_app_java.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
-import com.microsoft.windowsazure.messaging.notificationhubs.InstallationTemplate;
+import com.microsoft.windowsazure.messaging.notificationhubs.DebounceInstallationAdapter;
+import com.microsoft.windowsazure.messaging.notificationhubs.InstallationAdapter;
 import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
+import com.microsoft.windowsazure.messaging.notificationhubs.PushChannelValidationAdapter;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -21,11 +23,12 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
-        NotificationHub.addTag("userAgent:com.example.notification_hubs_sample_app_java:0.1.0");
-        InstallationTemplate testTemplate = new InstallationTemplate();
-        testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");
-        NotificationHub.setTemplate("testTemplate", testTemplate);
-        NotificationHub.setUserId("john.doe@example.com");
+        // Use the custom installation adapter to save to the backend once received from the backend
+        InstallationAdapter client = new CustomInstallationAdapter(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
+        InstallationAdapter debouncer = new DebounceInstallationAdapter(this.getApplication(), client);
+        NotificationHub.start(
+            this.getApplication(),
+            new PushChannelValidationAdapter(debouncer)
+        );
     }
 }
