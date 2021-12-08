@@ -72,7 +72,7 @@ dependencies {
         }
     }
 
-    def firebaseMessagingVersion = '22.0.0'
+    def firebaseMessagingVersion = '23.0.0'
     fcmApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
     generalApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
 
@@ -88,7 +88,7 @@ dependencies {
     testImplementation 'androidx.test:runner:1.4.0'
     testImplementation 'androidx.test:rules:1.4.0'
     testImplementation 'androidx.test.ext:junit:1.1.3'
-    testImplementation 'org.json:json:20210307'
+    testImplementation 'org.json:json:20211205'
     testImplementation 'org.powermock:powermock-api-mockito:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4-rule-agent:2.0.9'
