@@ -41,7 +41,7 @@ android {
 
         adm {
             dimension "push-provider"
-            applicationIdSuffix "adm"
+            applicationIdSuffix ".adm"
             USE_GOOGLE_SERVICES = false
         }
     }
