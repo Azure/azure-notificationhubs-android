@@ -21,6 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name="com.microsoft.windowsazure.messaging.notificationhubs.AnhAdmMessageReceiver"
+            android:permission="com.amazon.device.messaging.permission.SEND"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
+                <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
+                <category android:name="com.example.notification_hubs_sample_app_java.adm" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

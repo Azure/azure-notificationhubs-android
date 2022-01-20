@@ -22,6 +22,7 @@ package com.microsoft.windowsazure.messaging;
 
 import static com.microsoft.windowsazure.messaging.Utils.*;
 
+import com.amazon.device.messaging.development.ADMManifest;
 import com.microsoft.windowsazure.messaging.Registration.RegistrationType;
 
 import java.io.IOException;
