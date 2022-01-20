@@ -26,16 +26,6 @@ public class AnhAdmMessageHandlerJobBase extends ADMMessageHandlerJobBase
     @Override
     protected void onRegistrationError(Context context, String errMessage) {
         Log.e("ANH", "ADM registration error: " + errMessage);
-
-        try {
-            InputStream is = context.getAssets().open("api_key.txt");
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader reader = new BufferedReader(isr);
-            String apiKey = reader.readLine();
-            Log.d("ANH", "We think your API Key: " + apiKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
