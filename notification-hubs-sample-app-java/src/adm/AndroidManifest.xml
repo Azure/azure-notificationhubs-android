@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.notification_hubs_sample_app_java">
+
+    <application>
+        <receiver android:name="com.microsoft.windowsazure.messaging.notificationhubs.AnhAdmMessageReceiver"
+            android:permission="com.amazon.device.messaging.permission.SEND"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
+                <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
+                <category android:name="com.example.notification_hubs_sample_app_java.adm" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

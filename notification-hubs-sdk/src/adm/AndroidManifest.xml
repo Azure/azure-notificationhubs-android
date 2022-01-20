@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:amazon="http://schemas.amazon.com/apk/res/android"
+    package="com.microsoft.windowsazure.messaging">
+
+    <permission android:name="com.microsoft.windowsazure.messaging.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.microsoft.windowsazure.messaging.permission.RECEIVE_ADM_MESSAGE" />
+    <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
+    <application>
+        <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="true" />
+        <service
+            android:name=".notificationhubs.AnhAdmMessageHandlerJobBase"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"
+            />
+        <service android:name=".notificationhubs.AnhAdmMessageHandler" android:exported="false" />
+    </application>
+
+</manifest>
