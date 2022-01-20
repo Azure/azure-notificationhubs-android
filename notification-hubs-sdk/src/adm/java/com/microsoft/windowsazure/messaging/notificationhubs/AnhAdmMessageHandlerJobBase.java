@@ -6,21 +6,27 @@ import android.util.Log;
 
 import com.amazon.device.messaging.ADMMessageHandlerJobBase;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 public class AnhAdmMessageHandlerJobBase extends ADMMessageHandlerJobBase
 {
+
+    private final NotificationHub mHub;
+
     public AnhAdmMessageHandlerJobBase()
     {
-        super();
+        this(NotificationHub.getInstance());
     }
+
+    public AnhAdmMessageHandlerJobBase(NotificationHub hub)
+    {
+        super();
+        mHub = hub;
+    }
+
 
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i("ANH", "message received from ADM");
+        mHub.getInstanceListener().onPushNotificationReceived(context.getApplicationContext(), intent);
     }
 
     @Override

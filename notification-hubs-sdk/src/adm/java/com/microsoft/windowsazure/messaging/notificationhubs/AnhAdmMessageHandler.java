@@ -6,18 +6,24 @@ import android.util.Log;
 import com.amazon.device.messaging.ADMMessageHandlerBase;
 
 public final class AnhAdmMessageHandler extends ADMMessageHandlerBase {
+
+    private final NotificationHub mHub;
+
     public AnhAdmMessageHandler()
     {
-        super(AnhAdmMessageHandler.class.getName());
+        this(NotificationHub.getInstance());
     }
 
-    protected AnhAdmMessageHandler(final String className) {
-        super(className);
+    public AnhAdmMessageHandler(NotificationHub hub)
+    {
+        super(AnhAdmMessageHandler.class.getName());
+        mHub = hub;
     }
 
     @Override
     protected void onMessage(final Intent intent) {
         Log.i("ANH", "message received from ADM");
+        mHub.getInstanceListener().onPushNotificationReceived(mHub.getApplication(), intent);
     }
 
     @Override
