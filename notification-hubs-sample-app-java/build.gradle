@@ -48,11 +48,12 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file(System.getProperty("ANH_SAMPLE_KEYSTORE_PATH"))
-            storePassword System.getProperty("ANH_SAMPLE_KEYSTORE_PASSWORD")
-            keyAlias System.getProperty("ANH_SAMPLE_KEY_NAME")
-            keyPassword System.getProperty("ANH_SAMPLE_KEY_PASSWORD")
+            storeFile file(System.getenv("ANH_SAMPLE_KEYSTORE_PATH"))
+            storePassword System.getenv("ANH_SAMPLE_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ANH_SAMPLE_KEY_NAME")
+            keyPassword System.getenv("ANH_SAMPLE_KEY_PASSWORD")
         }
+
         releaseSigningConfig {
             storeFile rootProject.file("notification-hubs-sample-app-java/notification-hubs-sample-app.jks")
             storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
