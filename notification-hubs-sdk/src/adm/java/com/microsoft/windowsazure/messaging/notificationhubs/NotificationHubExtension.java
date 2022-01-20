@@ -6,6 +6,8 @@ import com.amazon.device.messaging.ADM;
 import com.amazon.device.messaging.development.ADMManifest;
 
 class NotificationHubExtension {
+    public static String PLATFORM = "adm";
+
     public static void fetchPushChannel(final NotificationHub hub)
     {
         ADMManifest.checkManifestAuthoredProperly(hub.getApplication());
