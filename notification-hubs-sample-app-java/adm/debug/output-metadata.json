@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.example.notification_hubs_sample_app_java.adm",
+  "variantName": "admDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 1,
+      "versionName": "1.0",
+      "outputFile": "notification-hubs-sample-app-java-adm-debug.apk"
+    }
+  ],
+  "elementType": "File"
+}

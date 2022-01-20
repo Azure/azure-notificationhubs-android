@@ -7,6 +7,8 @@ if (secretsPropertiesFile.exists()) {
     secretsProperties.load(new FileInputStream(secretsPropertiesFile))
 }
 
+boolean USE_GOOGLE_SERVICES
+
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
@@ -29,14 +31,29 @@ android {
         fcm {
             dimension "push-provider"
             applicationIdSuffix ".fcm"
+            USE_GOOGLE_SERVICES = true
         }
 
         general {
             dimension "push-provider"
+            USE_GOOGLE_SERVICES = true
+        }
+
+        adm {
+            dimension "push-provider"
+            applicationIdSuffix ".adm"
+            USE_GOOGLE_SERVICES = false
         }
     }
 
     signingConfigs {
+        debug {
+            storeFile file(System.getenv("ANH_SAMPLE_KEYSTORE_PATH"))
+            storePassword System.getenv("ANH_SAMPLE_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ANH_SAMPLE_KEY_NAME")
+            keyPassword System.getenv("ANH_SAMPLE_KEY_PASSWORD")
+        }
+
         releaseSigningConfig {
             storeFile rootProject.file("notification-hubs-sample-app-java/notification-hubs-sample-app.jks")
             storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
@@ -56,6 +73,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    sourceSets {
+        adm {
+            assets {
+                srcDirs 'src\\adm\\assets'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -64,13 +88,17 @@ dependencies {
     implementation project(':notification-hubs-sdk')
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.android.gms:play-services-base:17.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    fcmImplementation 'com.google.android.gms:play-services-base:17.6.0'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
-apply plugin: 'com.google.gms.google-services'
+if(USE_GOOGLE_SERVICES) {
+    apply plugin: 'com.google.gms.google-services'
+}

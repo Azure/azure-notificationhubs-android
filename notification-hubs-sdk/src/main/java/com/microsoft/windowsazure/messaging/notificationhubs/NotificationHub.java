@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import com.amazon.device.messaging.development.ADMManifest;
 import com.microsoft.windowsazure.messaging.R;
 
 import java.util.ArrayList;
@@ -66,6 +67,11 @@ public final class NotificationHub {
             sInstance = new NotificationHub();
         }
         return sInstance;
+    }
+
+    protected Application getApplication()
+    {
+        return mApplication;
     }
 
      synchronized void registerApplication(Application application) {
@@ -130,6 +136,8 @@ public final class NotificationHub {
         instance.mAdapter = adapter;
 
         instance.registerApplication(application);
+
+      //  ADMManifest.checkManifestAuthoredProperly(application);
 
         // Why is this done here instead of being in the manifest like everything else?
         // BroadcastReceivers are special, and starting in Android 8.0 the ability to start them

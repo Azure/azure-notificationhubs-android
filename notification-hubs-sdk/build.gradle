@@ -41,6 +41,11 @@ android {
         general {
             dimension "push-provider"
         }
+
+        adm {
+            dimension "push-provider"
+            versionNameSuffix "-adm"
+        }
     }
 
     lintOptions {
@@ -64,13 +69,14 @@ configurations {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation('com.android.volley:volley') {
         version {
             strictly '[1.0, 2.0['
             prefer '1.2.0'
         }
     }
+    admImplementation files('libs\\amazon-device-messaging-1.1.0.jar')
 
     def firebaseMessagingVersion = '23.0.0'
     fcmApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"

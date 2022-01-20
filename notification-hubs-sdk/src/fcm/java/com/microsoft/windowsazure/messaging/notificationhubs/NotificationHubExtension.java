@@ -16,6 +16,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
  * instance.
  */
 class NotificationHubExtension {
+    public static String PLATFORM = "GCM";
+
     /**
      * Queries Firebase for the most recent token asynchronously.
      *
