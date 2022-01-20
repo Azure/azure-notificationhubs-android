@@ -9,7 +9,7 @@ pr:
 - v1-preview
 
 pool:
-  name: Hosted Mac Internal
+  vmImage: macOS-latest
   demands: java
 
 steps:
