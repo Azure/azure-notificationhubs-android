@@ -72,7 +72,7 @@ dependencies {
         }
     }
 
-    def firebaseMessagingVersion = '23.0.0'
+    def firebaseMessagingVersion = '23.0.2'
     fcmApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
     generalApi "com.google.firebase:firebase-messaging:${firebaseMessagingVersion}"
 
