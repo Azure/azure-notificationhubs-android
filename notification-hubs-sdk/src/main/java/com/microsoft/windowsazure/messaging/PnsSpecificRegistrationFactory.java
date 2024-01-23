@@ -30,7 +30,7 @@ public final class PnsSpecificRegistrationFactory {
 	/**
 	 * Specifies the SDK registration Type.
 	 */
-	private static RegistrationType mRegistrationType = RegistrationType.fcm;
+	private static RegistrationType mRegistrationType = RegistrationType.fcmv1;
 
 	/**
 	 * Keeps the single instance
@@ -75,6 +75,9 @@ public final class PnsSpecificRegistrationFactory {
 			case fcm:{
 				return new FcmNativeRegistration(notificationHubPath);
 			}
+			case fcmv1:{
+				return new FcmV1NativeRegistration(notificationHubPath);
+			}
 			case baidu:{
 				return new BaiduNativeRegistration(notificationHubPath);
 			}
@@ -82,7 +85,7 @@ public final class PnsSpecificRegistrationFactory {
 				return new AdmNativeRegistration(notificationHubPath);
 			}
 			default:{
-				throw new AssertionError("Ivalid registration type!");
+				throw new AssertionError("Invalid registration type!");
 			}
 		}
 	}
@@ -99,6 +102,8 @@ public final class PnsSpecificRegistrationFactory {
 				return new GcmTemplateRegistration(notificationHubPath);
 			case fcm:
 				return new FcmTemplateRegistration(notificationHubPath);
+			case fcmv1:
+				return new FcmV1TemplateRegistration(notificationHubPath);
 			case baidu:
 				return new BaiduTemplateRegistration(notificationHubPath);
 			case adm:
@@ -115,27 +120,32 @@ public final class PnsSpecificRegistrationFactory {
 	 */
 	public boolean isTemplateRegistration(String xml){
 
-		String tempelateRegistrationCustomNode;
+		String templateRegistrationCustomNode;
 		
 		switch(mRegistrationType)
 		{
 			case gcm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						GcmTemplateRegistration.GCM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
 			case fcm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						FcmTemplateRegistration.FCM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
+			case fcmv1:{
+				templateRegistrationCustomNode =
+						FcmV1TemplateRegistration.FCM_V1_TEMPLATE_REGISTRATION_CUSTOM_NODE;
+				break;
+			}
 			case baidu:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						BaiduTemplateRegistration.BAIDU_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
 			case adm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						AdmTemplateRegistration.ADM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
@@ -144,7 +154,7 @@ public final class PnsSpecificRegistrationFactory {
 			}
 		}
 
-		return xml.contains("<" + (tempelateRegistrationCustomNode));
+		return xml.contains("<" + (templateRegistrationCustomNode));
 	}
 	
 	/**
@@ -159,6 +169,9 @@ public final class PnsSpecificRegistrationFactory {
 			}
 			case fcm:{
 				return FcmNativeRegistration.FCM_HANDLE_NODE;
+			}
+			case fcmv1:{
+				return FcmV1NativeRegistration.FCM_V1_HANDLE_NODE;
 			}
 			case baidu:{
 				return BaiduNativeRegistration.BAIDU_HANDLE_NODE;
@@ -185,6 +198,9 @@ public final class PnsSpecificRegistrationFactory {
 			}
 			case fcm:{
 				return "AndroidSdkFcm";
+			}
+			case fcmv1:{
+				return "AndroidSdkFcmV1";
 			}
 			case baidu:{
 				return "AndroidSdkBaidu";

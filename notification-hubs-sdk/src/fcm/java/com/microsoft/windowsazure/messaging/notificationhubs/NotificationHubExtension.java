@@ -3,6 +3,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
  * instance.
  */
 class NotificationHubExtension {
+    private static final String MIGRATED_TO_FCM_V1_KEY = "__ANH__MIGRATED_TO_FCM_V1";
+
     /**
      * Queries Firebase for the most recent token asynchronously.
      *
@@ -40,5 +44,23 @@ class NotificationHubExtension {
                 hub.setInstancePushChannel(task.getResult());
             }
         });
+    }
+
+    public static void migrateToFcmV1(Context context, NotificationHub hub) {
+        FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    sharedPreferences.edit().putBoolean(MIGRATED_TO_FCM_V1_KEY, true).apply();
+                }
+                fetchPushChannel(hub);
+            }
+        });
+    }
+
+    public static boolean isMigratedToFcmV1(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(MIGRATED_TO_FCM_V1_KEY, false);
     }
 }
