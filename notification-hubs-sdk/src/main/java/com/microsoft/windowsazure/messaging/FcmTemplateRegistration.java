@@ -25,7 +25,10 @@ import org.w3c.dom.Element;
 
 /**
  * Represents FCM template registration
+ *
+ * @deprecated use {@link com.microsoft.windowsazure.messaging.FcmV1TemplateRegistration#FcmV1TemplateRegistration(String)} instead.
  */
+@Deprecated
 public class FcmTemplateRegistration extends TemplateRegistration {
 
     /**

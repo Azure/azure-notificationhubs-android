@@ -25,7 +25,10 @@ import org.w3c.dom.Element;
 
 /**
  * Represents FCM native registration
+ *
+ * @deprecated
  */
+@Deprecated
 public class FcmNativeRegistration extends Registration {
 
     /**

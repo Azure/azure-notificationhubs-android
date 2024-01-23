@@ -54,6 +54,10 @@ public abstract class Registration {
 		 */
 		@Deprecated
 		gcm,
+		/**
+		 * @deprecated Use fcmv1 instead.
+		 */
+		@Deprecated
 		fcm,
 		fcmv1,
 		adm,
