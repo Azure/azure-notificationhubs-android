@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
+        NotificationHub.setPlatform("fcmV1");
         NotificationHub.addTag("userAgent:com.example.notification_hubs_sample_app_java:0.1.0");
         InstallationTemplate testTemplate = new InstallationTemplate();
         testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");

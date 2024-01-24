@@ -95,7 +95,7 @@ class InstallationPutRequest extends JsonObjectRequest {
 
             JSONObject jsonBody = new JSONObject() {{
                 put("installationId", installation.getInstallationId());
-                put("platform", "FCMV1");
+                put("platform", installation.getPlatform());
                 put("pushChannel", installation.getPushChannel());
                 put("tags", tagList);
                 put("templates", serializedTemplates);
