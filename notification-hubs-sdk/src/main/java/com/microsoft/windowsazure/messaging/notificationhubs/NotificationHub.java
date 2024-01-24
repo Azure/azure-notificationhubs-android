@@ -92,11 +92,7 @@ public final class NotificationHub {
         mUserIdVisitor = new UserIdVisitor(mApplication);
         useInstanceVisitor(mUserIdVisitor);
 
-        if (!NotificationHubExtension.isMigratedToFcmV1(application.getApplicationContext())) {
-            NotificationHubExtension.migrateToFcmV1(application.getApplicationContext(), this);
-        } else {
-            NotificationHubExtension.fetchPushChannel(this);
-        }
+        NotificationHubExtension.fetchPushChannel(this);
     }
 
     /**
