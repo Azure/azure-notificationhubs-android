@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class Installation implements Taggable {
     private String mPushChannel;
-    private String mPlatform = "fcm";
+    private String mPlatform = "fcmv1";
     private Set<String> mTags;
     private Map<String, InstallationTemplate> mTemplates;
     private String mInstallationId;

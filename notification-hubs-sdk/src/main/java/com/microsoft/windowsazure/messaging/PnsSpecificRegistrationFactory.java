@@ -30,7 +30,7 @@ public final class PnsSpecificRegistrationFactory {
 	/**
 	 * Specifies the SDK registration Type.
 	 */
-	private static RegistrationType mRegistrationType = RegistrationType.fcm;
+	private static RegistrationType mRegistrationType = RegistrationType.fcmv1;
 
 	/**
 	 * Keeps the single instance

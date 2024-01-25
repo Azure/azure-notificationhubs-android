@@ -38,7 +38,6 @@ public final class LegacyNotificationHubManager {
 
     public void initialize(Context context) {
         hub = new NotificationHub(BuildConfig.hubName, BuildConfig.hubListenConnectionString, context);
-        PnsSpecificRegistrationFactory.getInstance().setRegistrationType(Registration.RegistrationType.fcmv1);
         if (!NotificationHubLegacyExtension.isMigratedToFcmV1(context)) {
             NotificationHubLegacyExtension.migrateToFcmV1(context, hub);
         } else {

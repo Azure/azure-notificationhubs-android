@@ -23,7 +23,7 @@ public class PlatformVisitor implements InstallationVisitor {
         if (selectedPlatform == null) {
             return;
         }
-        
+
         subject.setPlatform(selectedPlatform);
     }
 
