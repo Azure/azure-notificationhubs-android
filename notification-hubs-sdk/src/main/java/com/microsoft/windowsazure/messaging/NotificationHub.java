@@ -319,13 +319,32 @@ public class NotificationHub {
 			Registration registration;
 			Element entry = (Element) entries.item(i);
 			String xml = getXmlString(entry);
+
 			if (PnsSpecificRegistrationFactory.getInstance().isTemplateRegistration(xml)) {
 				registration = PnsSpecificRegistrationFactory.getInstance().createTemplateRegistration(mNotificationHubPath);
 			} else {
 				registration = PnsSpecificRegistrationFactory.getInstance().createNativeRegistration(mNotificationHubPath);
 			}
-
 			registration.loadXml(xml, mNotificationHubPath);
+
+			if (isNullOrWhiteSpace(registration.getRegistrationId())) {
+				RegistrationType currentPlatform = PnsSpecificRegistrationFactory.getInstance().getRegistrationType();
+
+				if (currentPlatform == RegistrationType.fcmv1
+						|| currentPlatform == RegistrationType.fcm
+						|| currentPlatform == RegistrationType.gcm) {
+					RegistrationType otherPlatformToCheck = currentPlatform == RegistrationType.fcmv1
+							? RegistrationType.fcm
+							: RegistrationType.fcmv1;
+
+					if (PnsSpecificRegistrationFactory.getInstance().isTemplateRegistrationForPlatform(xml, otherPlatformToCheck)) {
+						registration = PnsSpecificRegistrationFactory.getInstance().createTemplateRegistrationForPlatform(mNotificationHubPath, otherPlatformToCheck);
+					} else {
+						registration = PnsSpecificRegistrationFactory.getInstance().createNativeRegistrationForPlatform(mNotificationHubPath, otherPlatformToCheck);
+					}
+					registration.loadXml(xml, mNotificationHubPath);
+				}
+			}
 
 			storeRegistrationId(registration.getName(), registration.getRegistrationId(), registration.getPNSHandle());
 		}

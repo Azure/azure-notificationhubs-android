@@ -61,6 +61,10 @@ public final class PnsSpecificRegistrationFactory {
 	public void setRegistrationType(RegistrationType type){
 		mRegistrationType = type;
 	}
+
+	public RegistrationType getRegistrationType() {
+		return mRegistrationType;
+	}
 	
 	/**
 	 * Creates native registration according the PNS supported on device
@@ -68,7 +72,17 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return Native registration
 	 */
 	public Registration createNativeRegistration(String notificationHubPath){
-		switch(mRegistrationType) {
+		return createNativeRegistrationForPlatform(notificationHubPath, mRegistrationType);
+	}
+
+	/**
+	 * Creates native registration gor the given PNS type
+	 * @param notificationHubPath The Notification Hub path
+	 * @param registrationType	Platform
+	 * @return Native registration
+	 */
+	public Registration createNativeRegistrationForPlatform(String notificationHubPath, RegistrationType registrationType) {
+		switch(registrationType) {
 			case gcm:{
 				return new GcmNativeRegistration(notificationHubPath);
 			}
@@ -97,7 +111,18 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return Template registration
 	 */
 	public TemplateRegistration createTemplateRegistration(String notificationHubPath){
-		switch(mRegistrationType) {
+		return createTemplateRegistrationForPlatform(notificationHubPath, mRegistrationType);
+	}
+
+	/**
+	 * Creates template registration for a given PNS type
+	 * TODO: This API needs to be deprecated
+	 * @param notificationHubPath The Notification Hub path
+	 * @param registrationType	Platform
+	 * @return Template registration
+	 */
+	public TemplateRegistration createTemplateRegistrationForPlatform(String notificationHubPath, RegistrationType registrationType) {
+		switch(registrationType) {
 			case gcm:
 				return new GcmTemplateRegistration(notificationHubPath);
 			case fcm:
@@ -110,7 +135,7 @@ public final class PnsSpecificRegistrationFactory {
 				return new AdmTemplateRegistration(notificationHubPath);
 			default:
 				throw new AssertionError("Invalid registration type!");
-		}	
+		}
 	}
 	
 	/**
@@ -119,10 +144,19 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return bool
 	 */
 	public boolean isTemplateRegistration(String xml){
+		return isTemplateRegistrationForPlatform(xml, mRegistrationType);
+	}
 
+	/**
+	 * Indicates if a registration xml is a Template Registration for the given platform
+	 * @param xml	The xml to check
+	 * @param registrationType	Platform
+	 * @return bool
+	 */
+	public boolean isTemplateRegistrationForPlatform(String xml, RegistrationType registrationType) {
 		String templateRegistrationCustomNode;
-		
-		switch(mRegistrationType)
+
+		switch(registrationType)
 		{
 			case gcm:{
 				templateRegistrationCustomNode =
