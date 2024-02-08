@@ -12,6 +12,9 @@ pool:
   vmImage: macOS-latest
   demands: java
 
+variables:
+- group: azure-sdk
+
 steps:
 - task: Gradle@2
   displayName: '(Non-Emulator) SDK Tests'
