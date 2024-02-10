@@ -23,7 +23,10 @@ public final class LegacyFirebaseReceiver extends FirebaseMessagingService {
     public void onCreate() {
         super.onCreate();
 
-        LegacyNotificationHubManager.getInstance().initialize(this.getApplicationContext());
+        LegacyNotificationHubManager legacyHubManager = LegacyNotificationHubManager.getInstance();
+        if (!legacyHubManager.isInitialized()) {
+            legacyHubManager.initialize(this.getApplicationContext());
+        }
     }
 
     /**
@@ -33,7 +36,6 @@ public final class LegacyFirebaseReceiver extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         System.out.println("Message received");
-//        mHub.getInstanceListener().onPushNotificationReceived(this.getApplicationContext(), remoteMessage);
     }
 
     /**

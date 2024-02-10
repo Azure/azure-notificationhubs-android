@@ -30,6 +30,10 @@ public final class LegacyNotificationHubManager {
         fetchTokenAndRegister();
     }
 
+    public boolean isInitialized() {
+        return hub != null;
+    }
+
     private void fetchTokenAndRegister() {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
@@ -53,7 +57,7 @@ public final class LegacyNotificationHubManager {
             @Override
             public void run() {
                 try {
-                    hub.register(token);
+                    hub.register(token, "anh-sample-app-reg");
                 } catch (Exception e) {
                     Log.e("ANH", "Error registering the device", e);
                 }
