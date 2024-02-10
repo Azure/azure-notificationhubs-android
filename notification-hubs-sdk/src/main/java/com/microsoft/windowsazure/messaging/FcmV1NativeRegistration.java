@@ -24,46 +24,42 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Represents FCM template registration
- *
- * @deprecated use {@link com.microsoft.windowsazure.messaging.FcmV1TemplateRegistration#FcmV1TemplateRegistration(String)} instead.
+ * Represents FCM V1 native registration
  */
-@Deprecated
-public class FcmTemplateRegistration extends TemplateRegistration {
+public class FcmV1NativeRegistration extends Registration {
 
     /**
-     * Custom payload node name for template registrations
+     * Custom payload node name for native registrations
      */
-    static final String FCM_TEMPLATE_REGISTRATION_CUSTOM_NODE = "GcmTemplateRegistrationDescription";
+    private static final String FCM_V1_NATIVE_REGISTRATION_CUSTOM_NODE = "FcmV1RegistrationDescription";
 
     /**
      * Custom node name for PNS handle
      */
-    private static final String FCM_HANDLE_NODE = "GcmRegistrationId";
+    static final String FCM_V1_HANDLE_NODE = "FcmV1RegistrationId";
 
     /**
-     * Creates a new template registration
+     * Creates a new native registration
      * @param notificationHubPath	The notification hub path
      */
-    FcmTemplateRegistration(String notificationHubPath) {
+    FcmV1NativeRegistration(String notificationHubPath) {
         super(notificationHubPath);
-        mRegistrationType = RegistrationType.fcm;
+        mRegistrationType = RegistrationType.fcmv1;
     }
 
     @Override
     protected String getSpecificPayloadNodeName() {
-        return FCM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
+        return FCM_V1_NATIVE_REGISTRATION_CUSTOM_NODE;
     }
 
     @Override
-    protected void appendCustomPayload(Document doc, Element templateRegistrationDescription) {
-        appendNodeWithValue(doc, templateRegistrationDescription, FCM_HANDLE_NODE, getPNSHandle());
-        super.appendCustomPayload(doc,templateRegistrationDescription);
+    protected void appendCustomPayload(Document doc, Element registrationDescription) {
+        appendNodeWithValue(doc, registrationDescription, FCM_V1_HANDLE_NODE, getPNSHandle());
     }
 
     @Override
     protected void loadCustomXmlData(Element payloadNode) {
-        setPNSHandle(getNodeValue(payloadNode, FCM_HANDLE_NODE));
-        super.loadCustomXmlData(payloadNode);
+        setPNSHandle(getNodeValue(payloadNode, FCM_V1_HANDLE_NODE));
+        setName(DEFAULT_REGISTRATION_NAME);
     }
 }

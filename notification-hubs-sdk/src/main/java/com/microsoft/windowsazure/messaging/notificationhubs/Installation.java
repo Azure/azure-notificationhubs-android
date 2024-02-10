@@ -13,6 +13,7 @@ import java.util.Set;
  */
 public class Installation implements Taggable {
     private String mPushChannel;
+    private String mPlatform = "fcmv1";
     private Set<String> mTags;
     private Map<String, InstallationTemplate> mTemplates;
     private String mInstallationId;
@@ -40,6 +41,22 @@ public class Installation implements Taggable {
      */
     public void setPushChannel(String pushChannel) {
         mPushChannel = pushChannel;
+    }
+
+    /**
+     * Fetches the platform for this installation.
+     * @return Platform for this installation.
+     */
+    public String getPlatform() {
+        return mPlatform;
+    }
+
+    /**
+     * Sets the platform for this {@link Installation}.
+     * @param platform Platform for this installation
+     */
+    public void setPlatform(String platform) {
+        mPlatform = platform;
     }
 
     /**

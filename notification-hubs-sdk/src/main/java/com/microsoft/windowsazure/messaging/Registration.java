@@ -50,11 +50,16 @@ public abstract class Registration {
 	{
 		unknown,
 		/**
-		 * @deprecated Use fcm instead.
+		 * @deprecated Use fcmv1 instead.
 		 */
 		@Deprecated
 		gcm,
+		/**
+		 * @deprecated Use fcmv1 instead.
+		 */
+		@Deprecated
 		fcm,
+		fcmv1,
 		adm,
 		baidu
 	}

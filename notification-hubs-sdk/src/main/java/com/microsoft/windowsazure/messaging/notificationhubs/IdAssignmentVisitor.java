@@ -20,7 +20,7 @@ class IdAssignmentVisitor implements InstallationVisitor {
      * Ensures that an {@link Installation} has a unique identifier associated with it before it is
      * sent to the server.
      *
-     * In no unique id has been set by the time this enrichment has been called, a UUID will be
+     * If no unique id has been set by the time this enrichment has been called, a UUID will be
      * generated and used as the unique identifier. That UUID is preserved between calls to this
      * method.
      *

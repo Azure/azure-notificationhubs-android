@@ -25,6 +25,7 @@ public final class NotificationHub {
     private NotificationListener mListener;
     private final List<InstallationVisitor> mVisitors;
     private PushChannelVisitor mPushChannelVisitor;
+    private PlatformVisitor mPlatformVisitor;
     private TagVisitor mTagVisitor;
     private TemplateVisitor mTemplateVisitor;
     private IdAssignmentVisitor mIdAssignmentVisitor;
@@ -88,6 +89,9 @@ public final class NotificationHub {
 
         mPushChannelVisitor = new PushChannelVisitor(mApplication);
         useInstanceVisitor(mPushChannelVisitor);
+
+        mPlatformVisitor = new PlatformVisitor(mApplication);
+        useInstanceVisitor(mPlatformVisitor);
 
         mUserIdVisitor = new UserIdVisitor(mApplication);
         useInstanceVisitor(mUserIdVisitor);
@@ -274,6 +278,37 @@ public final class NotificationHub {
      */
     public String getInstancePushChannel() {
         return mPushChannelVisitor.getPushChannel();
+    }
+
+
+    public static void setPlatform(String platform) {
+        getInstance().setInstancePlatform(platform);
+    }
+
+    /**
+     * Fetches the current Platform.
+     * @return The current platform for this device. Null if
+     *         it hasn't been initialized yet.
+     */
+    public static String getPlatform() {
+        return getInstance().getInstancePlatform();
+    }
+
+    void setInstancePlatform(String platform) {
+        if (platform.equals(mPlatformVisitor.getPlatform())) {
+            return;
+        }
+        mPlatformVisitor.setPlatform(platform);
+        beginInstanceInstallationUpdate();
+    }
+
+    /**
+     * Fetches the current Platform.
+     * @return The current platform for this device. Null if
+     *         it hasn't been initialized yet.
+     */
+    public String getInstancePlatform() {
+        return mPlatformVisitor.getPlatform();
     }
 
     /**

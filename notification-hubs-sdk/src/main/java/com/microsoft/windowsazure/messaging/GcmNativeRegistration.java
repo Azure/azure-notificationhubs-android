@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 /**
  * Represents GCM native registration
  *
- * @deprecated use {@link com.microsoft.windowsazure.messaging.FcmNativeRegistration#FcmNativeRegistration(String)} instead.
+ * @deprecated use {@link com.microsoft.windowsazure.messaging.FcmV1NativeRegistration#FcmV1NativeRegistration(String)} instead.
  */
 @Deprecated
 public class GcmNativeRegistration extends Registration {

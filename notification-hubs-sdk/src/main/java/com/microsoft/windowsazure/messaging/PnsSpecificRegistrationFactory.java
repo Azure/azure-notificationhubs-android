@@ -30,7 +30,7 @@ public final class PnsSpecificRegistrationFactory {
 	/**
 	 * Specifies the SDK registration Type.
 	 */
-	private static RegistrationType mRegistrationType = RegistrationType.fcm;
+	private static RegistrationType mRegistrationType = RegistrationType.fcmv1;
 
 	/**
 	 * Keeps the single instance
@@ -61,6 +61,10 @@ public final class PnsSpecificRegistrationFactory {
 	public void setRegistrationType(RegistrationType type){
 		mRegistrationType = type;
 	}
+
+	public RegistrationType getRegistrationType() {
+		return mRegistrationType;
+	}
 	
 	/**
 	 * Creates native registration according the PNS supported on device
@@ -68,12 +72,25 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return Native registration
 	 */
 	public Registration createNativeRegistration(String notificationHubPath){
-		switch(mRegistrationType) {
+		return createNativeRegistrationForPlatform(notificationHubPath, mRegistrationType);
+	}
+
+	/**
+	 * Creates native registration gor the given PNS type
+	 * @param notificationHubPath The Notification Hub path
+	 * @param registrationType	Platform
+	 * @return Native registration
+	 */
+	public Registration createNativeRegistrationForPlatform(String notificationHubPath, RegistrationType registrationType) {
+		switch(registrationType) {
 			case gcm:{
 				return new GcmNativeRegistration(notificationHubPath);
 			}
 			case fcm:{
 				return new FcmNativeRegistration(notificationHubPath);
+			}
+			case fcmv1:{
+				return new FcmV1NativeRegistration(notificationHubPath);
 			}
 			case baidu:{
 				return new BaiduNativeRegistration(notificationHubPath);
@@ -82,7 +99,7 @@ public final class PnsSpecificRegistrationFactory {
 				return new AdmNativeRegistration(notificationHubPath);
 			}
 			default:{
-				throw new AssertionError("Ivalid registration type!");
+				throw new AssertionError("Invalid registration type!");
 			}
 		}
 	}
@@ -94,18 +111,31 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return Template registration
 	 */
 	public TemplateRegistration createTemplateRegistration(String notificationHubPath){
-		switch(mRegistrationType) {
+		return createTemplateRegistrationForPlatform(notificationHubPath, mRegistrationType);
+	}
+
+	/**
+	 * Creates template registration for a given PNS type
+	 * TODO: This API needs to be deprecated
+	 * @param notificationHubPath The Notification Hub path
+	 * @param registrationType	Platform
+	 * @return Template registration
+	 */
+	public TemplateRegistration createTemplateRegistrationForPlatform(String notificationHubPath, RegistrationType registrationType) {
+		switch(registrationType) {
 			case gcm:
 				return new GcmTemplateRegistration(notificationHubPath);
 			case fcm:
 				return new FcmTemplateRegistration(notificationHubPath);
+			case fcmv1:
+				return new FcmV1TemplateRegistration(notificationHubPath);
 			case baidu:
 				return new BaiduTemplateRegistration(notificationHubPath);
 			case adm:
 				return new AdmTemplateRegistration(notificationHubPath);
 			default:
 				throw new AssertionError("Invalid registration type!");
-		}	
+		}
 	}
 	
 	/**
@@ -114,28 +144,42 @@ public final class PnsSpecificRegistrationFactory {
 	 * @return bool
 	 */
 	public boolean isTemplateRegistration(String xml){
+		return isTemplateRegistrationForPlatform(xml, mRegistrationType);
+	}
 
-		String tempelateRegistrationCustomNode;
-		
-		switch(mRegistrationType)
+	/**
+	 * Indicates if a registration xml is a Template Registration for the given platform
+	 * @param xml	The xml to check
+	 * @param registrationType	Platform
+	 * @return bool
+	 */
+	public boolean isTemplateRegistrationForPlatform(String xml, RegistrationType registrationType) {
+		String templateRegistrationCustomNode;
+
+		switch(registrationType)
 		{
 			case gcm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						GcmTemplateRegistration.GCM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
 			case fcm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						FcmTemplateRegistration.FCM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
+			case fcmv1:{
+				templateRegistrationCustomNode =
+						FcmV1TemplateRegistration.FCM_V1_TEMPLATE_REGISTRATION_CUSTOM_NODE;
+				break;
+			}
 			case baidu:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						BaiduTemplateRegistration.BAIDU_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
 			case adm:{
-				tempelateRegistrationCustomNode =
+				templateRegistrationCustomNode =
 						AdmTemplateRegistration.ADM_TEMPLATE_REGISTRATION_CUSTOM_NODE;
 				break;
 			}
@@ -144,7 +188,7 @@ public final class PnsSpecificRegistrationFactory {
 			}
 		}
 
-		return xml.contains("<" + (tempelateRegistrationCustomNode));
+		return xml.contains("<" + (templateRegistrationCustomNode));
 	}
 	
 	/**
@@ -159,6 +203,9 @@ public final class PnsSpecificRegistrationFactory {
 			}
 			case fcm:{
 				return FcmNativeRegistration.FCM_HANDLE_NODE;
+			}
+			case fcmv1:{
+				return FcmV1NativeRegistration.FCM_V1_HANDLE_NODE;
 			}
 			case baidu:{
 				return BaiduNativeRegistration.BAIDU_HANDLE_NODE;
@@ -185,6 +232,9 @@ public final class PnsSpecificRegistrationFactory {
 			}
 			case fcm:{
 				return "AndroidSdkFcm";
+			}
+			case fcmv1:{
+				return "AndroidSdkFcmV1";
 			}
 			case baidu:{
 				return "AndroidSdkBaidu";

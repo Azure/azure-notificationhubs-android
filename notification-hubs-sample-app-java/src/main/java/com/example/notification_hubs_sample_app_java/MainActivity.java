@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationHub.start(this.getApplication(), BuildConfig.hubName, BuildConfig.hubListenConnectionString);
         NotificationHub.addTag("userAgent:com.example.notification_hubs_sample_app_java:0.1.0");
         InstallationTemplate testTemplate = new InstallationTemplate();
-        testTemplate.setBody("{\"data\":{\"message\":\"Notification Hub test notification: $myTextProp\"}}");
+        testTemplate.setBody("{\"message\":{\"android\":{\"data\":{\"message\":\"{'Notification Hub test notification: ' + $(myTextProp)}\"}}}}");
         NotificationHub.setTemplate("testTemplate", testTemplate);
         NotificationHub.setUserId("john.doe@example.com");
     }
