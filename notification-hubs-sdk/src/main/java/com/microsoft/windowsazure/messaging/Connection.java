@@ -262,9 +262,17 @@ class Connection {
 	 * @throws java.io.IOException
 	 */
 	private String getResponseContent(HttpURLConnection conn) throws IOException {
+		InputStream responseStream = null;
 		try {
-			InputStream instream = conn.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+			responseStream = conn.getInputStream();
+		} catch (IOException ex) {
+			responseStream = conn.getErrorStream();
+		}
+		if (responseStream == null) {
+			return null;
+		}
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
 
 			StringBuilder sb = new StringBuilder();
 			String content = reader.readLine();
