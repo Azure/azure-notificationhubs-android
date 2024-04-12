@@ -12,9 +12,6 @@ pool:
   vmImage: macOS-latest
   demands: java
 
-variables:
-- group: azure-sdk
-
 steps:
 - task: Gradle@2
   displayName: '(Non-Emulator) SDK Tests'
@@ -88,7 +85,6 @@ steps:
     mv azcopy_darwin_*/azcopy azcopy
     
     # Log in
-    export AZCOPY_SPA_CLIENT_SECRET=$(azuresdkpartnerdrops-service-principal-key)
     azcopy login --service-principal --application-id cfb5fe52-8bb2-4901-9056-70449fa2df96
     
     # Get version
@@ -109,3 +105,5 @@ steps:
     azcopy copy $ANDROID_SOURCE_PATH $DEST_URL --recursive
     azcopy copy $FCM_SOURCE_PATH $DEST_URL --recursive
   displayName: "AzCopy"
+  env: 
+    AZCOPY_SPA_CLIENT_SECRET: $(azuresdkpartnerdrops-service-principal-key)
