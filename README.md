@@ -1,9 +1,7 @@
 <p align="center"><a href="https://azure.microsoft.com/en-us/services/notification-hubs/"><img src="./nh-logo_300x300.png"/></a></p>
 
 # Azure Notification Hubs - Android SDK
-[![Download](https://badgen.net/maven/v/maven-central/com.microsoft.azure/notification-hubs-android-sdk)](https://search.maven.org/artifact/com.microsoft.azure/notification-hubs-android-sdk)
-
-> ATTENTION: JFrog is shutting down Bintray, and this library is now published on Maven Central. Read more on our [developer blog](https://devblogs.microsoft.com/azure-notification-hubs/bintray-sunset/).
+[![Download](https://badgen.net/maven/v/maven-central/com.microsoft.azure/notification-hubs-android-sdk)](https://central.sonatype.com/artifact/com.microsoft.azure/notification-hubs-android-sdk)
 
 Azure Notification Hubs (ANH) provides a multi-platform, scaled-out push infrastructure that enables you to send mobile push notifications from any backend (in the cloud or on-premises) to any mobile platform. To learn more, visit our [Developer Center](https://azure.microsoft.com/en-us/documentation/services/notification-hubs).
 
@@ -25,10 +23,10 @@ Once you have a Firebase project, and your application registered, make sure to 
 
 ### Reference with Gradle
 
-There are two SKUs of this library published on [Bintray](https://bintray.com/microsoftazuremobile/SDK/):
+There are two SKUs of this library published on [Maven Central](https://central.sonatype.com/search?q=notification-hubs-android-sdk):
 
-- _General:_ [notification-hubs-android-sdk](https://bintray.com/beta/#/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK?tab=overview)
-- _FCM Optimized:_ [notification-hubs-android-sdk-fcm](https://bintray.com/beta/#/microsoftazuremobile/SDK/Notification-Hubs-Android-SDK-fcm?tab=overview).
+- _General:_ [notification-hubs-android-sdk](https://central.sonatype.com/artifact/com.microsoft.azure/notification-hubs-android-sdk)
+- _FCM Optimized:_ [notification-hubs-android-sdk-fcm](https://central.sonatype.com/artifact/com.microsoft.azure/notification-hubs-android-sdk-fcm).
 
 Adding a reference to either project is as simple as editting two files in your project:
 
@@ -52,9 +50,9 @@ _{project-root}/{your-module}/build.gradle:_
 
 dependencies {
     // Ensure the following line is included in your app/library's "dependencies" section.
-    implementation 'com.microsoft.azure:notification-hubs-android-sdk:1.1.6'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:2.0.0'
     // optionally, use the fcm optimized SKU instead:
-    // implementation 'com.microsoft.azure:notification-hubs-android-sdk-fcm:1.1.6'
+    // implementation 'com.microsoft.azure:notification-hubs-android-sdk-fcm:2.0.0'
 }
 ```
 
