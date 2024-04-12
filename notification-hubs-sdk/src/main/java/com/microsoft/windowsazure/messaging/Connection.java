@@ -256,15 +256,22 @@ class Connection {
 	}
 
 	/**
-	 * Reads the content from a HttpURLConnection to a string
+	 * Reads the content from a HttpURLConnection response to a string
 	 * @param conn	The HttpURLConnection to read
 	 * @return	The content string
-	 * @throws java.io.IOException
 	 */
-	private String getResponseContent(HttpURLConnection conn) throws IOException {
+	private String getResponseContent(HttpURLConnection conn) {
+		InputStream responseStream;
 		try {
-			InputStream instream = conn.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+			responseStream = conn.getInputStream();
+		} catch (IOException ex) {
+			responseStream = conn.getErrorStream();
+		}
+		if (responseStream == null) {
+			return null;
+		}
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
 
 			StringBuilder sb = new StringBuilder();
 			String content = reader.readLine();
